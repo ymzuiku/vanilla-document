@@ -14,6 +14,13 @@ export const Home = () => {
           navHistory.push('/user');
         },
       }),
+    DOM('button')
+      .set({ textContent: 'go createDomExample' })
+      .set({
+        onclick: () => {
+          navHistory.push('/createDomExample');
+        },
+      }),
   );
 
   return root;

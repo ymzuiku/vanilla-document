@@ -8,15 +8,17 @@ A VanillaJS Framework, No component, only add lifecycle to HTMLElement.
 
 Tiny, Clear and Light size:
 
-No Gzip: 5k
-Gzip: 2k
+| Compress type | Size |
+| ------------- | ---- |
+| No Gzip       | 8k   |
+| Gzip          | 3k   |
 
 Feature:
 
 - State manage
 - Route
-- Declarative build UI!
-- immutable data update
+- Declarative build and Update UI!
+- immutable data update (Use Immer)
 
 ## Install
 
@@ -35,18 +37,80 @@ npm i --save vanilly
 yarn add vanilly
 ```
 
+## Create DOMs example
+
+```ts
+import { DOM, navHistory } from 'vanilly';
+
+const App = () => {
+  const refs = {
+    message: DOM('span'),
+  };
+
+  const root = DOM('div')
+    .set({
+      onclick: () => {},
+    })
+    .setStyle({
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#fff',
+    })
+    .setChilds(
+      DOM('h2').set({ textContent: 'VBind lable and input:' }),
+      DOM('span').setRef(r => (refs.message = r)),
+      DOM('input').set({
+        oninput: (e: any) => {
+          refs.message.textContent = e.target.value;
+        },
+      }),
+      DOM('button')
+        .set({ textContent: 'go home' })
+        .set({
+          onclick: () => {
+            navHistory.push('/home');
+          },
+        }),
+    );
+
+  root.onAppend = () => {
+    console.log('listening, at element append to parentElement');
+  };
+
+  root.onRemove = () => {
+    console.log(
+      'listening at element at remove by dom, when use root.remove, or parentElement use remove or removeChild',
+    );
+  };
+
+  root.onUpdate = () => {
+    console.log('listening, when store.update(...)');
+  };
+
+  return root;
+};
+
+document.body.append(App());
+```
+
+## Use state example
+
 ```ts
 import {DOM. navHistory, store} from 'vanilly'
 
 // init state
-store._state = {
+const state = {
   history: {
     '/app': {
       title: 'hello';
     },
   },
   paths: [],
-} as IState;
+};
+
+store._state = {...store._state, ...state};
+
+type IState = typeof state;
 
 // like Component, but only return HTMLElement
 const App = (path:string)=>{
@@ -94,6 +158,5 @@ setTimeout(() => {
   // goback URL
   navHistory.pop();
 }, 2000);
-
 
 ```

@@ -4,6 +4,7 @@ import 'cssin/commonSheets';
 import { DOM, Route, navHistory } from 'vanilly';
 import { Home } from './pages/home';
 import { User } from './pages/user';
+import { createDomExample } from './pages/createDomExample';
 import './state';
 
 setGlobalCss();
@@ -14,7 +15,7 @@ const App = () => {
   const root = DOM('div').append(
     Route({ path: '/user', component: User }),
     Route({ path: '/home', component: Home }),
-    Route({ path: '/home2', component: Home }),
+    Route({ path: '/createDomExample', component: createDomExample }),
   );
 
   root.onAppend = () => {
