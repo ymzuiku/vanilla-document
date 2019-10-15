@@ -38,11 +38,14 @@ export function Route<S>({ path, component, delay, keep = true, leaveTime }: IRo
     .setStyle({
       width: '100%',
       height: '100%',
-      minHeight: '100vh',
       overflow: 'hidden',
       left: '0px',
       top: '0px',
       backgroundColor: '#fff',
+      pointerEvents: HIDDEN_POINTEREVENTS,
+      display: HIDDEN_DISPLAY,
+      position: HIDDEN_POSITION,
+      zIndex: HIDDEN_ZINDEX,
     });
 
   const state = {

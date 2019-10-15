@@ -1,3 +1,4 @@
+import 'mobile-touch';
 import { cssin } from 'cssin';
 import { setGlobalCss } from 'cssin/commonCSSValues';
 import 'cssin/commonSheets';
@@ -12,11 +13,13 @@ setGlobalCss();
 document.body.setClass(cssin`padding:0px;margin:0px;`);
 
 const App = () => {
-  const root = DOM('div').append(
-    Route({ path: '/user', component: User }),
-    Route({ path: '/home', component: Home }),
-    Route({ path: '/createDomExample', component: createDomExample }),
-  );
+  const root = DOM('div')
+    .append(
+      Route({ path: '/user', component: User }),
+      Route({ path: '/home', component: Home }),
+      Route({ path: '/createDomExample', component: createDomExample }),
+    )
+    .setClass(cssin`wh:100%;relative;`);
 
   root.onAppend = () => {
     console.log('init-append');
