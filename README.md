@@ -26,7 +26,7 @@ Use unpkg, vanilly need immer:
 
 ```html
 <script src="https://unpkg.com/immer@4.0.1/dist/immer.umd.js"></script>
-<script src="https://unpkg.com/vanilly@0.1.0/umd/index.js"></script>
+<script src="https://unpkg.com/vanilly@x.x.x/umd/index.js"></script>
 ```
 
 Or use npm:
@@ -40,6 +40,9 @@ yarn add vanilly
 ## Create DOMs example
 
 ```ts
+// if use typescript, can use reference:
+/// <reference types="vanilly" />
+
 import { DOM, navHistory } from 'vanilly';
 
 const App = () => {

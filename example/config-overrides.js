@@ -10,10 +10,10 @@ module.exports = {
     // const babel = config.module.rules[1];
     // babel.include = [/(bdc-components)/, babel.include];
 
-    config.externals = {
-      immer: 'immer',
-      vanilly: 'vanilly',
-    };
+    // config.externals = {
+    //   immer: 'immer',
+    //   vanilly: 'vanilly',
+    // };
 
     return config;
   },
