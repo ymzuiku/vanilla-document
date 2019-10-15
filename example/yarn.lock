@@ -8307,11 +8307,6 @@ querystring-es3@^0.2.0:
   resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
   integrity sha1-nsYfeQSYdXB9aUFFlv2Qek1xHnM=
 
-querystring-number@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/querystring-number/-/querystring-number-1.0.6.tgz#5861f26aaf2dc378a52fd88c6a1688beb2b29b76"
-  integrity sha512-mqllvy5XJ+NMoF0OnIoEjklTtpBkjInIWPdpRO+emJeGezn1T6XBPCDBSrYPfKDxX80UUE4lF8O5IeVFPsqDTw==
-
 querystring@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
