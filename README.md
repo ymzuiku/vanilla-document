@@ -29,6 +29,8 @@ Use unpkg, vanilly need immer:
 <script src="https://unpkg.com/vanilly@x.x.x/umd/index.js"></script>
 ```
 
+> Change `vanilly@x.x.x` to package.json version, like: `vanilly@0.1.2`
+
 Or use npm:
 
 ```sh
