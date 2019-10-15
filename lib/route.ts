@@ -6,9 +6,9 @@ export const navHistory = createHistory(store);
 
 const SHOW_DISPLAY = 'block';
 const HIDDEN_DISPLAY = 'block';
-const HIDDEN_ZINDEX = 3;
-const SHOW_ZINDEX = 3;
+const HIDDEN_ZINDEX = 1;
 const LAST_ZINDEX = 2;
+const SHOW_ZINDEX = 3;
 const HIDDEN_POSITION = 'absolute';
 const SHOW_POSIRION = 'relative';
 const SHOW_POINTEREVENTS = 'auto';
@@ -41,6 +41,7 @@ export function Route<S>({ path, component, delay, keep = true, leaveTime }: IRo
       overflow: 'hidden',
       left: '0px',
       top: '0px',
+      backgroundColor: '#fff',
     });
 
   const state = {
@@ -53,6 +54,8 @@ export function Route<S>({ path, component, delay, keep = true, leaveTime }: IRo
 
   const onHistoryUpdate = () => {
     const [match, stackMatch, lastPage] = navHistory.checkPathMatch(path);
+
+    console.log(match, stackMatch, lastPage, path);
 
     if (match) {
       // 如果没有 child, 先读取，再重新执行
@@ -84,7 +87,7 @@ export function Route<S>({ path, component, delay, keep = true, leaveTime }: IRo
       const oldIsRenderChild = state.isRenderChild;
 
       if (state.isRenderChild === undefined || state.isRenderChild === true) {
-        if (lastPage && leaveTime && leaveTime > 0) {
+        if (lastPage > 0 && leaveTime && leaveTime > 0) {
           state.style = {
             pointerEvents: SHOW_POINTEREVENTS,
             display: SHOW_DISPLAY,
@@ -116,7 +119,7 @@ export function Route<S>({ path, component, delay, keep = true, leaveTime }: IRo
             pointerEvents: HIDDEN_POINTEREVENTS,
             display: HIDDEN_DISPLAY,
             position: HIDDEN_POSITION,
-            zIndex: lastPage ? LAST_ZINDEX : HIDDEN_ZINDEX,
+            zIndex: lastPage > 0 ? LAST_ZINDEX : HIDDEN_ZINDEX,
           };
           route.setStyle(state.style);
           if (oldIsRenderChild && !state.isRenderChild) {
@@ -131,7 +134,9 @@ export function Route<S>({ path, component, delay, keep = true, leaveTime }: IRo
     }
   };
 
-  state.unListen = navHistory.listen(onHistoryUpdate);
+  route.onAppend = () => {
+    state.unListen = navHistory.listen(onHistoryUpdate);
+  };
 
   route.onRemove = () => {
     if (state.unListen) {
