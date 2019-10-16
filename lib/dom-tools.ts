@@ -494,15 +494,6 @@ export interface IStyle {
   [key: string]: any;
 }
 
-interface ISetHTMLElement {
-  textContent?: string | null;
-  onclick?: any;
-  oninput?: any;
-  onchange?: any;
-  [index: number]: string;
-  [key: string]: any;
-}
-
 export function toDOM<T extends any>(target: T) {
   const chain = {
     __isChain: true,
@@ -588,7 +579,7 @@ export function toDOM<T extends any>(target: T) {
 
       return chain;
     },
-    setProps: (obj: ISetHTMLElement) => {
+    setProps: (obj: any) => {
       Object.keys(obj).forEach(k => {
         target[k] = obj[k];
       });
@@ -616,7 +607,7 @@ export function toDOM<T extends any>(target: T) {
       });
       return chain;
     },
-    onUpdate: <S extends any, M extends Array<any>>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => {
+    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => {
       target.__onMemo = memo;
       target.__onUpdate = fn;
       target.setAttribute(ONUPDATE_KEY, '1');

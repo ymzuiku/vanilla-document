@@ -1,4 +1,4 @@
-import { DOM, toDOM, routeManage } from '../vanilly2';
+import { DOM, toDOM, routeManage } from 'vanilly';
 import { IState } from '../state';
 
 export const User = () => {
@@ -11,8 +11,8 @@ export const User = () => {
     .cssText('background:#f88')
     .textContent('user-page')
     .onUpdate(
-      s => [s.age],
-      ([age], self) => {
+      (s: any) => [s.age],
+      ([age]: [number], self: any) => {
         if (age > 10) {
           toDOM(self).removeChild(ele => {
             if (ele.id === 'input') {

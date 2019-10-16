@@ -1,4 +1,4 @@
-import { DOM, store, routeManage } from '../vanilly2';
+import { DOM, store, routeManage } from 'vanilly';
 
 export const Home = () => {
   return DOM('div')

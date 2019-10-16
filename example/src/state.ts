@@ -1,4 +1,4 @@
-import { store } from './vanilly2';
+import { store } from 'vanilly';
 
 const initState = {
   name: 'dog',

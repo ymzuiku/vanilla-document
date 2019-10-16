@@ -1,4 +1,4 @@
-import { DOM, Route, routeManage } from './vanilly2';
+import { DOM, Route, routeManage } from 'vanilly';
 import { Home } from './pages/home';
 import { User } from './pages/user';
 import './state';
