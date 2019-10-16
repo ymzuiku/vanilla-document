@@ -1,12 +1,12 @@
-import 'mobile-touch';
-import { cssin } from 'cssin';
+import './polyfill';
+import { DOM, Route, navHistory } from 'vanilly';
 import { setGlobalCss } from 'cssin/commonCSSValues';
 import 'cssin/commonSheets';
-import { DOM, Route, navHistory } from 'vanilly';
 import { Home } from './pages/home';
 import { User } from './pages/user';
 import { createDomExample } from './pages/createDomExample';
 import './state';
+import { cssin } from 'cssin';
 
 setGlobalCss();
 

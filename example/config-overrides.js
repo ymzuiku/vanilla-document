@@ -1,6 +1,7 @@
 // touch config-overrides.js && yarn add react-app-rewired -D
 // "start": "react-app-rewired start"
 const path = require('path');
+process.env.INLINE_RUNTIME_CHUNK = 'false';
 
 const pwd = (...args) => path.resolve(__dirname, '../', ...args);
 
@@ -14,7 +15,24 @@ module.exports = {
     //   immer: 'immer',
     //   vanilly: 'vanilly',
     // };
-
+    config.optimization.splitChunks = {
+      chunks: 'all', // all, async, initial
+      name: false,
+      minSize: 0,
+      maxAsyncRequests: 5,
+      cacheGroups: {
+        // 编译成单个文件
+        vendor_single: {
+          test: /.*/,
+          name: 'single',
+        },
+        // // 有意义的首屏资源，首屏相关页面+组件+容器+排除大组件、大容器
+        // vendor_FMP: {
+        //   test: /(pages\/(Login|Learn|LearnDetail)|components\/(?!Null)|containers\/(?!BigContainers)|actions\/(?!BigActions))/,
+        //   name: 'fmp',
+        // },
+      },
+    };
     return config;
   },
   jest: function(config) {

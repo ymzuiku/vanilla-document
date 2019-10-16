@@ -101,14 +101,12 @@ const rewriteElement = () => {
   };
 
   // append
-  const append = (HTMLElement as any).prototype.append;
+  // const append = (HTMLElement as any).prototype.append;
   (HTMLElement as any).prototype.append = function(...args: any) {
     initElement(this);
 
     args.forEach((child: any) => {
-      if (typeof child === 'string' || typeof child === 'number') {
-        append.call(this, child);
-      } else if (child !== undefined) {
+      if (typeof child === 'object') {
         this.appendChild(child);
       }
     });
