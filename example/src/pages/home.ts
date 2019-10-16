@@ -1,5 +1,4 @@
-import { DOM } from '../vanilly2';
-import { store } from '../state';
+import { DOM, store, routeManage } from '../vanilly2';
 
 export const Home = () => {
   return DOM('div')
@@ -18,5 +17,10 @@ export const Home = () => {
           };
         })
         .textContent('test-click'),
+      DOM('button')
+        .addEventListener('click', () => {
+          routeManage.push('/user');
+        })
+        .textContent('go-user-pagei'),
     );
 };

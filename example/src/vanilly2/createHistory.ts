@@ -223,8 +223,6 @@ export const createHistory = (store: any): IHistory => {
       s.history = { ...s.history };
     });
 
-    console.log(store.getState());
-
     if (typeof window === 'undefined') {
       return;
     }

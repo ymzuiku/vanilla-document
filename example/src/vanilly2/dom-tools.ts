@@ -1,4 +1,5 @@
 import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY } from './commonCount';
+import { store } from './dom-store';
 
 export interface IStyle {
   alignContent?: string;
@@ -502,7 +503,7 @@ interface ISetHTMLElement {
   [key: string]: any;
 }
 
-export function setDOM<T extends any>(target: T) {
+export function toDOM<T extends any>(target: T) {
   const chain = {
     __isChain: true,
     target,
@@ -537,22 +538,51 @@ export function setDOM<T extends any>(target: T) {
       target.textContent = text;
       return chain;
     },
-    removeChild: (node: any) => {
-      target.removeChild(node);
+    children: (fn: (nodes: HTMLElement[]) => any) => {
+      const originChildren = [] as any;
+
+      for (let i = 0; i < target.children.length; i++) {
+        originChildren.push(target.children.item(i));
+      }
+      fn(originChildren);
+    },
+    clearChildren: () => {
+      for (let i = 0; i < target.children.length; i++) {
+        const node = target.children.item(i);
+        toDOM(node).remove();
+      }
       return chain;
     },
+    removeChild: (forEach: (node: HTMLElement, index: number) => any) => {
+      for (let i = 0; i < target.children.length; i++) {
+        const ele = target.children.item(i);
+        if (forEach(ele, i)) {
+          toDOM(ele).remove();
+        }
+      }
+    },
     remove: () => {
+      chain.clearChildren();
+      if (target.__onRemove) {
+        target.__onRemove(target.__lastMemo, target);
+        store.__listenNodes.delete(target);
+      }
       target.remove();
       return chain;
     },
     append: (...nodes: any[]) => {
       nodes.forEach((v: any) => {
         if (v) {
-          if (v.__isChain) {
-            target.appendChild(v.target);
-          } else {
-            target.appendChild(v);
+          const node = v.__isChain ? v.target : v;
+          if (node.__onAppend) {
+            node.__onAppend(node.__lastMemo, node);
           }
+          if (node.__onUpdate) {
+            if (!store.__listenNodes.has(node)) {
+              store.__listenNodes.add(node);
+            }
+          }
+          target.appendChild(node);
         }
       });
 
@@ -576,21 +606,13 @@ export function setDOM<T extends any>(target: T) {
       target.style.cssText = text;
       return chain;
     },
-    children: (fn: (nodes: HTMLElement[]) => any) => {
-      const originChildren = [] as any;
-
-      for (let i = 0; i < target.children.length; i++) {
-        originChildren.push(target.children.item(i));
-      }
-      fn(originChildren);
-    },
     setClass: (cssString: string) => {
       target.setAttribute('class', cssString);
       return chain;
     },
     setStyle: (obj: IStyle) => {
       Object.keys(obj).forEach(k => {
-        target[k] = obj[k];
+        target.style[k] = obj[k];
       });
       return chain;
     },
@@ -618,5 +640,5 @@ export function setDOM<T extends any>(target: T) {
 export const DOM = <K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions) => {
   const target = document.createElement(tagName, options);
 
-  return setDOM(target);
+  return toDOM(target);
 };

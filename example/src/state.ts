@@ -1,4 +1,4 @@
-import { createStore } from './vanilly2';
+import { store } from './vanilly2';
 
 const initState = {
   name: 'dog',
@@ -6,9 +6,10 @@ const initState = {
 };
 export type IState = typeof initState;
 
-const { store, routeManage, Route } = createStore(initState);
-
-export { store, Route, routeManage };
+store.__state = {
+  ...store.__state,
+  ...initState,
+};
 
 if (process.env.NODE_ENV === 'development') {
   (window as any).store = store;

@@ -60,8 +60,6 @@ export function createRoute(store: any) {
     const onHistoryUpdate = () => {
       const [match, stackMatch, lastPage] = routeManage.checkPathMatch(path);
 
-      console.log(match, stackMatch, lastPage, path);
-
       if (match) {
         // 如果没有 child, 先读取，再重新执行
 
@@ -151,7 +149,7 @@ export function createRoute(store: any) {
       state.animeTimer = null;
     });
 
-    return route.target;
+    return route;
   }
 
   return { routeManage, Route };
