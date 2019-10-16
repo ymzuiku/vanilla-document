@@ -10,22 +10,20 @@ Tiny, Clear and Light size:
 
 | Compress type | Size |
 | ------------- | ---- |
-| No Gzip       | 8k   |
-| Gzip          | 3k   |
+| No Gzip       | 9k   |
+| Gzip          | 3.5k |
 
 Feature:
 
 - State manage
 - Route
-- Declarative build and Update UI!
-- immutable data update (Use Immer)
+- Chain declarative UI
 
 ## Install
 
-Use unpkg, vanilly need immer:
+Use unpkg:
 
 ```html
-<script src="https://unpkg.com/immer@4.0.1/dist/immer.umd.js"></script>
 <script src="https://unpkg.com/vanilly@x.x.x/umd/index.js"></script>
 ```
 
@@ -42,126 +40,92 @@ yarn add vanilly
 ## Create DOMs example
 
 ```ts
-// if use typescript, can use reference:
-/// <reference types="vanilly" />
+import { DOM, store, routeManage } from 'vanilly';
 
-import { DOM, navHistory } from 'vanilly';
+export const Home = () => {
+  return DOM('div')
+    .cssText('background:#f55')
+    .textContent('home-page')
+    .onAppend(() => {
+      console.log('onAppend-home-page');
+    })
+    .append(
+      DOM('button')
+        .ref(e => {
+          e.onclick = () => {
+            store.update(s => {
+              s.age += 1;
+            });
+          };
+        })
+        .textContent('test-click'),
+      DOM('button')
+        .addEventListener('click', () => {
+          routeManage.push('/user');
+        })
+        .textContent('go-user-pagei'),
+    );
+};
+```
+
+Long JSX, we can split codes:
+
+```ts
+import { DOM } from 'vanilly';
 
 const App = () => {
-  const refs = {
-    message: DOM('span'),
-  };
-
   const root = DOM('div')
-    .set({
-      onclick: () => {},
-    })
-    .setStyle({
-      width: '100%',
-      height: '100%',
-      backgroundColor: '#fff',
-    })
-    .setChilds(
-      DOM('h2').set({ textContent: 'VBind lable and input:' }),
-      DOM('span').setRef(r => (refs.message = r)),
-      DOM('input').set({
-        oninput: (e: any) => {
-          refs.message.textContent = e.target.value;
-        },
-      }),
-      DOM('button')
-        .set({ textContent: 'go home' })
-        .set({
-          onclick: () => {
-            navHistory.push('/home');
-          },
-        }),
+    .cssText('background:#f88')
+    .textContent('user-page')
+    .onUpdate(
+      (s: any) => [s.age],
+      ([age]: [number], self: any) => {
+        if (age > 10) {
+          toDOM(self).removeChild(ele => {
+            if (ele.id === 'input') {
+              toDOM(ele).remove();
+            }
+          });
+        }
+      },
     );
 
-  root.onAppend = () => {
-    console.log('listening, at element append to parentElement');
-  };
+  const input = DOM('input')
+    .setProps({ id: 'input' })
+    .onRemove(() => {
+      console.log('input-remove');
+    });
 
-  root.onRemove = () => {
-    console.log(
-      'listening at element at remove by dom, when use root.remove, or parentElement use remove or removeChild',
-    );
-  };
+  const p = DOM('p')
+    .onUpdate<IState, [number]>(
+      s => [s.age],
+      ([age], self) => {
+        console.log(age);
+        self.textContent = age as any;
+        console.log('xx');
+      },
+    )
+    .onAppend(() => {
+      console.log('onAppend-sub-p');
+    })
+    .textContent('111');
 
-  root.onUpdate = () => {
-    console.log('listening, when store.update(...)');
-  };
+  const button = DOM('button')
+    .ref(e => {
+      e.onclick = () => {
+        console.log('haha');
+      };
+    })
+    .textContent('user-page-click');
 
-  return root;
+  const changePage = DOM('button')
+    .addEventListener('click', () => {
+      routeManage.push('/home');
+    })
+    .textContent('go-home-page');
+
+  return root.append(input, p, button, changePage);
 };
 
 document.body.append(App());
-```
-
-## Use state example
-
-```ts
-import {DOM. navHistory, store} from 'vanilly'
-
-// init state
-const state = {
-  history: {
-    '/app': {
-      title: 'hello';
-    },
-  },
-  paths: [],
-};
-
-store._state = {...store._state, ...state};
-
-type IState = typeof state;
-
-// like Component, but only return HTMLElement
-const App = (path:string)=>{
-  // create barm element
-  // app is HTMLDIVElement object
-  const app = DOM('div'); // document.createElement('div')
-
-  // We don't need app.onInit
-
-// Only at s.title change, run ele.onUpdate
-  app.onMemo = (s:IState) => [s.paths, s.history['/app'].title];
-
-  // Declarative UI props;
-  app.onUpdate = (s: IState, memo: any[]) => {
-    app.innerText = memo[1];
-    console.log('onUpdate:', s);
-  };
-
-  app.onRemove = (s: IState, memo: any[]) => {
-    console.log('onRemove:', s);
-  };
-
-  return app;
-}
-
-document.body.appendChild(Route('/app', App));
-
-// init route at append element
-navHistory.init('/app');
-
-// you can change history
-setTimeout(() => {
-  // update all barm
-  store.update((s: IState) => {
-    s.history['/app'].title = 'hello world';
-  });
-}, 1000);
-
-setTimeout(() => {
-  // change URL
-  navHistory.push('/empry-page');
-}, 1000);
-
-setTimeout(() => {
-  // goback URL
-  navHistory.pop();
-}, 2000);
-
 ```

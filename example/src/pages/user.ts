@@ -2,12 +2,7 @@ import { DOM, toDOM, routeManage } from 'vanilly';
 import { IState } from '../state';
 
 export const User = () => {
-  const refs = {
-    root: (undefined as any) as HTMLDivElement,
-  };
-
   const user = DOM('div')
-    .ref(r => (refs.root = r))
     .cssText('background:#f88')
     .textContent('user-page')
     .onUpdate(
