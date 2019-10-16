@@ -1,6 +1,7 @@
 import { UPDATE_KEY } from './commonCount';
+import { createRoute } from './createRoute';
 
-export function lifeDom<T>(target: HTMLElement, initState: T = {} as any) {
+export function observerDOM<T>(target: HTMLElement, initState: T = {} as any) {
   const store = {
     _listenFns: new Set(),
     _listenNodes: new Set(),
@@ -101,5 +102,7 @@ export function lifeDom<T>(target: HTMLElement, initState: T = {} as any) {
     observer.disconnect();
   };
 
-  return store;
+  const { Route, routeManage } = createRoute(store);
+
+  return { store, Route, routeManage };
 }
