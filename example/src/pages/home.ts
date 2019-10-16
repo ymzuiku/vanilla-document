@@ -1,6 +1,13 @@
 import { DOM, navHistory } from 'vanilly';
 import { cssin } from 'cssin';
 
+// Options for the observer (which mutations to observe)
+let config = {
+  attributes: true,
+  childList: true,
+  subtree: true,
+};
+
 export const Home = () => {
   const root = DOM('div');
 

@@ -1,32 +1,32 @@
-import './polyfill';
-import { DOM, Route, navHistory } from 'vanilly';
-import { setGlobalCss } from 'cssin/commonCSSValues';
-import 'cssin/commonSheets';
-import { Home } from './pages/home';
-import { User } from './pages/user';
-import { createDomExample } from './pages/createDomExample';
-import './state';
 import { cssin } from 'cssin';
+import { append, setClass, domObserver, DOM } from './vanilly-dom';
 
-setGlobalCss();
+const root = DOM('div');
 
-document.body.setClass(cssin`padding:0px;margin:0px;`);
+const dog = DOM('div');
 
-const App = () => {
-  const root = DOM('div')
-    .append(
-      Route({ path: '/user', component: User }),
-      Route({ path: '/home', component: Home }),
-      Route({ path: '/createDomExample', component: createDomExample }),
-    )
-    .setClass(cssin`wh:100%;relative;`);
+domObserver(dog, {
+  childList: (v: any) => {
+    console.log('xxx');
+  },
+});
 
-  root.onAppend = () => {
-    console.log('init-append');
-  };
+append(root, dog);
 
-  return root;
-};
+domObserver(root, {
+  attributes: (v: any) => {
+    console.log('xxxx', v);
+  },
+  childList: (v: any) => {
+    console.log('xxxx', v);
+  },
+  subtree: (v: any) => {
+    console.log('xxxx', v);
+  },
+});
 
-document.body.append(App());
-navHistory.init('/user');
+root.setAttribute('cccc', 'bbb');
+
+root.textContent = 'aaaa';
+
+document.body.append(root);
