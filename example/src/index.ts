@@ -1,34 +1,20 @@
 import { cssin } from 'cssin';
-import { append, setClass, domObserver, DOM } from './vanilly-dom';
+import { append, setClass, lifeDom, DOM } from './vanilly-dom';
 
 const root = DOM('div');
+lifeDom(root);
 
-const dog = DOM('div');
-
-domObserver(dog, {
-  childList: (v: any) => {
-    console.log('xxx');
-  },
-});
+const dog = DOM('button');
 
 append(root, dog);
 
-domObserver(root, {
-  attributes: (v: any) => {
-    console.log('xxxx', v);
-  },
-  childList: (v: any) => {
-    console.log('xxxx', v);
-  },
-  subtree: (v: any) => {
-    console.log('xxxx', v);
-  },
-});
-
-root.setAttribute('cccc', 'bbb');
+root.setAttribute('update', { dog: '111' } as any);
+root.setAttribute('update', '12312321');
 
 document.body.append(root);
 
+dog.append('123');
+
 setTimeout(() => {
-  root.remove();
+  dog.remove();
 }, 500);

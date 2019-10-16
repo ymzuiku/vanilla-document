@@ -1,5 +1,3 @@
-import { any } from 'prop-types';
-
 (function(arr) {
   arr.forEach(function(item) {
     if (item.hasOwnProperty('remove')) {
@@ -63,14 +61,61 @@ export interface IdomObserverOption {
   childList?: any;
   attributes?: any;
   subtree?: any;
+  attributeFilter?: string[];
+}
+
+export function lifeDom<T>(target: HTMLElement, initState: T = {} as any) {
+  const store = {
+    listens: new Set(),
+    _state: initState,
+    getState: () => store._state,
+    update: (fn: (draft: T) => any) => {
+      store._state = fn(store._state);
+      store.listens.forEach((node: any) => {
+        if (node.onMemo && node.onUpdate) {
+          const lastMemo = node.onMemo(store._state);
+
+          if (node.lastMemo !== lastMemo) {
+            node.onUpdate(node.lastMemo);
+            node.lastMemo = lastMemo;
+          }
+        }
+      });
+    },
+  };
+
+  domObserver(target, {
+    childList: (obs: any) => {
+      if (obs.addedNodes.length > 0) {
+        obs.addedNodes.forEach((node: any) => {
+          if (node.onAppend) {
+            node.onAppend();
+          }
+          if (node.onUpdate) {
+            if (!store.listens.has(node)) {
+              store.listens.add(node);
+            }
+          }
+        });
+        obs.removedNodes.forEach((node: any) => {
+          store.listens.delete(node);
+          if (node.onRemove) {
+            node.onRemove();
+          }
+        });
+      }
+    },
+  });
 }
 
 export function domObserver(target: HTMLElement, opt: IdomObserverOption) {
   const config = {
+    ...opt,
     attributes: !!opt.attributes,
+    attributeOldValue: !!opt.attributes,
     childList: !!opt.childList,
     subtree: !!opt.subtree,
-    characterData: true,
+    characterData: false,
   };
 
   let observer: any;
@@ -105,6 +150,8 @@ export function domObserver(target: HTMLElement, opt: IdomObserverOption) {
   // Start observing the target node for configured mutations
   observer.observe(target, config);
 
-  // Later, you can stop observing
-  // observer.disconnect();
+  return () => {
+    // Later, you can stop observing
+    observer.disconnect();
+  };
 }
