@@ -1,20 +1,14 @@
-import { store } from 'vanilly';
-const state = {
+import { createStore } from './vanilly2';
+
+const initState = {
   name: 'dog',
-  age: 10,
-  history: {
-    '/home': {
-      dog: '111',
-    },
-  },
+  age: 5,
 };
+export type IState = typeof initState;
 
-export type IState = typeof state;
+const { store, routeManage, Route } = createStore(initState);
 
-store._state = {
-  ...store._state,
-  ...state,
-};
+export { store, Route, routeManage };
 
 if (process.env.NODE_ENV === 'development') {
   (window as any).store = store;

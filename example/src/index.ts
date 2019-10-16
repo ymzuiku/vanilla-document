@@ -1,23 +1,20 @@
 // import './polyfill';
 // import { cssin } from 'cssin';
-import { DOM, observerDOM } from './vanilly2';
+import { DOM } from './vanilly2';
+import { Home } from './pages/home';
+import { User } from './pages/user';
+import { store } from './state';
 
-const initState = {
-  name: 'dog',
-  age: 5,
-};
-type IState = typeof initState;
-
-const { store, routeManage, Route } = observerDOM(document.body, initState);
-
-const root = DOM('div').setChilds(
+const root = DOM('h2').append(
   DOM('div')
     .setStyle({
       backgroundColor: '#f66',
       fontSize: '24px',
     })
-    .setText('hello-bb'),
+    .textContent('hello-bb'),
   DOM('div'),
+  Home(),
+  User(),
 );
 
-document.body.append(root.target);
+document.body.append(store.mutationObserver(root));

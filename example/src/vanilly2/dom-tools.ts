@@ -1,4 +1,4 @@
-import { UPDATE_KEY } from './commonCount';
+import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY } from './commonCount';
 
 export interface IStyle {
   alignContent?: string;
@@ -504,12 +504,51 @@ interface ISetHTMLElement {
 
 export function setDOM<T extends any>(target: T) {
   const chain = {
-    __isChan: true,
+    __isChain: true,
     target,
-    setChilds: (...nodes: any[]) => {
+    ref: (fn: (selfTarget: T) => any) => {
+      fn(target);
+      return chain;
+    },
+    addEventListener: <K extends keyof HTMLElementEventMap>(
+      type: K,
+      listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+      options?: boolean | AddEventListenerOptions,
+    ) => {
+      target.addEventListener(type, listener, options);
+      return chain;
+    },
+    removeEventListener: <K extends keyof HTMLElementEventMap>(
+      type: K,
+      listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+      options?: boolean | EventListenerOptions,
+    ) => {
+      target.removeEventListener(type, listener, options);
+    },
+    innerText: (text: string) => {
+      target.innerText = text;
+      return chain;
+    },
+    innerHTML: (html: string) => {
+      target.innerHTML = html;
+      return chain;
+    },
+    textContent: (text: string) => {
+      target.textContent = text;
+      return chain;
+    },
+    removeChild: (node: any) => {
+      target.removeChild(node);
+      return chain;
+    },
+    remove: () => {
+      target.remove();
+      return chain;
+    },
+    append: (...nodes: any[]) => {
       nodes.forEach((v: any) => {
         if (v) {
-          if (v.__isChan) {
+          if (v.__isChain) {
             target.appendChild(v.target);
           } else {
             target.appendChild(v);
@@ -519,23 +558,31 @@ export function setDOM<T extends any>(target: T) {
 
       return chain;
     },
-    setText: (text: string) => {
-      target.textContent = text;
-      return chain;
-    },
     setProps: (obj: ISetHTMLElement) => {
       Object.keys(obj).forEach(k => {
         target[k] = obj[k];
       });
       return chain;
     },
-    setAttr: (key: string, value: any) => {
-      if (value === undefined || value === null) {
-        target.removeAttribute(key, value);
-      } else {
-        target.setAttribute(key, value);
-      }
+    setAttribute: (key: string, value: any) => {
+      target.setAttribute(key, value);
       return chain;
+    },
+    removeAttribute(key: string) {
+      target.removeAttribute(key);
+      return chain;
+    },
+    cssText: (text: string) => {
+      target.style.cssText = text;
+      return chain;
+    },
+    children: (fn: (nodes: HTMLElement[]) => any) => {
+      const originChildren = [] as any;
+
+      for (let i = 0; i < target.children.length; i++) {
+        originChildren.push(target.children.item(i));
+      }
+      fn(originChildren);
     },
     setClass: (cssString: string) => {
       target.setAttribute('class', cssString);
@@ -547,18 +594,20 @@ export function setDOM<T extends any>(target: T) {
       });
       return chain;
     },
-    onUpdate: <T extends any, S extends any>(memo: (state: T) => S, updater: (memo: S) => any) => {
-      target.__onUpdate = updater;
+    onUpdate: <S extends any, M extends Array<any>>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => {
       target.__onMemo = memo;
-      target.setAttribute(UPDATE_KEY, '1');
+      target.__onUpdate = fn;
+      target.setAttribute(ONUPDATE_KEY, '1');
       return chain;
     },
-    onAppend(fn: any) {
+    onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
       target.__onAppend = fn;
+      target.setAttribute(ONAPPEND_KEY, '1');
       return chain;
     },
-    onRemove(fn: any) {
+    onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
       target.__onRemove = fn;
+      target.setAttribute(ONREMOVE_KEY, '1');
       return chain;
     },
   };

@@ -1,105 +1,150 @@
-import { UPDATE_KEY } from './commonCount';
+import { ONUPDATE_KEY } from './commonCount';
 import { createRoute } from './createRoute';
+import { setDOM } from './dom-tools';
 
-export function observerDOM<T>(target: HTMLElement, initState: T = {} as any) {
+export function createStore<T>(initState: T = {} as any) {
   const store = {
-    _listenFns: new Set(),
-    _listenNodes: new Set(),
-    _state: initState,
-    getState: () => store._state as T,
-    update: (fn: (draft: T) => any) => {
-      const data = fn(store._state);
-      if (data) {
-        store._state = data;
+    __listenFns: new Set<any>(),
+    __listenNodes: new Set<any>(),
+    __state: initState,
+    mutationObserver: (target: any) => target,
+    middleware: {
+      update: [] as any[],
+      getState: [] as any[],
+    },
+    getState: (): T => {
+      if (store.middleware.getState.length > 0) {
+        store.middleware.getState.forEach((getState: any) => {
+          store.__state = getState(store.__state);
+        });
       }
-      store._listenFns.forEach((v: any) => {
-        const nextState = v(store._state);
+      return store.__state;
+    },
+    update: (fn: (draft: T) => any) => {
+      if (store.middleware.update.length > 0) {
+        store.middleware.update.forEach((update: any) => {
+          store.__state = update(store.__state);
+        });
+      }
+      const data = fn(store.__state);
+      if (data) {
+        store.__state = data;
+      }
+      store.__listenFns.forEach((v: any) => {
+        const nextState = v(store.__state);
         if (nextState) {
-          store._state = nextState;
+          store.__state = nextState;
         }
       });
-      store._listenNodes.forEach((node: any) => {
+      store.__listenNodes.forEach((node: any) => {
         if (node && node.__onMemo && node.__onUpdate) {
-          const lastMemo = node.__onMemo(store._state);
+          const lastMemo = node.__onMemo(store.__state);
 
-          if (node.lastMemo !== lastMemo) {
-            node.__onUpdate(lastMemo || []);
-            node.lastMemo = lastMemo;
+          if (node.__lastMemo !== lastMemo) {
+            node.__onUpdate(lastMemo || [], node);
+            node.__lastMemo = lastMemo;
           }
         }
       });
     },
     listen: (fn: any) => {
-      if (!store._listenFns.has(fn)) {
-        store._listenFns.add(fn);
+      if (!store.__listenFns.has(fn)) {
+        store.__listenFns.add(fn);
       }
     },
-    disconnect: () => {},
   };
 
-  function childListFn(mutation: any) {
-    if (mutation.addedNodes.length > 0) {
-      mutation.addedNodes.forEach((node: any) => {
-        if (node.__onAppend) {
-          node.__onAppend();
-        }
-        if (node.__onUpdate) {
-          if (!store._listenNodes.has(node)) {
-            store._listenNodes.add(node);
+  store.mutationObserver = (target: HTMLElement) => {
+    if ((target as any).__isChain) {
+      target = (target as any).target;
+    }
+
+    if (target.children) {
+      const originChildren = [] as any;
+
+      for (let i = 0; i < target.children.length; i++) {
+        originChildren.push(target.children.item(i));
+      }
+
+      target.innerHTML = '';
+      const waitParantNode = () => {
+        setTimeout(() => {
+          if (target.parentNode) {
+            setDOM(target).append(...originChildren);
+          } else {
+            waitParantNode();
           }
-        }
-      });
+        }, 17);
+      };
+      waitParantNode();
     }
-    if (mutation.removedNodes.length > 0) {
-      mutation.removedNodes.forEach((node: any) => {
-        store._listenNodes.delete(node);
-        if (node.__onRemove) {
-          node.__onRemove();
-        }
-      });
-    }
-  }
 
-  function attributesFn(mutation: any) {
-    if (mutation.target && mutation.target.__onUpdate) {
-      const node = mutation.target;
-      if (!store._listenNodes.has(node)) {
-        store._listenNodes.add(node);
+    function childListFn(mutation: any) {
+      if (mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach((node: any) => {
+          if (node.__onAppend) {
+            node.__onAppend(node.__lastMemo, node);
+          }
+          if (node.__onUpdate) {
+            if (!store.__listenNodes.has(node)) {
+              store.__listenNodes.add(node);
+            }
+          }
+        });
+      }
+      if (mutation.removedNodes.length > 0) {
+        mutation.removedNodes.forEach((node: any) => {
+          store.__listenNodes.delete(node);
+          if (node.__onRemove) {
+            node.__onRemove(node.__lastMemo, node);
+          }
+          if (node.__disconnect) {
+            node.__disconnect();
+          }
+        });
       }
     }
-  }
 
-  const mutationCallback = (mutationsList: any) => {
-    for (let mutation of mutationsList) {
-      let type = mutation.type;
-      switch (type) {
-        case 'childList':
-          childListFn(mutation);
-          break;
-        case 'subtree':
-          childListFn(mutation);
-          break;
-        case 'attributes':
-          attributesFn(mutation);
-          break;
-        default:
-          break;
+    function attributesFn(mutation: any) {
+      if (mutation.target && mutation.target.__onUpdate) {
+        const node = mutation.target;
+        if (!store.__listenNodes.has(node)) {
+          store.__listenNodes.add(node);
+        }
       }
     }
-  };
 
-  const observer = new MutationObserver(mutationCallback);
+    const mutationCallback = (mutationsList: any) => {
+      for (let mutation of mutationsList) {
+        let type = mutation.type;
+        switch (type) {
+          case 'childList':
+            childListFn(mutation);
+            break;
+          case 'subtree':
+            childListFn(mutation);
+            break;
+          case 'attributes':
+            attributesFn(mutation);
+            break;
+          default:
+            break;
+        }
+      }
+    };
 
-  observer.observe(target as any, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: [UPDATE_KEY],
-  });
+    const observer = new MutationObserver(mutationCallback);
 
-  store.disconnect = () => {
-    // Later, you can stop observing
-    observer.disconnect();
+    observer.observe(target, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: [ONUPDATE_KEY],
+    });
+
+    (target as any).__disconnect = () => observer.disconnect();
+
+    return target;
   };
 
   const { Route, routeManage } = createRoute(store);

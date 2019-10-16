@@ -34,7 +34,7 @@ export function createRoute(store: any) {
    */
   function Route<S>({ path, component, delay, keep = true, leaveTime }: IRouteProps) {
     const route = DOM('div');
-    route.setAttr('route', path);
+    route.setAttribute('route', path);
 
     route.setStyle({
       width: '100%',
@@ -68,12 +68,12 @@ export function createRoute(store: any) {
         if (!state.realChild) {
           if (delay === undefined) {
             state.realChild = component();
-            route.setChilds(state.realChild);
+            route.innerHTML('').append(state.realChild);
             onHistoryUpdate();
           } else {
             component().then((comp: any) => {
               state.realChild = comp();
-              route.setChilds(state.realChild);
+              route.innerHTML('').append(state.realChild);
               onHistoryUpdate();
             });
           }
@@ -111,10 +111,10 @@ export function createRoute(store: any) {
               };
               route.setStyle(state.style);
               if (oldIsRenderChild && !state.isRenderChild) {
-                route.target.innerHTML = '';
+                route.innerHTML('');
               } else {
                 if (!oldIsRenderChild) {
-                  route.setChilds(state.realChild);
+                  route.innerHTML('').append(state.realChild);
                 }
               }
             }, leaveTime);
@@ -128,10 +128,10 @@ export function createRoute(store: any) {
             };
             route.setStyle(state.style);
             if (oldIsRenderChild && !state.isRenderChild) {
-              route.target.innerHTML = '';
+              route.innerHTML('');
             } else {
               if (!oldIsRenderChild) {
-                route.setChilds(state.realChild);
+                route.innerHTML('').append(state.realChild);
               }
             }
           }
