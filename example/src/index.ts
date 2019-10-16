@@ -27,6 +27,8 @@ domObserver(root, {
 
 root.setAttribute('cccc', 'bbb');
 
-root.textContent = 'aaaa';
-
 document.body.append(root);
+
+setTimeout(() => {
+  root.remove();
+}, 500);

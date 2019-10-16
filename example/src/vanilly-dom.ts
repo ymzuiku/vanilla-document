@@ -77,6 +77,7 @@ export function domObserver(target: HTMLElement, opt: IdomObserverOption) {
 
   // Callback function to execute when mutations are observed
   const mutationCallback = (mutationsList: any) => {
+    console.log('xxxx', mutationsList);
     for (let mutation of mutationsList) {
       let type = mutation.type;
       switch (type) {
