@@ -1,2 +1,4 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import 'core-js/features/array';
+import 'core-js/features/set';
+import 'core-js/features/map';
+import 'core-js/features/promise';

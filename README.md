@@ -129,3 +129,10 @@ const App = () => {
 
 document.body.append(App());
 ```
+
+## Dependent polyfill: Set
+
+```js
+// install core-js
+import 'core-js/features/set';
+```
