@@ -1,10 +1,11 @@
 import { DOM, toDOM, routeManage } from 'vanilly';
 import { IState } from '../state';
+import { cssin } from 'cssin';
 
 export const User = () => {
   const user = DOM('div')
-    .cssText('background:#f88')
     .textContent('user-page')
+    .setClass(cssin`bg:#55f`)
     .onUpdate(
       (s: any) => [s.age],
       ([age]: [number], self: any) => {

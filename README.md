@@ -16,7 +16,7 @@ Tiny, Clear and Light size:
 Feature:
 
 - State manage
-- Route
+- Route (Don't Support IE9)
 - Chain declarative UI
 
 ## Install
