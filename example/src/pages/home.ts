@@ -10,7 +10,7 @@ export const Home = () => {
     .append(
       DOM('button')
         .ref(e => {
-          e.onclick = () => {
+          e.target.onclick = () => {
             store.update(s => {
               s.age += 1;
             });

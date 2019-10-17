@@ -1,4 +1,4 @@
-import { DOM, toDOM, routeManage } from 'vanilly';
+import { DOM, routeManage } from 'vanilly';
 import { IState } from '../state';
 import { cssin } from 'cssin';
 
@@ -6,13 +6,13 @@ export const User = () => {
   const user = DOM('div')
     .textContent('user-page')
     .setClass(cssin`bg:#55f`)
-    .onUpdate(
-      (s: any) => [s.age],
-      ([age]: [number], self: any) => {
+    .onUpdate<any, [number]>(
+      s => [s.age],
+      ([age], self: any) => {
         if (age > 10) {
-          toDOM(self).removeChild(ele => {
+          DOM(self).removeChild(ele => {
             if (ele.id === 'input') {
-              toDOM(ele).remove();
+              DOM(ele).remove();
             }
           });
         }
@@ -41,7 +41,7 @@ export const User = () => {
 
   const button = DOM('button')
     .ref(e => {
-      e.onclick = () => {
+      e.target.onclick = () => {
         console.log('haha');
       };
     })

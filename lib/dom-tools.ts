@@ -494,12 +494,45 @@ export interface IStyle {
   [key: string]: any;
 }
 
-export function toDOM<T extends any>(target: T) {
-  const chain = {
+export interface IChain<T> {
+  __isChain: true;
+  target: T;
+  ref: (fn: (selfChain: IChain<T>) => any) => IChain<T>;
+  addEventListener: <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ) => IChain<T>;
+  removeEventListener: <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions,
+  ) => IChain<T>;
+  innerText: (text: string) => IChain<T>;
+  innerHTML: (html: string) => IChain<T>;
+  textContent: (text: string) => IChain<T>;
+  children: (fn: (nodes: HTMLElement[]) => any) => IChain<T>;
+  clearChildren: () => IChain<T>;
+  removeChild: (forEach: (node: HTMLElement, index: number) => any) => IChain<T>;
+  remove: () => IChain<T>;
+  append: (...nodes: any[]) => IChain<T>;
+  setProps: (obj: any) => IChain<T>;
+  setAttribute: (key: string, value: any) => IChain<T>;
+  removeAttribute: (key: string) => IChain<T>;
+  cssText: (text: string) => IChain<T>;
+  setClass: (cssString: string) => IChain<T>;
+  setStyle: (obj: IStyle) => IChain<T>;
+  onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+  onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+  onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+}
+
+function toDOM<T extends any>(target: T): IChain<T> {
+  const chain: IChain<T> = {
     __isChain: true,
     target,
-    ref: (fn: (selfTarget: T) => any) => {
-      fn(target);
+    ref: (fn: (selfChain: IChain<T>) => any) => {
+      fn(chain as any);
       return chain;
     },
     addEventListener: <K extends keyof HTMLElementEventMap>(
@@ -516,6 +549,7 @@ export function toDOM<T extends any>(target: T) {
       options?: boolean | EventListenerOptions,
     ) => {
       target.removeEventListener(type, listener, options);
+      return chain;
     },
     innerText: (text: string) => {
       target.innerText = text;
@@ -536,6 +570,7 @@ export function toDOM<T extends any>(target: T) {
         originChildren.push(target.children.item(i));
       }
       fn(originChildren);
+      return chain;
     },
     clearChildren: () => {
       for (let i = 0; i < target.children.length; i++) {
@@ -551,6 +586,7 @@ export function toDOM<T extends any>(target: T) {
           toDOM(ele).remove();
         }
       }
+      return chain;
     },
     remove: () => {
       chain.clearChildren();
@@ -589,7 +625,7 @@ export function toDOM<T extends any>(target: T) {
       target.setAttribute(key, value);
       return chain;
     },
-    removeAttribute(key: string) {
+    removeAttribute: (key: string) => {
       target.removeAttribute(key);
       return chain;
     },
@@ -625,11 +661,21 @@ export function toDOM<T extends any>(target: T) {
     },
   };
 
-  return chain;
+  return chain as any;
 }
 
-export const DOM = <K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions) => {
-  const target = document.createElement(tagName, options);
+declare function IDOM<K extends keyof HTMLElementTagNameMap>(
+  tagName: K,
+  options?: ElementCreationOptions,
+): IChain<HTMLElementTagNameMap[K]>;
 
-  return toDOM(target);
+declare function IDOM<K extends HTMLElement>(tagNode: K, options?: any): IChain<K>;
+
+export const DOM: typeof IDOM = (tag: any, options?: any) => {
+  if (typeof tag === 'string') {
+    const target = document.createElement(tag, options);
+    return toDOM(target);
+  }
+
+  return toDOM(tag);
 };
