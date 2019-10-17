@@ -23,7 +23,7 @@ export declare function createRoute(store: any): {
         removeChild: (forEach: (node: HTMLElement, index: number) => any) => void;
         remove: () => any;
         append: (...nodes: any[]) => any;
-        setProps: (obj: import("./dom-tools").ISetHTMLElement) => any;
+        setProps: (obj: any) => any;
         setAttribute: (key: string, value: any) => any;
         removeAttribute(key: string): any;
         cssText: (text: string) => any;

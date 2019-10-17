@@ -1,3 +1,4 @@
+import './polyfill';
 import { DOM, Route, routeManage } from 'vanilly';
 import { Home } from './pages/home';
 import { User } from './pages/user';
