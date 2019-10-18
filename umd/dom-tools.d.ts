@@ -513,6 +513,7 @@ export interface IChain<T> {
     setStyle: (obj: IStyle) => IChain<T>;
     onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => IChain<T>;
     onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+    onMount: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
     onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
 }
 declare function IDOM<K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions): IChain<HTMLElementTagNameMap[K]>;

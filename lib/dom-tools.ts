@@ -1,4 +1,4 @@
-import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY } from './commonCount';
+import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY, ONMOUNT_KEY } from './commonCount';
 import { store } from './dom-store';
 
 export interface IStyle {
@@ -523,8 +523,13 @@ export interface IChain<T> {
   setClass: (cssString: string) => IChain<T>;
   updateClass: (fn: (lastClass: string) => string) => IChain<T>;
   setStyle: (obj: IStyle) => IChain<T>;
+  // listing store.update()
   onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+  // After append to parent
   onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+  // Very slow, after append ues requestAnimationFrame find DOM, time out at 3340 ms
+  onMount: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+  // event by DOM.remove()
   onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
 }
 
@@ -602,15 +607,35 @@ function toDOM<T extends any>(target: T): IChain<T> {
       nodes.forEach((v: any) => {
         if (v) {
           const node = v.__isChain ? v.target : v;
-          if (node.__onAppend) {
-            node.__onAppend(node.__lastMemo, node);
-          }
           if (node.__onUpdate) {
             if (!store.__listenNodes.has(node)) {
               store.__listenNodes.add(node);
             }
           }
           target.appendChild(node);
+          if (node.__onAppend) {
+            node.__onAppend(node.__lastMemo, node);
+          }
+
+          if (node.__onMount) {
+            if (!node.id) {
+              node.id = Math.random()
+                .toString(16)
+                .slice(2);
+            }
+
+            let out = 0;
+            const findAndRunOnAppend = () => {
+              out++;
+              const nodeInDOM = document.getElementById(node.id);
+              if (nodeInDOM) {
+                node.__onMount(node.__lastMemo, node);
+              } else if (out < 200) {
+                requestAnimationFrame(findAndRunOnAppend);
+              }
+            };
+            requestAnimationFrame(findAndRunOnAppend);
+          }
         }
       });
 
@@ -659,6 +684,11 @@ function toDOM<T extends any>(target: T): IChain<T> {
     onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
       target.__onAppend = fn;
       target.setAttribute(ONAPPEND_KEY, '1');
+      return chain;
+    },
+    onMount: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
+      target.__onMount = fn;
+      target.setAttribute(ONMOUNT_KEY, '1');
       return chain;
     },
     onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {

@@ -66,4 +66,30 @@
   });
 })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
 
+// window.requestAnimationFrame polyfill
+(function(w) {
+  var hasPerformance = !!(window.performance && window.performance.now);
+
+  // Add new wrapper for browsers that don't have performance
+  if (!hasPerformance) {
+    // Store reference to existing rAF and initial startTime
+    var rAF = window.requestAnimationFrame as any,
+      startTime = +new Date();
+
+    // Override window rAF to include wrapped callback
+    (window as any).requestAnimationFrame = function(callback: any, element: any) {
+      // Wrap the given callback to pass in performance timestamp
+      var wrapped = function(timestamp: any) {
+        // Get performance-style timestamp
+        var performanceTimestamp = timestamp < 1e12 ? timestamp : timestamp - startTime;
+
+        return callback(performanceTimestamp);
+      };
+
+      // Call original rAF with wrapped callback
+      rAF(wrapped, element);
+    };
+  }
+})();
+
 export const dom_polyfill = true;
