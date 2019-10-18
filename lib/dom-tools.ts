@@ -521,13 +521,13 @@ export interface IChain<T> {
   removeAttribute: (key: string) => IChain<T>;
   cssText: (text: string) => IChain<T>;
   setClass: (cssString: string) => IChain<T>;
-  updateClass: (fn: (lastClass: string) => string) => IChain<T>;
+  updateClass: (fn: any) => IChain<T>;
   setStyle: (obj: IStyle) => IChain<T>;
   // listing store.update()
   onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => IChain<T>;
   // After append to parent
   onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
-  // Very slow, after append ues requestAnimationFrame find DOM, time out at 3340 ms
+  // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
   onRendered: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
   // event by DOM.remove()
   onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
@@ -630,11 +630,11 @@ function toDOM<T extends any>(target: T): IChain<T> {
               const nodeInDOM = document.getElementById(node.id);
               if (nodeInDOM) {
                 node.__onRendered(node.__lastMemo, node);
-              } else if (out < 200) {
-                requestAnimationFrame(findAndRunOnAppend);
+              } else if (out < 100) {
+                setTimeout(findAndRunOnAppend, 40);
               }
             };
-            requestAnimationFrame(findAndRunOnAppend);
+            setTimeout(findAndRunOnAppend, 40);
           }
         }
       });
@@ -663,10 +663,15 @@ function toDOM<T extends any>(target: T): IChain<T> {
       target.setAttribute('class', cssString);
       return chain;
     },
-    updateClass: (fn: (lastClass: string) => string) => {
-      const cssString = fn(target.className || '');
+    updateClass: (fn: any) => {
+      if (typeof fn === 'string') {
+        target.setAttribute('class', (target.className || '') + fn);
+      } else {
+        const cssString = fn(target.className || '');
 
-      target.setAttribute('class', cssString);
+        target.setAttribute('class', cssString);
+      }
+
       return chain;
     },
     setStyle: (obj: IStyle) => {
