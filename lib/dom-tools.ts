@@ -1,4 +1,4 @@
-import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY, ONMOUNT_KEY } from './commonCount';
+import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './commonCount';
 import { store } from './dom-store';
 
 export interface IStyle {
@@ -528,7 +528,7 @@ export interface IChain<T> {
   // After append to parent
   onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
   // Very slow, after append ues requestAnimationFrame find DOM, time out at 3340 ms
-  onMount: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
+  onRendered: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
   // event by DOM.remove()
   onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
 }
@@ -617,7 +617,7 @@ function toDOM<T extends any>(target: T): IChain<T> {
             node.__onAppend(node.__lastMemo, node);
           }
 
-          if (node.__onMount) {
+          if (node.__onRendered) {
             if (!node.id) {
               node.id = Math.random()
                 .toString(16)
@@ -629,7 +629,7 @@ function toDOM<T extends any>(target: T): IChain<T> {
               out++;
               const nodeInDOM = document.getElementById(node.id);
               if (nodeInDOM) {
-                node.__onMount(node.__lastMemo, node);
+                node.__onRendered(node.__lastMemo, node);
               } else if (out < 200) {
                 requestAnimationFrame(findAndRunOnAppend);
               }
@@ -686,9 +686,9 @@ function toDOM<T extends any>(target: T): IChain<T> {
       target.setAttribute(ONAPPEND_KEY, '1');
       return chain;
     },
-    onMount: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
-      target.__onMount = fn;
-      target.setAttribute(ONMOUNT_KEY, '1');
+    onRendered: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
+      target.__onRendered = fn;
+      target.setAttribute(ONRENDERED_KEY, '1');
       return chain;
     },
     onRemove: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => {
