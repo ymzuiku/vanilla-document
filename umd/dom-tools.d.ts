@@ -509,6 +509,7 @@ export interface IChain<T> {
     removeAttribute: (key: string) => IChain<T>;
     cssText: (text: string) => IChain<T>;
     setClass: (cssString: string) => IChain<T>;
+    updateClass: (fn: (lastClass: string) => string) => IChain<T>;
     setStyle: (obj: IStyle) => IChain<T>;
     onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfTarget: T) => any) => IChain<T>;
     onAppend: <M extends Array<any>>(fn: (memo: M, selfTarget: T) => any) => IChain<T>;
