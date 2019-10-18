@@ -2,6 +2,7 @@ import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './comm
 import { store } from './dom-store';
 import { IStyle } from './IStyle';
 import * as device from './device';
+import { keyframesSpring } from './keyframesSpring';
 
 const cssSet = new Set<string>();
 
@@ -44,10 +45,19 @@ export interface IChain<T> {
   setAttribute: (key: string, value: any) => IChain<T>;
   removeAttribute: (key: string) => IChain<T>;
   cssText: (text: string) => IChain<T>;
-  class: (className: string) => IChain<T>;
-  css: (css: string) => IChain<T>;
+  /** use BEM replace(/\.\^/, ${${BEM}_}) */
+  class: (className: string, BEM?: string) => IChain<T>;
+  /** use BEM replace(/\^/, ${${BEM}_}) */
+  css: (css: string, BEM?: string) => IChain<T>;
   updateClass: (fn: any) => IChain<T>;
   style: (obj: IStyle) => IChain<T>;
+  /** create keyframes use Spring */
+  keyframesSpring: (
+    keyframesName: string,
+    tension: number,
+    wobble: number,
+    fn: (value: number) => string,
+  ) => IChain<T>;
   // listing store.update()
   onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => IChain<T>;
   // After append to parent
@@ -184,22 +194,31 @@ function toDOM<T extends any>(element: T): IChain<T> {
       element.style.cssText = text;
       return chain;
     },
-    css: (css: string) => {
-      if (!cssSet.has(css)) {
+    /** BEM参数 将会查找字符串 .^， 替换为 .${BEM}- */
+    css: (css: string, BEM?: string) => {
+      const cacheCss = `${css}${BEM}`;
+      if (!cssSet.has(cacheCss)) {
         const cssNode = document.createElement('style');
         if (css.indexOf('@media-') > -1) {
           Object.keys(media).forEach(k => {
             css = css.replace(k, (media as any)[k]);
           });
         }
+        if (BEM) {
+          css = css.replace(/\.\^/g, `.${BEM}-`);
+        }
         cssNode.textContent = css;
-        console.log(css);
         document.head.appendChild(cssNode);
+        cssSet.add(cacheCss);
       }
 
       return chain;
     },
-    class: (cssString: string) => {
+    /** BEM参数 将会查找字符串 ^， 替换为 ${BEM}_ */
+    class: (cssString: string, BEM?: string) => {
+      if (BEM) {
+        cssString = cssString.replace(/\^/g, `${BEM}-`);
+      }
       element.setAttribute('class', cssString);
       return chain;
     },
@@ -218,6 +237,19 @@ function toDOM<T extends any>(element: T): IChain<T> {
       Object.keys(obj).forEach(k => {
         element.style[k] = obj[k];
       });
+      return chain;
+    },
+    keyframesSpring: (name: string, tension: number, wobble: number, fn: (value: number) => string) => {
+      if (!cssSet.has(name)) {
+        const cssNode = document.createElement('style');
+        const css = keyframesSpring(name, tension, wobble, fn);
+
+        cssNode.textContent = css;
+        document.head.appendChild(cssNode);
+
+        cssSet.add(name);
+      }
+
       return chain;
     },
     onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => {
@@ -251,7 +283,7 @@ declare function IDOM<K extends keyof HTMLElementTagNameMap>(
   options?: ElementCreationOptions,
 ): IChain<HTMLElementTagNameMap[K]>;
 
-declare function IDOM<K extends HTMLElement>(tagNode: K, options?: any): IChain<K>;
+declare function IDOM<K extends HTMLElement>(tagNode?: K, options?: any): IChain<K>;
 
 export const DOM: typeof IDOM = (tag: any, options?: any) => {
   if (typeof tag === 'string') {
@@ -259,5 +291,5 @@ export const DOM: typeof IDOM = (tag: any, options?: any) => {
     return toDOM(element);
   }
 
-  return toDOM(tag);
+  return toDOM(tag || document.createElement('div'));
 };

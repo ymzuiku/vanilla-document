@@ -17,16 +17,20 @@ export interface IChain<T> {
     setAttribute: (key: string, value: any) => IChain<T>;
     removeAttribute: (key: string) => IChain<T>;
     cssText: (text: string) => IChain<T>;
-    class: (className: string) => IChain<T>;
-    css: (css: string) => IChain<T>;
+    /** use BEM replace(/\.\^/, ${${BEM}_}) */
+    class: (className: string, BEM?: string) => IChain<T>;
+    /** use BEM replace(/\^/, ${${BEM}_}) */
+    css: (css: string, BEM?: string) => IChain<T>;
     updateClass: (fn: any) => IChain<T>;
     style: (obj: IStyle) => IChain<T>;
+    /** create keyframes use Spring */
+    keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IChain<T>;
     onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => IChain<T>;
     onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
     onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
     onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
 }
 declare function IDOM<K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions): IChain<HTMLElementTagNameMap[K]>;
-declare function IDOM<K extends HTMLElement>(tagNode: K, options?: any): IChain<K>;
+declare function IDOM<K extends HTMLElement>(tagNode?: K, options?: any): IChain<K>;
 export declare const DOM: typeof IDOM;
 export {};
