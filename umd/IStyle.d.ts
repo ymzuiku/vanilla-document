@@ -54,7 +54,7 @@ export interface IStyle {
     alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline' | keyof IGlobalValues;
     alignmentBaseline?: string | null;
     animation?: string;
-    animation__snippet?: 'name 3s ease-in 1s infinite reverse both running' | 'name 3s linear 1s infinite running' | 'name 3s linear 1s infinite alternate' | 'name .5s linear 1s infinite alternate';
+    animation__snippet?: 'name 1s linear 0s infinite normal both running' | 'name 3s linear 1s infinite running' | 'name 3s linear 1s infinite alternate' | 'name .5s linear 1s infinite alternate';
     animationDelay?: string;
     animationDirection?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
     animationDuration?: string;

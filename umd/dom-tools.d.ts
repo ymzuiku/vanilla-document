@@ -1,14 +1,18 @@
 import { IStyle } from './IStyle';
+declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (ele: HTMLElementTagNameMap[K] | null) => any): IChain<HTMLElementTagNameMap[K]>;
+declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E | null) => any): IChain<E>;
 export interface IChain<T> {
     __isChain: true;
     element: T;
     ref: (fn: (selfChain: IChain<T>) => any) => IChain<T>;
+    /** know from addEventListener, when remvoe element, auto removeEventListen */
+    addEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IChain<T>;
     addEventListener: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IChain<T>;
     removeEventListener: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions) => IChain<T>;
     innerText: (text: string) => IChain<T>;
     innerHTML: (html: string) => IChain<T>;
     textContent: (text: string) => IChain<T>;
-    children: (fn: (nodes: HTMLElement[]) => any) => IChain<T>;
+    querySelector: typeof IQuerySelector;
     clearChildren: () => IChain<T>;
     removeChild: (forEach: (node: HTMLElement, index: number) => any) => IChain<T>;
     remove: () => IChain<T>;
@@ -29,6 +33,7 @@ export interface IChain<T> {
     onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
     onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
     onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
+    [key: string]: any;
 }
 declare function IDOM<K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions): IChain<HTMLElementTagNameMap[K]>;
 declare function IDOM<K extends HTMLElement>(tagNode?: K, options?: any): IChain<K>;

@@ -19,10 +19,22 @@ const media = {
   '@media-pad': `@media (min-width: ${!device.isPad ? '0px' : '9999px'})`,
 };
 
+declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(
+  selectors: K,
+  fn: (ele: HTMLElementTagNameMap[K] | null) => any,
+): IChain<HTMLElementTagNameMap[K]>;
+declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E | null) => any): IChain<E>;
+
 export interface IChain<T> {
   __isChain: true;
   element: T;
   ref: (fn: (selfChain: IChain<T>) => any) => IChain<T>;
+  /** know from addEventListener, when remvoe element, auto removeEventListen */
+  addEvent: <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ) => IChain<T>;
   addEventListener: <K extends keyof HTMLElementEventMap>(
     type: K,
     listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
@@ -36,7 +48,7 @@ export interface IChain<T> {
   innerText: (text: string) => IChain<T>;
   innerHTML: (html: string) => IChain<T>;
   textContent: (text: string) => IChain<T>;
-  children: (fn: (nodes: HTMLElement[]) => any) => IChain<T>;
+  querySelector: typeof IQuerySelector;
   clearChildren: () => IChain<T>;
   removeChild: (forEach: (node: HTMLElement, index: number) => any) => IChain<T>;
   remove: () => IChain<T>;
@@ -66,6 +78,7 @@ export interface IChain<T> {
   onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
   // event by DOM.remove()
   onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
+  [key: string]: any;
 }
 
 function toDOM<T extends any>(element: T): IChain<T> {
@@ -74,6 +87,19 @@ function toDOM<T extends any>(element: T): IChain<T> {
     element,
     ref: (fn: (selfChain: IChain<T>) => any) => {
       fn(chain as any);
+      return chain;
+    },
+    addEvent: <K extends keyof HTMLElementEventMap>(
+      type: K,
+      listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+      options?: boolean | AddEventListenerOptions,
+    ) => {
+      if (!element.__events) {
+        element.__events = new Set<any>();
+      }
+      element.__events.add([type, listener, options]);
+      element.addEventListener(type, listener, options);
+
       return chain;
     },
     addEventListener: <K extends keyof HTMLElementEventMap>(
@@ -104,13 +130,8 @@ function toDOM<T extends any>(element: T): IChain<T> {
       element.textContent = text;
       return chain;
     },
-    children: (fn: (nodes: HTMLElement[]) => any) => {
-      const originChildren = [] as any;
-
-      for (let i = 0; i < element.children.length; i++) {
-        originChildren.push(element.children.item(i));
-      }
-      fn(originChildren);
+    querySelector: (selector: any, fn: any) => {
+      fn(chain.element.querySelector(selector));
       return chain;
     },
     clearChildren: () => {
@@ -134,6 +155,14 @@ function toDOM<T extends any>(element: T): IChain<T> {
       if (element.__onRemove) {
         element.__onRemove(element.__lastMemo, element);
         store.__listenNodes.delete(element);
+      }
+      // 如果有自动绑定的事件，当元素移除时，会自动移除事件
+      if (element.__events) {
+        element.__events.forEach((event: any) => {
+          element.removeEventListener(...event);
+        });
+        element.__events.clear();
+        element.__events = null;
       }
       element.remove();
       return chain;

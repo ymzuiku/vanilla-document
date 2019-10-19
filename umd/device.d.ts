@@ -5,3 +5,7 @@ export declare const isPad: boolean;
 export declare const isIos: boolean;
 export declare const isWechat: boolean;
 export declare const isPc: boolean;
+export declare const isSmall: boolean;
+export declare const isMiddle: boolean;
+export declare const isLarge: boolean;
+export declare const isExtraLarge: boolean;

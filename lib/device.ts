@@ -1,7 +1,6 @@
 const ua = navigator.userAgent;
 const dp = window.devicePixelRatio || 1;
-const iw = () => window.screen.width;
-const ih = () => window.screen.height;
+const iw = window.innerWidth;
 
 export const isAndroid = /(?:Android)/.test(ua);
 // const isAndroid = true;
@@ -12,3 +11,7 @@ export const isPad =
 export const isIos = /(?:iPhone)/.test(ua) && !isPad;
 export const isWechat = /MicroMessenger/.test(ua);
 export const isPc = !isIos && !isAndroid;
+export const isSmall = dp > 1 ? iw <= 320 : iw <= 640;
+export const isMiddle = dp > 1 ? iw <= 375 : iw <= 750;
+export const isLarge = dp > 1 ? iw <= 512 : iw <= 1024;
+export const isExtraLarge = dp > 1 ? iw <= 640 : iw <= 1280;

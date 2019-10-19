@@ -1,34 +1,21 @@
 (function() {
+  const props = ['pushState', 'replaceState', 'back', 'forward', 'go', 'scrollRestoration'];
   if (window.history === undefined) {
-    (window as any).history = {};
-  }
-  if (window.history.pushState === undefined) {
-    (window as any).history.pushState = () => {
-      (window as any).history.length += 1;
+    (window as any).history = {
+      length: 0,
+      state: {},
     };
-  }
-  if (window.history.replaceState === undefined) {
-    (window as any).history.replaceState = () => {};
-  }
-  if (window.history.back === undefined) {
-    (window as any).history.back = () => {
-      (window as any).history.length -= 1;
-    };
-  }
-  if (window.history.forward === undefined) {
-    (window as any).history.forward = () => {};
-  }
-  if (window.history.go === undefined) {
-    (window as any).history.go = () => {};
-  }
-  if (window.history.length === undefined) {
-    (window as any).history.length = 0;
-  }
-  if (window.history.state === undefined) {
-    (window as any).history.state = {};
-  }
-  if (window.history.scrollRestoration === undefined) {
-    (window as any).history.scrollRestoration = () => {};
+    props.forEach(k => {
+      if ((window as any).history[k] === undefined) {
+        (window as any).history[k] = () => {};
+      }
+    });
+  } else {
+    props.forEach(k => {
+      if ((window as any).history[k] === undefined) {
+        (window as any).history[k] = () => {};
+      }
+    });
   }
 })();
 
