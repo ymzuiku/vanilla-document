@@ -22,70 +22,70 @@ const media = {
 declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(
   selectors: K,
   fn: (ele: HTMLElementTagNameMap[K] | null) => any,
-): IChain<HTMLElementTagNameMap[K]>;
-declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E | null) => any): IChain<E>;
+): IDOM<HTMLElementTagNameMap[K]>;
+declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E | null) => any): IDOM<E>;
 
-export interface IChain<T> {
+export interface IDOM<T> {
   __isChain: true;
   element: T;
-  ref: (fn: (selfChain: IChain<T>) => any) => IChain<T>;
+  getElement: (fn: (ele: T) => any) => IDOM<T>;
+  ref: (fn: (selfChain: IDOM<T>) => any) => IDOM<T>;
   /** know from addEventListener, when remvoe element, auto removeEventListen */
   addEvent: <K extends keyof HTMLElementEventMap>(
     type: K,
     listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions,
-  ) => IChain<T>;
+  ) => IDOM<T>;
   addEventListener: <K extends keyof HTMLElementEventMap>(
     type: K,
     listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions,
-  ) => IChain<T>;
+  ) => IDOM<T>;
   removeEventListener: <K extends keyof HTMLElementEventMap>(
     type: K,
     listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | EventListenerOptions,
-  ) => IChain<T>;
-  innerText: (text: string) => IChain<T>;
-  innerHTML: (html: string) => IChain<T>;
-  textContent: (text: string) => IChain<T>;
+  ) => IDOM<T>;
+  innerText: (text: string) => IDOM<T>;
+  innerHTML: (html: string) => IDOM<T>;
+  textContent: (text: string | null) => IDOM<T>;
   querySelector: typeof IQuerySelector;
-  clearChildren: () => IChain<T>;
-  removeChild: (forEach: (node: HTMLElement, index: number) => any) => IChain<T>;
-  remove: () => IChain<T>;
-  append: (...nodes: any[]) => IChain<T>;
-  setProps: (obj: any) => IChain<T>;
-  setAttribute: (key: string, value: any) => IChain<T>;
-  removeAttribute: (key: string) => IChain<T>;
-  cssText: (text: string) => IChain<T>;
+  clearChildren: () => IDOM<T>;
+  removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
+  remove: () => IDOM<T>;
+  append: (...nodes: any[]) => IDOM<T>;
+  setProps: (obj: any) => IDOM<T>;
+  setAttribute: (key: string, value: any) => IDOM<T>;
+  removeAttribute: (key: string) => IDOM<T>;
+  cssText: (text: string) => IDOM<T>;
   /** use BEM replace(/\.\^/, ${${BEM}_}) */
-  class: (className: string, BEM?: string) => IChain<T>;
+  class: (className: string, BEM?: string) => IDOM<T>;
   /** use BEM replace(/\^/, ${${BEM}_}) */
-  css: (css: string, BEM?: string) => IChain<T>;
-  updateClass: (fn: any) => IChain<T>;
-  style: (obj: IStyle) => IChain<T>;
+  css: (css: string, BEM?: string) => IDOM<T>;
+  updateClass: (fn: any) => IDOM<T>;
+  style: (obj: IStyle) => IDOM<T>;
   /** create keyframes use Spring */
-  keyframesSpring: (
-    keyframesName: string,
-    tension: number,
-    wobble: number,
-    fn: (value: number) => string,
-  ) => IChain<T>;
+  keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
   // listing store.update()
-  onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => IChain<T>;
+  onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => IDOM<T>;
   // After append to parent
-  onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
+  onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
-  onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
+  onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
   // event by DOM.remove()
-  onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IChain<T>;
+  onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
   [key: string]: any;
 }
 
-function toDOM<T extends any>(element: T): IChain<T> {
-  const chain: IChain<T> = {
+function toDOM<T extends any>(element: T): IDOM<T> {
+  let chain: IDOM<T> = {
     __isChain: true,
     element,
-    ref: (fn: (selfChain: IChain<T>) => any) => {
+    getElement: (fn: (ele: T) => any) => {
+      fn(element);
+      return chain;
+    },
+    ref: (fn: (selfChain: IDOM<T>) => any) => {
       fn(chain as any);
       return chain;
     },
@@ -126,7 +126,7 @@ function toDOM<T extends any>(element: T): IChain<T> {
       element.innerHTML = html;
       return chain;
     },
-    textContent: (text: string) => {
+    textContent: (text: string | null) => {
       element.textContent = text;
       return chain;
     },
@@ -165,6 +165,9 @@ function toDOM<T extends any>(element: T): IChain<T> {
         element.__events = null;
       }
       element.remove();
+
+      chain.element = null as any;
+      chain = null as any;
       return chain;
     },
     append: (...nodes: any[]) => {
@@ -307,14 +310,14 @@ function toDOM<T extends any>(element: T): IChain<T> {
   return chain as any;
 }
 
-declare function IDOM<K extends keyof HTMLElementTagNameMap>(
+declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
   options?: ElementCreationOptions,
-): IChain<HTMLElementTagNameMap[K]>;
+): IDOM<HTMLElementTagNameMap[K]>;
 
-declare function IDOM<K extends HTMLElement>(tagNode?: K, options?: any): IChain<K>;
+declare function IDOMCreator<K extends HTMLElement>(tagNode?: K, options?: any): IDOM<K>;
 
-export const DOM: typeof IDOM = (tag: any, options?: any) => {
+export const DOM: typeof IDOMCreator = (tag: any, options?: any) => {
   if (typeof tag === 'string') {
     const element = document.createElement(tag, options);
     return toDOM(element);
