@@ -628,3 +628,148 @@ export interface IStyle {
   [index: number]: string;
   [key: string]: any;
 }
+
+export interface IProps {
+  [key:string]: any,
+  [index:number]:any,
+  onclick?: any,
+  oninput?: any,
+  accessKey: string;
+  autocapitalize?: string;
+  dir?: string;
+  draggable?: boolean;
+  hidden?: boolean;
+  innerText:? string;
+  lang?: string;
+  spellcheck?: boolean;
+  title?: string;
+  translate?: boolean;
+    accept?: string;
+    
+    align?: string;
+    
+    alt?: string;
+
+    autocomplete?: string;
+
+    autofocus?: boolean;
+    
+    checked?: boolean;
+    
+    defaultChecked?: boolean;
+    
+    defaultValue?: string;
+    dirName?: string;
+    disabled?: boolean;
+    
+    files?: FileList | null;
+  
+  
+    formAction?: string;
+    
+    formEnctype?: string;
+    
+    formMethod?: string;
+    
+    formNoValidate?: boolean;
+    
+    formTarget?: string;
+    
+    height?: number;
+    indeterminate?: boolean;
+    /**
+     * Defines the maximum acceptable value for an input element with type="number".When used with the min and step attributes, lets you control the range and increment (such as only even numbers) that the user can enter into an input field.
+     */
+    max?: string;
+    /**
+     * Sets or retrieves the maximum number of characters that the user can enter in a text control.
+     */
+    maxLength?: number;
+    /**
+     * Defines the minimum acceptable value for an input element with type="number". When used with the max and step attributes, lets you control the range and increment (such as even numbers only) that the user can enter into an input field.
+     */
+    min?: string;
+    minLength?: number;
+    /**
+     * Sets or retrieves the Boolean value indicating whether multiple items can be selected from a list.
+     */
+    multiple?: boolean;
+    /**
+     * Sets or retrieves the name of the object.
+     */
+    name?: string;
+    /**
+     * Gets or sets a string containing a regular expression that the user's input must match.
+     */
+    pattern?: string;
+    /**
+     * Gets or sets a text string that is displayed in an input field as a hint or prompt to users as the format or type of information they need to enter.The text appears in an input field until the user puts focus on the field.
+     */
+    placeholder?: string;
+    readOnly?: boolean;
+    /**
+     * When present, marks an element that can't be submitted without a value.
+     */
+    required?: boolean;
+    selectionDirection?: string | null;
+    /**
+     * Gets or sets the end position or offset of a text selection.
+     */
+    selectionEnd?: number | null;
+    /**
+     * Gets or sets the starting position or offset of a text selection.
+     */
+    selectionStart?: number | null;
+    size?: number;
+    /**
+     * The address or URL of the a media resource that is to be considered.
+     */
+    src?: string;
+    /**
+     * Defines an increment or jump between values that you want to allow the user to enter. When used with the max and min attributes, lets you control the range and increment (for example, allow only even numbers) that the user can enter into an input field.
+     */
+    step?: string;
+    /**
+     * Returns the content type of the object.
+     */
+    type?: string;
+    /**
+     * Sets or retrieves the URL, often with a bookmark extension (#name), to use as a client-side image map.
+     */
+    /** @deprecated */
+    useMap?: string;
+    /**
+     * Returns the value of the data at the cursor's current position.
+     */
+    value?: string;
+    /**
+     * Returns a Date object representing the form control's value, if applicable; otherwise, returns null. Can be set, to change the value. Throws an "InvalidStateError" DOMException if the control isn't date- or time-based.
+     */
+    valueAsDate?: Date | null;
+    /**
+     * Returns the input field value as a number.
+     */
+    valueAsNumber?: number;
+    /**
+     * Sets or retrieves the width of the object.
+     */
+    width?: number;
+    /**
+     * Returns whether a form will validate when it is submitted, without having to submit it.
+     */
+    checkValidity?: 'function' | any;
+    reportValidity?:'function' | any;
+    /**
+     * Makes the selection equal to the current object.
+     */
+    select?:'function' | any;
+    setCustomValidity?:'function' | any;
+    setRangeText?: '(replacement: string, start: number, end: number, selectionMode?: SelectionMode): void' |any;
+    setSelectionRange?:'(start: number, end: number, direction?: "forward" | "backward" | "none"): void;'|any;
+    stepDown?: '(n?: number): void;'|any;
+    stepUp?:'(n?: number): void;'|any;
+    addEventListener?: '<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void'|any;
+    removeEventListener?:'<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void'|any;
+}
+
+export {}

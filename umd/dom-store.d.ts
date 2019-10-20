@@ -11,5 +11,5 @@ declare const store: {
     update: <T extends any>(fn: (draft: T) => any) => void;
     listen: (fn: any) => void;
 };
-declare const Route: <S>({ path, component, delay, keep, leaveTime }: import("./createRoute").IRouteProps) => import("./dom-tools").IChain<HTMLDivElement>, routeManage: import("./createHistory").IHistory;
+declare const Route: <S>({ path, component, delay, keep, leaveTime }: import("./createRoute").IRouteProps) => import("./dom-tools").IDOM<HTMLDivElement>, routeManage: import("./createHistory").IHistory;
 export { store, Route, routeManage };

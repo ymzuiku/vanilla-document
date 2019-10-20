@@ -1,10 +1,13 @@
 import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './commonCount';
 import { store } from './dom-store';
-import { IStyle } from './IStyle';
+import { IStyle, IProps } from './interface';
 import * as device from './device';
 import { keyframesSpring } from './keyframesSpring';
+import { __values } from 'tslib';
 
 const cssSet = new Set<string>();
+
+document.createElement('input');
 
 const media = {
   '@media-sm': `@media (min-width: 640px)`,
@@ -21,15 +24,37 @@ const media = {
 
 declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(
   selectors: K,
-  fn: (ele: HTMLElementTagNameMap[K] | null) => any,
+  fn: (ele: HTMLElementTagNameMap[K]) => any,
+  unfindable?: () => any,
 ): IDOM<HTMLElementTagNameMap[K]>;
-declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E | null) => any): IDOM<E>;
+
+declare function IQuerySelector<E extends Element = Element>(
+  selectors: string,
+  fn: (ele: E) => any,
+  unfindable?: () => any,
+): IDOM<E>;
+
+declare function IQuerySelectorAll<K extends keyof HTMLElementTagNameMap>(
+  selectors: K,
+  fn: (nodeList: HTMLElementTagNameMap[K][]) => any,
+): IDOM<HTMLElementTagNameMap[K]>;
+
+declare function IQuerySelectorAll<E extends Element = Element>(
+  selectors: string,
+  fn: (nodeList: E[]) => any,
+): IDOM<E>;
 
 export interface IDOM<T> {
   __isChain: true;
   element: T;
   getElement: (fn: (ele: T) => any) => IDOM<T>;
   ref: (fn: (selfChain: IDOM<T>) => any) => IDOM<T>;
+  /**
+   * bind props to element
+   */
+  props: (obj: IProps) => IDOM<T>;
+  /** get data from element */
+  getProp: (key: string, callback: (value: any) => any) => IDOM<T>;
   /** know from addEventListener, when remvoe element, auto removeEventListen */
   addEvent: <K extends keyof HTMLElementEventMap>(
     type: K,
@@ -50,19 +75,23 @@ export interface IDOM<T> {
   innerHTML: (html: string) => IDOM<T>;
   textContent: (text: string | null) => IDOM<T>;
   querySelector: typeof IQuerySelector;
+  querySelectorAll: typeof IQuerySelectorAll;
+  insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
+  insertAdjacentElement: (
+    position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
+    newNode: HTMLElement,
+  ) => IDOM<T>;
   clearChildren: () => IDOM<T>;
   removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
   remove: () => IDOM<T>;
   append: (...nodes: any[]) => IDOM<T>;
-  setProps: (obj: any) => IDOM<T>;
   setAttribute: (key: string, value: any) => IDOM<T>;
   removeAttribute: (key: string) => IDOM<T>;
   cssText: (text: string) => IDOM<T>;
   /** use BEM replace(/\.\^/, ${${BEM}_}) */
-  class: (className: string, BEM?: string) => IDOM<T>;
+  css: (className: string, BEM?: string) => IDOM<T>;
   /** use BEM replace(/\^/, ${${BEM}_}) */
-  css: (css: string, BEM?: string) => IDOM<T>;
-  updateClass: (fn: any) => IDOM<T>;
+  appendCss: (css: string, BEM?: string) => IDOM<T>;
   style: (obj: IStyle) => IDOM<T>;
   /** create keyframes use Spring */
   keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
@@ -77,17 +106,17 @@ export interface IDOM<T> {
   [key: string]: any;
 }
 
-function toDOM<T extends any>(element: T): IDOM<T> {
-  let chain: IDOM<T> = {
+export function toDOM<T extends any>(element: T): IDOM<T> {
+  let _DOM: IDOM<T> = {
     __isChain: true,
     element,
     getElement: (fn: (ele: T) => any) => {
       fn(element);
-      return chain;
+      return _DOM;
     },
     ref: (fn: (selfChain: IDOM<T>) => any) => {
-      fn(chain as any);
-      return chain;
+      fn(_DOM as any);
+      return _DOM;
     },
     addEvent: <K extends keyof HTMLElementEventMap>(
       type: K,
@@ -100,7 +129,7 @@ function toDOM<T extends any>(element: T): IDOM<T> {
       element.__events.add([type, listener, options]);
       element.addEventListener(type, listener, options);
 
-      return chain;
+      return _DOM;
     },
     addEventListener: <K extends keyof HTMLElementEventMap>(
       type: K,
@@ -108,7 +137,7 @@ function toDOM<T extends any>(element: T): IDOM<T> {
       options?: boolean | AddEventListenerOptions,
     ) => {
       element.addEventListener(type, listener, options);
-      return chain;
+      return _DOM;
     },
     removeEventListener: <K extends keyof HTMLElementEventMap>(
       type: K,
@@ -116,30 +145,59 @@ function toDOM<T extends any>(element: T): IDOM<T> {
       options?: boolean | EventListenerOptions,
     ) => {
       element.removeEventListener(type, listener, options);
-      return chain;
+      return _DOM;
     },
     innerText: (text: string) => {
       element.innerText = text;
-      return chain;
+      return _DOM;
     },
     innerHTML: (html: string) => {
       element.innerHTML = html;
-      return chain;
+      return _DOM;
     },
     textContent: (text: string | null) => {
       element.textContent = text;
-      return chain;
+      return _DOM;
     },
-    querySelector: (selector: any, fn: any) => {
-      fn(chain.element.querySelector(selector));
-      return chain;
+    querySelector: (selector: any, fn: any, unfindable: any) => {
+      const ele = element.querySelector(selector);
+      if (ele) {
+        fn(ele);
+      } else if (unfindable) {
+        unfindable();
+      }
+
+      return _DOM;
+    },
+    querySelectorAll: (selector: any, fn: any) => {
+      fn(element.querySelectorAll(selector));
+
+      return _DOM;
+    },
+    insertBefore: (selector: any, newNode: any, unfindable: any) => {
+      const ele = element.querySelector(selector);
+      if (ele) {
+        element.insertBefore(newNode, ele);
+      } else if (unfindable) {
+        unfindable();
+      }
+
+      return _DOM;
+    },
+    insertAdjacentElement: (
+      position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
+      newNode: HTMLElement,
+    ) => {
+      element.insertAdjacentElement(position, newNode);
+
+      return _DOM;
     },
     clearChildren: () => {
       for (let i = 0; i < element.children.length; i++) {
         const ele = element.children.item(i);
         toDOM(ele).remove();
       }
-      return chain;
+      return _DOM;
     },
     removeChild: (forEach: (node: HTMLElement, index: number) => any) => {
       for (let i = 0; i < element.children.length; i++) {
@@ -148,10 +206,10 @@ function toDOM<T extends any>(element: T): IDOM<T> {
           toDOM(ele).remove();
         }
       }
-      return chain;
+      return _DOM;
     },
     remove: () => {
-      chain.clearChildren();
+      _DOM.clearChildren();
       if (element.__onRemove) {
         element.__onRemove(element.__lastMemo, element);
         store.__listenNodes.delete(element);
@@ -164,11 +222,13 @@ function toDOM<T extends any>(element: T): IDOM<T> {
         element.__events.clear();
         element.__events = null;
       }
+      element._DOM = null;
+      element._state = null;
       element.remove();
 
-      chain.element = null as any;
-      chain = null as any;
-      return chain;
+      _DOM.element = null as any;
+      _DOM = null as any;
+      return _DOM;
     },
     append: (...nodes: any[]) => {
       nodes.forEach((v: any) => {
@@ -206,28 +266,32 @@ function toDOM<T extends any>(element: T): IDOM<T> {
         }
       });
 
-      return chain;
+      return _DOM;
     },
-    setProps: (obj: any) => {
+    props: (obj: any) => {
       Object.keys(obj).forEach(k => {
         element[k] = obj[k];
       });
-      return chain;
+      return _DOM;
+    },
+    getProp: (key, callback) => {
+      callback(element[key]);
+      return _DOM;
     },
     setAttribute: (key: string, value: any) => {
       element.setAttribute(key, value);
-      return chain;
+      return _DOM;
     },
     removeAttribute: (key: string) => {
       element.removeAttribute(key);
-      return chain;
+      return _DOM;
     },
     cssText: (text: string) => {
       element.style.cssText = text;
-      return chain;
+      return _DOM;
     },
     /** BEM参数 将会查找字符串 .^， 替换为 .${BEM}- */
-    css: (css: string, BEM?: string) => {
+    appendCss: (css: string, BEM?: string) => {
       const cacheCss = `${css}${BEM}`;
       if (!cssSet.has(cacheCss)) {
         const cssNode = document.createElement('style');
@@ -244,32 +308,21 @@ function toDOM<T extends any>(element: T): IDOM<T> {
         cssSet.add(cacheCss);
       }
 
-      return chain;
+      return _DOM;
     },
     /** BEM参数 将会查找字符串 ^， 替换为 ${BEM}_ */
-    class: (cssString: string, BEM?: string) => {
+    css: (cssString: string, BEM?: string) => {
       if (BEM) {
         cssString = cssString.replace(/\^/g, `${BEM}-`);
       }
       element.setAttribute('class', cssString);
-      return chain;
-    },
-    updateClass: (fn: any) => {
-      if (typeof fn === 'string') {
-        element.setAttribute('class', (element.className || '') + fn);
-      } else {
-        const cssString = fn(element.className || '');
-
-        element.setAttribute('class', cssString);
-      }
-
-      return chain;
+      return _DOM;
     },
     style: (obj: IStyle) => {
       Object.keys(obj).forEach(k => {
         element.style[k] = obj[k];
       });
-      return chain;
+      return _DOM;
     },
     keyframesSpring: (name: string, tension: number, wobble: number, fn: (value: number) => string) => {
       if (!cssSet.has(name)) {
@@ -282,46 +335,34 @@ function toDOM<T extends any>(element: T): IDOM<T> {
         cssSet.add(name);
       }
 
-      return chain;
+      return _DOM;
     },
     onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => {
       element.__onMemo = memo;
       element.__onUpdate = fn;
       element.setAttribute(ONUPDATE_KEY, '1');
-      return chain;
+      return _DOM;
     },
     onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => {
       element.__onAppend = fn;
       element.setAttribute(ONAPPEND_KEY, '1');
-      return chain;
+      return _DOM;
     },
     onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => {
       element.__onRendered = fn;
       element.setAttribute(ONRENDERED_KEY, '1');
-      return chain;
+      return _DOM;
     },
     onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => {
       element.__onRemove = fn;
       element.setAttribute(ONREMOVE_KEY, '1');
-      return chain;
+      return _DOM;
     },
   };
 
-  return chain as any;
-}
-
-declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(
-  tagName: K,
-  options?: ElementCreationOptions,
-): IDOM<HTMLElementTagNameMap[K]>;
-
-declare function IDOMCreator<K extends HTMLElement>(tagNode?: K, options?: any): IDOM<K>;
-
-export const DOM: typeof IDOMCreator = (tag: any, options?: any) => {
-  if (typeof tag === 'string') {
-    const element = document.createElement(tag, options);
-    return toDOM(element);
+  if (element) {
+    element._DOM = _DOM;
   }
 
-  return toDOM(tag || document.createElement('div'));
-};
+  return _DOM as any;
+}

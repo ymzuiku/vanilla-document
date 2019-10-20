@@ -8,5 +8,5 @@ export interface IRouteProps {
 }
 export declare function createRoute(store: any): {
     routeManage: import("./createHistory").IHistory;
-    Route: <S>({ path, component, delay, keep, leaveTime }: IRouteProps) => import("./dom-tools").IChain<HTMLDivElement>;
+    Route: <S>({ path, component, delay, keep, leaveTime }: IRouteProps) => import("./dom-tools").IDOM<HTMLDivElement>;
 };

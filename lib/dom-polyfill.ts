@@ -1,24 +1,3 @@
-(function() {
-  const props = ['pushState', 'replaceState', 'back', 'forward', 'go', 'scrollRestoration'];
-  if (window.history === undefined) {
-    (window as any).history = {
-      length: 0,
-      state: {},
-    };
-    props.forEach(k => {
-      if ((window as any).history[k] === undefined) {
-        (window as any).history[k] = () => {};
-      }
-    });
-  } else {
-    props.forEach(k => {
-      if ((window as any).history[k] === undefined) {
-        (window as any).history[k] = () => {};
-      }
-    });
-  }
-})();
-
 (function(arr) {
   arr.forEach(function(item) {
     if (item.hasOwnProperty('remove')) {
@@ -52,5 +31,26 @@
     });
   });
 })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
+
+(function() {
+  const props = ['pushState', 'replaceState', 'back', 'forward', 'go', 'scrollRestoration'];
+  if (window.history === undefined) {
+    (window as any).history = {
+      length: 0,
+      state: {},
+    };
+    props.forEach(k => {
+      if ((window as any).history[k] === undefined) {
+        (window as any).history[k] = () => {};
+      }
+    });
+  } else {
+    props.forEach(k => {
+      if ((window as any).history[k] === undefined) {
+        (window as any).history[k] = () => {};
+      }
+    });
+  }
+})();
 
 export const dom_polyfill = true;

@@ -1,11 +1,19 @@
-import { IStyle } from './IStyle';
-declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (ele: HTMLElementTagNameMap[K] | null) => any): IDOM<HTMLElementTagNameMap[K]>;
-declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E | null) => any): IDOM<E>;
+import { IStyle, IProps } from './interface';
+declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (ele: HTMLElementTagNameMap[K]) => any, unfindable?: () => any): IDOM<HTMLElementTagNameMap[K]>;
+declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E) => any, unfindable?: () => any): IDOM<E>;
+declare function IQuerySelectorAll<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (nodeList: HTMLElementTagNameMap[K][]) => any): IDOM<HTMLElementTagNameMap[K]>;
+declare function IQuerySelectorAll<E extends Element = Element>(selectors: string, fn: (nodeList: E[]) => any): IDOM<E>;
 export interface IDOM<T> {
     __isChain: true;
     element: T;
     getElement: (fn: (ele: T) => any) => IDOM<T>;
     ref: (fn: (selfChain: IDOM<T>) => any) => IDOM<T>;
+    /**
+     * bind props to element
+     */
+    props: (obj: IProps) => IDOM<T>;
+    /** get data from element */
+    getProp: (key: string, callback: (value: any) => any) => IDOM<T>;
     /** know from addEventListener, when remvoe element, auto removeEventListen */
     addEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IDOM<T>;
     addEventListener: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IDOM<T>;
@@ -14,19 +22,20 @@ export interface IDOM<T> {
     innerHTML: (html: string) => IDOM<T>;
     textContent: (text: string | null) => IDOM<T>;
     querySelector: typeof IQuerySelector;
+    querySelectorAll: typeof IQuerySelectorAll;
+    insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
+    insertAdjacentElement: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLElement) => IDOM<T>;
     clearChildren: () => IDOM<T>;
     removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
     remove: () => IDOM<T>;
     append: (...nodes: any[]) => IDOM<T>;
-    setProps: (obj: any) => IDOM<T>;
     setAttribute: (key: string, value: any) => IDOM<T>;
     removeAttribute: (key: string) => IDOM<T>;
     cssText: (text: string) => IDOM<T>;
     /** use BEM replace(/\.\^/, ${${BEM}_}) */
-    class: (className: string, BEM?: string) => IDOM<T>;
+    css: (className: string, BEM?: string) => IDOM<T>;
     /** use BEM replace(/\^/, ${${BEM}_}) */
-    css: (css: string, BEM?: string) => IDOM<T>;
-    updateClass: (fn: any) => IDOM<T>;
+    appendCss: (css: string, BEM?: string) => IDOM<T>;
     style: (obj: IStyle) => IDOM<T>;
     /** create keyframes use Spring */
     keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
@@ -36,7 +45,5 @@ export interface IDOM<T> {
     onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
     [key: string]: any;
 }
-declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions): IDOM<HTMLElementTagNameMap[K]>;
-declare function IDOMCreator<K extends HTMLElement>(tagNode?: K, options?: any): IDOM<K>;
-export declare const DOM: typeof IDOMCreator;
+export declare function toDOM<T extends any>(element: T): IDOM<T>;
 export {};
