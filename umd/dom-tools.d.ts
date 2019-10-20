@@ -42,6 +42,7 @@ export interface IDOM<T> {
     onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
     onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
     onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
+    connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => IDOM<T>;
     [key: string]: any;
 }
 export declare const toDOM: <T extends any>(element: T) => IDOM<T>;

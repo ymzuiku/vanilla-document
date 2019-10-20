@@ -1,6 +1,6 @@
-import micoStore from 'mico-store';
+import { createStore } from 'vanilly';
 
-export const store = micoStore({
+export const store = createStore({
   name: 'dog',
   age: 5,
 });

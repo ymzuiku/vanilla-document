@@ -6,4 +6,5 @@ export * from './dom';
 export * from './createRoute';
 export * from './Springer';
 export * from './makeStyle';
+export * from './createStore';
 export { device };

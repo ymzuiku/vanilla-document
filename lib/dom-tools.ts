@@ -2,7 +2,6 @@ import { ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './commonCount';
 import { IStyle, IProps } from './interface';
 import * as device from './device';
 import { keyframesSpring } from './keyframesSpring';
-import { __values } from 'tslib';
 
 const cssSet = new Set<string>();
 
@@ -100,6 +99,7 @@ export interface IDOM<T> {
   onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // event by DOM.remove()
   onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
+  connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => IDOM<T>;
   [key: string]: any;
 }
 
@@ -217,6 +217,10 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
       if (element.__onRemove) {
         element.__onRemove(element.__lastMemo, _DOM);
       }
+      if (element.__connectStore) {
+        const { store, onUpdate } = element.__connectStore;
+        store.unlisten(onUpdate);
+      }
       // 如果有自动绑定的事件，当元素移除时，会自动移除事件
       if (element.__events) {
         element.__events.forEach((event: any) => {
@@ -240,6 +244,10 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
           element.appendChild(ele);
           if (ele.__onAppend) {
             ele.__onAppend(ele.__lastMemo, ele._DOM);
+          }
+          if (ele.__connectStore) {
+            const { store, onUpdate, memo } = ele.__connectStore;
+            store.listen(onUpdate, memo);
           }
 
           if (ele.__onRendered) {
@@ -348,6 +356,10 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
     onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onRemove = fn;
       element.setAttribute(ONREMOVE_KEY, '1');
+      return _DOM;
+    },
+    connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => {
+      element.__connectStore = { store, onUpdate, memo };
       return _DOM;
     },
   };
