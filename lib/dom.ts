@@ -5,13 +5,14 @@ declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(
   options?: ElementCreationOptions,
 ): IDOM<HTMLElementTagNameMap[K]>;
 
-declare function IDOMCreator<K extends HTMLElement>(tagNode?: K, options?: any): IDOM<K>;
+declare function IDOMCreator<K extends Element>(tagNode?: K, options?: any): IDOM<K>;
 
+/** Element operator */
 export const DOM: typeof IDOMCreator = (tag: any, options?: any) => {
   if (typeof tag === 'string') {
     const element = document.createElement(tag, options);
     return toDOM(element);
   }
 
-  return toDOM(tag);
+  return toDOM(tag || document.createElement('div'));
 };

@@ -1,4 +1,6 @@
-import { DOM, store, routeManage } from 'vanilly';
+import { DOM, routeManage } from 'vanilly';
+
+import { store } from './actions';
 
 export const Home = () => {
   const home = DOM('div')
@@ -11,9 +13,7 @@ export const Home = () => {
       DOM('button')
         .props({
           onclick: () => {
-            store.update(s => {
-              s.age += 1;
-            });
+            store.update(s => (s.age += 1));
           },
         })
         .textContent('test-click'),

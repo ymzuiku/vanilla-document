@@ -25,7 +25,7 @@ export interface IDOM<T> {
     querySelectorAll: typeof IQuerySelectorAll;
     insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
     insertAdjacentElement: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLElement) => IDOM<T>;
-    clearChildren: () => IDOM<T>;
+    removeAllChildren: () => IDOM<T>;
     removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
     remove: () => IDOM<T>;
     append: (...nodes: any[]) => IDOM<T>;
@@ -39,11 +39,10 @@ export interface IDOM<T> {
     style: (obj: IStyle) => IDOM<T>;
     /** create keyframes use Spring */
     keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
-    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: IDOM<T>) => any) => IDOM<T>;
     onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
     onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
     onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
     [key: string]: any;
 }
-export declare function toDOM<T extends any>(element: T): IDOM<T>;
+export declare const toDOM: <T extends any>(element: T) => IDOM<T>;
 export {};

@@ -6,7 +6,5 @@ export interface IRouteProps {
     path: string;
     children?: any;
 }
-export declare function createRoute(store: any): {
-    routeManage: import("./createHistory").IHistory;
-    Route: <S>({ path, component, delay, keep, leaveTime }: IRouteProps) => import("./dom-tools").IDOM<HTMLDivElement>;
-};
+declare const routeManage: import("./createHistory").IHistory, Route: <S>({ path, component, delay, keep, leaveTime }: IRouteProps) => import("./dom-tools").IDOM<HTMLDivElement>;
+export { routeManage, Route };

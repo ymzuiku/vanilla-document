@@ -26,8 +26,8 @@ export interface IRouteProps {
   children?: any;
 }
 
-export function createRoute(store: any) {
-  const routeManage = createHistory(store);
+function createRoute() {
+  const routeManage = createHistory();
 
   /**
    *  Route 使用 history.listen 而不使用 consumer 是因为 Route 属于非常固定的模式.
@@ -67,12 +67,12 @@ export function createRoute(store: any) {
         if (!state.realChild) {
           if (delay === undefined) {
             state.realChild = component();
-            route.innerHTML('').append(state.realChild);
+            route.removeAllChildren().append(state.realChild);
             onHistoryUpdate();
           } else {
             component().then((comp: any) => {
               state.realChild = comp();
-              route.innerHTML('').append(state.realChild);
+              route.removeAllChildren().append(state.realChild);
               onHistoryUpdate();
             });
           }
@@ -110,10 +110,10 @@ export function createRoute(store: any) {
               };
               route.style(state.style);
               if (oldIsRenderChild && !state.isRenderChild) {
-                route.clearChildren();
+                route.removeAllChildren();
               } else {
                 if (!oldIsRenderChild) {
-                  route.clearChildren().append(state.realChild);
+                  route.removeAllChildren().append(state.realChild);
                 }
               }
             }, leaveTime);
@@ -127,10 +127,10 @@ export function createRoute(store: any) {
             };
             route.style(state.style);
             if (oldIsRenderChild && !state.isRenderChild) {
-              route.clearChildren();
+              route.removeAllChildren();
             } else {
               if (!oldIsRenderChild) {
-                route.clearChildren().append(state.realChild);
+                route.removeAllChildren().append(state.realChild);
               }
             }
           }
@@ -155,3 +155,7 @@ export function createRoute(store: any) {
 
   return { routeManage, Route };
 }
+
+const { routeManage, Route } = createRoute();
+
+export { routeManage, Route };

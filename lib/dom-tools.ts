@@ -1,5 +1,4 @@
-import { ONUPDATE_KEY, ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './commonCount';
-import { store } from './dom-store';
+import { ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './commonCount';
 import { IStyle, IProps } from './interface';
 import * as device from './device';
 import { keyframesSpring } from './keyframesSpring';
@@ -81,7 +80,7 @@ export interface IDOM<T> {
     position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
     newNode: HTMLElement,
   ) => IDOM<T>;
-  clearChildren: () => IDOM<T>;
+  removeAllChildren: () => IDOM<T>;
   removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
   remove: () => IDOM<T>;
   append: (...nodes: any[]) => IDOM<T>;
@@ -95,11 +94,6 @@ export interface IDOM<T> {
   style: (obj: IStyle) => IDOM<T>;
   /** create keyframes use Spring */
   keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
-  // listing store.update()
-  onUpdate: <S extends any, M extends any[]>(
-    memo: (state: S) => M,
-    fn: (memo: M, selfElement: IDOM<T>) => any,
-  ) => IDOM<T>;
   // After append to parent
   onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
@@ -109,7 +103,11 @@ export interface IDOM<T> {
   [key: string]: any;
 }
 
-export function toDOM<T extends any>(element: T): IDOM<T> {
+export const toDOM = <T extends any>(element: T): IDOM<T> => {
+  if (element._DOM) {
+    return element._DOM;
+  }
+
   let _DOM: IDOM<T> = {
     __isChain: true,
     element,
@@ -195,11 +193,14 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
 
       return _DOM;
     },
-    clearChildren: () => {
-      for (let i = 0; i < element.children.length; i++) {
-        const ele = element.children.item(i);
-        toDOM(ele).remove();
+    removeAllChildren: () => {
+      if (element) {
+        for (let i = 0; i < element.children.length; i++) {
+          const ele = element.children.item(i);
+          toDOM(ele).remove();
+        }
       }
+
       return _DOM;
     },
     removeChild: (forEach: (node: HTMLElement, index: number) => any) => {
@@ -212,10 +213,9 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
       return _DOM;
     },
     remove: () => {
-      _DOM.clearChildren();
+      _DOM.removeAllChildren();
       if (element.__onRemove) {
         element.__onRemove(element.__lastMemo, _DOM);
-        store.__listenNodes.delete(element);
       }
       // 如果有自动绑定的事件，当元素移除时，会自动移除事件
       if (element.__events) {
@@ -237,14 +237,9 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
       nodes.forEach((v: any) => {
         if (v) {
           const ele = v.__isChain ? v.element : v;
-          if (ele.__onUpdate) {
-            if (!store.__listenNodes.has(ele)) {
-              store.__listenNodes.add(ele);
-            }
-          }
           element.appendChild(ele);
           if (ele.__onAppend) {
-            ele.__onAppend(ele.__lastMemo, _DOM);
+            ele.__onAppend(ele.__lastMemo, ele._DOM);
           }
 
           if (ele.__onRendered) {
@@ -259,7 +254,7 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
               out++;
               const nodeInDOM = document.getElementById(ele.id);
               if (nodeInDOM) {
-                ele.__onRendered(ele.__lastMemo, _DOM);
+                ele.__onRendered(ele.__lastMemo, ele._DOM);
               } else if (out < 100) {
                 setTimeout(findAndRunOnAppend, 40);
               }
@@ -340,12 +335,6 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
 
       return _DOM;
     },
-    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, _DOM: IDOM<T>) => any) => {
-      element.__onMemo = memo;
-      element.__onUpdate = fn;
-      element.setAttribute(ONUPDATE_KEY, '1');
-      return _DOM;
-    },
     onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onAppend = fn;
       element.setAttribute(ONAPPEND_KEY, '1');
@@ -368,4 +357,4 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
   }
 
   return _DOM as any;
-}
+};

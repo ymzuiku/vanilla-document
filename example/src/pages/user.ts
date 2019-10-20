@@ -1,37 +1,22 @@
 import { DOM, routeManage } from 'vanilly';
-import { IState } from '../state';
+import { store } from './actions';
 
 export const User = () => {
-  const user = DOM('div')
-    .textContent('user-page')
-    .onUpdate<any, [number]>(
-      s => [s.age],
-      ([age], self: any) => {
-        if (age > 10) {
-          DOM(self).removeChild(ele => {
-            if (ele.id === 'input') {
-              DOM(ele).remove();
-            }
-          });
-        }
-      },
-    );
+  const user = DOM('div').textContent('user-page');
+
+  function updateInput() {
+    console.log('xxx');
+    if (store.state.age > 10) {
+      input.remove();
+    }
+  }
 
   const input = DOM('input')
     .props({ id: 'input' })
-    .onRemove(() => {
-      console.log('input-remove');
-    });
+    .onAppend(() => store.listen(updateInput, s => [s.age]))
+    .onRemove(() => store.unListen(updateInput));
 
   const p = DOM('p')
-    .onUpdate<IState, [number]>(
-      s => [s.age],
-      ([age], self) => {
-        console.log(age);
-        self.textContent(age as any);
-        console.log('xx');
-      },
-    )
     .onAppend(() => {
       console.log('onAppend-sub-p');
     })

@@ -18,6 +18,8 @@ export interface IHistory {
     replace(path: string, historic?: {
         [key: string]: any;
     }): void;
+    state: any;
+    paths: string[];
 }
-export declare const createHistory: (store: any) => IHistory;
+export declare const createHistory: () => IHistory;
 export {};

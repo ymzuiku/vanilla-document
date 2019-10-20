@@ -29,9 +29,13 @@ export interface IHistory {
       [key: string]: any;
     },
   ): void;
+  state: any;
+  paths: string[];
 }
 
-export const createHistory = (store: any): IHistory => {
+export const createHistory = (): IHistory => {
+  const state: any = {};
+  const paths: string[] = [];
   const cacheGetMatch = new Map();
 
   const getMatch = (selfPath: string, nextPath: string): boolean => {
@@ -63,7 +67,6 @@ export const createHistory = (store: any): IHistory => {
   const cacheCheckPathMatch = new Map();
 
   const checkPathMatch = (path: string): [boolean, boolean, number] => {
-    const paths = store.getState().paths;
     const key = `${path}:${paths.join(',')}`;
     if (cacheCheckPathMatch.has(key)) {
       return cacheCheckPathMatch.get(key);
@@ -113,84 +116,67 @@ export const createHistory = (store: any): IHistory => {
   /** 校验路由变化是否被拦截 */
   const historyListenFnsChecker = (nextPath: string, historic?: { [key: string]: any }) => {
     for (const fn of historyListenFns) {
-      fn(nextPath, historic, store.getState());
+      fn(nextPath, historic, state);
     }
   };
 
   /**  替换当前路由状态 */
   const dispatcHistoryReplace = (path: string, historic?: { [key: string]: any }) => {
-    const realState = store.getState();
-    const thePath = path || realState.paths[realState.paths.length - 1];
+    const thePath = path || paths[paths.length - 1];
 
-    store.update((state: any) => {
-      const nextHistoric = { ...state.history[path], ...historic };
-      state.history[path] = nextHistoric;
-      state.paths[state.paths.length - 1] = thePath;
+    const nextHistoric = { ...state[path], ...historic };
+    state[path] = nextHistoric;
+    paths[state.paths.length - 1] = thePath;
 
-      if (typeof window !== 'undefined') {
-        const query = queryString.stringify(nextHistoric);
+    if (typeof window !== 'undefined') {
+      const query = queryString.stringify(nextHistoric);
 
-        window.history.replaceState(
-          null,
-          `${space}${thePath}`,
-          query === '' ? `${space}${thePath}` : `${space}${thePath}?${query}`,
-        );
-      }
-    });
+      window.history.replaceState(
+        null,
+        `${space}${thePath}`,
+        query === '' ? `${space}${thePath}` : `${space}${thePath}?${query}`,
+      );
+    }
 
     historyListenFnsChecker(thePath, historic);
   };
 
   /** 推进一个新的路由，并且更新 AppState */
   const dispatchHistoryPush = (path: string, historic?: { [key: string]: any }, stopPush?: boolean) => {
-    if (path === store.getState().paths[store.getState().paths.length - 1]) {
+    if (path === paths[paths.length - 1]) {
       return;
     }
-    store.update((state: any) => {
-      state.paths.push(path);
-      const nextHistoric = { ...state.history[path], ...historic };
-      state.history[path] = nextHistoric;
-      if (typeof window !== 'undefined' && !stopPush && !isKeepHistory) {
-        const query = queryString.stringify(nextHistoric);
-        window.history.pushState(
-          null,
-          `${space}${path}`,
-          query === '' ? `${space}${path}` : `${space}${path}?${query}`,
-        );
-      }
-    });
+    paths.push(path);
+    const nextHistoric = { ...state[path], ...historic };
+    state[path] = nextHistoric;
+    if (typeof window !== 'undefined' && !stopPush && !isKeepHistory) {
+      const query = queryString.stringify(nextHistoric);
+      window.history.pushState(null, `${space}${path}`, query === '' ? `${space}${path}` : `${space}${path}?${query}`);
+    }
 
     historyListenFnsChecker(path, historic);
   };
 
   /** 移走一个路由或者去到指定路径的路由，并且更新视图 */
   const dispatchHistoryPop = (index?: number | any, stopBack?: boolean) => {
-    const realState = store.getState();
+    const _index = typeof index === 'number' ? index : paths.length - 1;
 
-    const _index = typeof index === 'number' ? index : realState.paths.length - 1;
+    const path = paths[_index - 1];
+    const historic = state[path];
 
-    const path = realState.paths[_index - 1];
-    const historic = realState.history[path];
-
-    store.update((state: any) => {
-      for (let i = 0; i < state.paths.length - _index; i++) {
-        if (!stopBack) {
-          window.history.back();
-        }
-        state.history[path] = {};
-        state.paths.pop();
+    for (let i = 0; i < paths.length - _index; i++) {
+      if (!stopBack) {
+        window.history.back();
       }
-    });
+      state[path] = {};
+      paths.pop();
+    }
 
     historyListenFnsChecker(path, historic);
   };
 
   if (typeof window !== 'undefined') {
     const onPopState = () => {
-      const realState = store.getState();
-
-      const paths = realState.paths;
-
       if (getHref()[0] !== paths[paths.length - 1]) {
         let isPop = false;
         paths.forEach((p: string, i: number) => {
@@ -217,11 +203,6 @@ export const createHistory = (store: any): IHistory => {
     isKeepHistory = keepHistory || false;
 
     space = hashSpace;
-
-    store.update((s: any) => {
-      s.paths = [];
-      s.history = { ...s.history };
-    });
 
     if (typeof window === 'undefined') {
       return;
@@ -252,5 +233,7 @@ export const createHistory = (store: any): IHistory => {
     push: dispatchHistoryPush,
     /** 替换当前路由状态 */
     replace: dispatcHistoryReplace,
+    state,
+    paths,
   };
 };
