@@ -1,7 +1,7 @@
 import { DOM, store, routeManage } from 'vanilly';
 
 export const Home = () => {
-  return DOM('div')
+  const home = DOM('div')
     .cssText('background:#f55')
     .textContent('home-page')
     .onAppend(() => {
@@ -9,12 +9,12 @@ export const Home = () => {
     })
     .append(
       DOM('button')
-        .ref(e => {
-          e.target.onclick = () => {
+        .props({
+          onclick: () => {
             store.update(s => {
               s.age += 1;
             });
-          };
+          },
         })
         .textContent('test-click'),
       DOM('button')
@@ -23,4 +23,6 @@ export const Home = () => {
         })
         .textContent('go-user-pagei'),
     );
+
+  return home;
 };

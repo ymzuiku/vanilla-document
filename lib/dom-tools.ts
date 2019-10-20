@@ -73,7 +73,7 @@ export interface IDOM<T> {
   ) => IDOM<T>;
   innerText: (text: string) => IDOM<T>;
   innerHTML: (html: string) => IDOM<T>;
-  textContent: (text: string | null) => IDOM<T>;
+  textContent: (text: string | number | null) => IDOM<T>;
   querySelector: typeof IQuerySelector;
   querySelectorAll: typeof IQuerySelectorAll;
   insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
@@ -96,13 +96,16 @@ export interface IDOM<T> {
   /** create keyframes use Spring */
   keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
   // listing store.update()
-  onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => IDOM<T>;
+  onUpdate: <S extends any, M extends any[]>(
+    memo: (state: S) => M,
+    fn: (memo: M, selfElement: IDOM<T>) => any,
+  ) => IDOM<T>;
   // After append to parent
-  onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
+  onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
-  onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
+  onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // event by DOM.remove()
-  onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
+  onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   [key: string]: any;
 }
 
@@ -155,7 +158,7 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
       element.innerHTML = html;
       return _DOM;
     },
-    textContent: (text: string | null) => {
+    textContent: text => {
       element.textContent = text;
       return _DOM;
     },
@@ -211,7 +214,7 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
     remove: () => {
       _DOM.clearChildren();
       if (element.__onRemove) {
-        element.__onRemove(element.__lastMemo, element);
+        element.__onRemove(element.__lastMemo, _DOM);
         store.__listenNodes.delete(element);
       }
       // 如果有自动绑定的事件，当元素移除时，会自动移除事件
@@ -241,7 +244,7 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
           }
           element.appendChild(ele);
           if (ele.__onAppend) {
-            ele.__onAppend(ele.__lastMemo, ele);
+            ele.__onAppend(ele.__lastMemo, _DOM);
           }
 
           if (ele.__onRendered) {
@@ -256,7 +259,7 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
               out++;
               const nodeInDOM = document.getElementById(ele.id);
               if (nodeInDOM) {
-                ele.__onRendered(ele.__lastMemo, ele);
+                ele.__onRendered(ele.__lastMemo, _DOM);
               } else if (out < 100) {
                 setTimeout(findAndRunOnAppend, 40);
               }
@@ -337,23 +340,23 @@ export function toDOM<T extends any>(element: T): IDOM<T> {
 
       return _DOM;
     },
-    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => {
+    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onMemo = memo;
       element.__onUpdate = fn;
       element.setAttribute(ONUPDATE_KEY, '1');
       return _DOM;
     },
-    onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => {
+    onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onAppend = fn;
       element.setAttribute(ONAPPEND_KEY, '1');
       return _DOM;
     },
-    onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => {
+    onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onRendered = fn;
       element.setAttribute(ONRENDERED_KEY, '1');
       return _DOM;
     },
-    onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => {
+    onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onRemove = fn;
       element.setAttribute(ONREMOVE_KEY, '1');
       return _DOM;

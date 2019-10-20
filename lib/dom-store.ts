@@ -38,7 +38,7 @@ const store = {
         const lastMemo = node.__onMemo(store.__state);
 
         if (node.__lastMemo !== lastMemo) {
-          node.__onUpdate(lastMemo || [], node);
+          node.__onUpdate(lastMemo || [], node._DOM);
           node.__lastMemo = lastMemo;
         }
       }

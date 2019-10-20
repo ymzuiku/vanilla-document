@@ -20,7 +20,7 @@ export interface IDOM<T> {
     removeEventListener: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions) => IDOM<T>;
     innerText: (text: string) => IDOM<T>;
     innerHTML: (html: string) => IDOM<T>;
-    textContent: (text: string | null) => IDOM<T>;
+    textContent: (text: string | number | null) => IDOM<T>;
     querySelector: typeof IQuerySelector;
     querySelectorAll: typeof IQuerySelectorAll;
     insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
@@ -39,10 +39,10 @@ export interface IDOM<T> {
     style: (obj: IStyle) => IDOM<T>;
     /** create keyframes use Spring */
     keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
-    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: T) => any) => IDOM<T>;
-    onAppend: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
-    onRendered: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
-    onRemove: <M extends Array<any>>(fn: (memo: M, selfElement: T) => any) => IDOM<T>;
+    onUpdate: <S extends any, M extends any[]>(memo: (state: S) => M, fn: (memo: M, selfElement: IDOM<T>) => any) => IDOM<T>;
+    onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
+    onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
+    onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
     [key: string]: any;
 }
 export declare function toDOM<T extends any>(element: T): IDOM<T>;

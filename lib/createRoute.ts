@@ -37,7 +37,7 @@ export function createRoute(store: any) {
     const route = DOM('div');
     route.setAttribute('route', path);
 
-    route.setStyle({
+    route.style({
       width: '100%',
       height: '100%',
       overflow: 'hidden',
@@ -84,7 +84,7 @@ export function createRoute(store: any) {
           position: SHOW_POSIRION,
           zIndex: SHOW_ZINDEX,
         };
-        route.setStyle(state.style);
+        route.style(state.style);
       } else {
         // 如果不需要保持组件，清空child
         const isKeepChild = keep && stackMatch;
@@ -98,7 +98,7 @@ export function createRoute(store: any) {
               position: HIDDEN_POSITION,
               zIndex: SHOW_DISPLAY,
             };
-            route.setStyle(state.style);
+            route.style(state.style);
 
             setTimeout(() => {
               state.isRenderChild = isKeepChild;
@@ -108,12 +108,12 @@ export function createRoute(store: any) {
                 position: HIDDEN_POSITION,
                 zIndex: HIDDEN_ZINDEX,
               };
-              route.setStyle(state.style);
+              route.style(state.style);
               if (oldIsRenderChild && !state.isRenderChild) {
-                route.innerHTML('');
+                route.clearChildren();
               } else {
                 if (!oldIsRenderChild) {
-                  route.innerHTML('').append(state.realChild);
+                  route.clearChildren().append(state.realChild);
                 }
               }
             }, leaveTime);
@@ -125,12 +125,12 @@ export function createRoute(store: any) {
               position: HIDDEN_POSITION,
               zIndex: lastPage > 0 ? LAST_ZINDEX : HIDDEN_ZINDEX,
             };
-            route.setStyle(state.style);
+            route.style(state.style);
             if (oldIsRenderChild && !state.isRenderChild) {
-              route.innerHTML('');
+              route.clearChildren();
             } else {
               if (!oldIsRenderChild) {
-                route.innerHTML('').append(state.realChild);
+                route.clearChildren().append(state.realChild);
               }
             }
           }

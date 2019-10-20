@@ -1,11 +1,9 @@
 import { DOM, routeManage } from 'vanilly';
 import { IState } from '../state';
-import { cssin } from 'cssin';
 
 export const User = () => {
   const user = DOM('div')
     .textContent('user-page')
-    .setClass(cssin`bg:#55f`)
     .onUpdate<any, [number]>(
       s => [s.age],
       ([age], self: any) => {
@@ -20,7 +18,7 @@ export const User = () => {
     );
 
   const input = DOM('input')
-    .setProps({ id: 'input' })
+    .props({ id: 'input' })
     .onRemove(() => {
       console.log('input-remove');
     });
@@ -30,7 +28,7 @@ export const User = () => {
       s => [s.age],
       ([age], self) => {
         console.log(age);
-        self.textContent = age as any;
+        self.textContent(age as any);
         console.log('xx');
       },
     )
@@ -40,10 +38,10 @@ export const User = () => {
     .textContent('111');
 
   const button = DOM('button')
-    .ref(e => {
-      e.target.onclick = () => {
+    .props({
+      onclick: () => {
         console.log('haha');
-      };
+      },
     })
     .textContent('user-page-click');
 
