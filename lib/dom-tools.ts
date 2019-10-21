@@ -200,6 +200,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
           toDOM(ele).remove();
         }
       }
+      element.innerHTML = '';
 
       return _DOM;
     },
@@ -219,7 +220,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
       }
       if (element.__connectStore) {
         const { store, onUpdate } = element.__connectStore;
-        store.unlisten(onUpdate);
+        store.unListen(onUpdate);
       }
       // 如果有自动绑定的事件，当元素移除时，会自动移除事件
       if (element.__events) {
@@ -310,6 +311,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
           css = css.replace(/\.\^/g, `.${BEM}-`);
         }
         cssNode.textContent = css;
+        cssNode.type = 'text/css';
         document.head.appendChild(cssNode);
         cssSet.add(cacheCss);
       }
@@ -336,6 +338,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
         const css = keyframesSpring(name, tension, wobble, fn);
 
         cssNode.textContent = css;
+        cssNode.type = 'text/css';
         document.head.appendChild(cssNode);
 
         cssSet.add(name);

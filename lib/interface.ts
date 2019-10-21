@@ -16,6 +16,7 @@ interface IPosition {
 interface IDisplay {
   /**此元素不会被显示。 */
   none: string;
+  flex: string;
   /** 此元素将显示为块级元素，此元素前后会带有换行符。 */
   block: string;
   /** 默认。此元素会被显示为内联元素，元素前后没有换行符。 */
@@ -160,7 +161,8 @@ export interface IStyle {
   content?: string | null;
   counterIncrement?: string | null;
   counterReset?: string | null;
-  cssFloat?: string | null;
+  cssFloat?: 'left'|'right'|'none'|'inherit';
+  float?:'left'|'right'|'none'|'inherit';
   cssText?: string;
   cursor?:
     | 'auto'
