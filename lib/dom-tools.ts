@@ -42,7 +42,7 @@ declare function IQuerySelectorAll<E extends Element = Element>(
 ): IDOM<E>;
 
 export interface IDOM<T> {
-  __isChain: true;
+  __isDOM: boolean;
   element: T;
   getElement: (fn: (ele: T) => any) => IDOM<T>;
   ref: (fn: (selfChain: IDOM<T>) => any) => IDOM<T>;
@@ -73,12 +73,14 @@ export interface IDOM<T> {
   textContent: (text: string | number | null) => IDOM<T>;
   querySelector: typeof IQuerySelector;
   querySelectorAll: typeof IQuerySelectorAll;
-  insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
+  insertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T>;
   insertAdjacentElement: (
     position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
-    newNode: HTMLElement,
+    newNode: HTMLInputElement,
   ) => IDOM<T>;
   append: (...nodes: any[]) => IDOM<T>;
+  children: (fn: (children: HTMLInputElement) => any) => IDOM<T>;
+  forEach: (fn: (node: HTMLInputElement, index: number) => any) => IDOM<T>;
   setAttribute: (key: string, value: any) => IDOM<T>;
   removeAttribute: (key: string) => IDOM<T>;
   cssText: (text: string) => IDOM<T>;
@@ -91,8 +93,6 @@ export interface IDOM<T> {
   onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
   onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
-  connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => IDOM<T>;
-  [key: string]: any;
 }
 
 export const toDOM = <T extends any>(element: T): IDOM<T> => {
@@ -101,7 +101,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
   }
 
   let _DOM: IDOM<T> = {
-    __isChain: true,
+    __isDOM: true,
     element,
     getElement: (fn: (ele: T) => any) => {
       fn(element);
@@ -185,18 +185,6 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
 
       return _DOM;
     },
-    children: (fn: (children: HTMLElement) => any) => {
-      fn(element.children);
-
-      return _DOM;
-    },
-    forEach: (fn: (node: HTMLElement, index: number) => any) => {
-      for (let i = 0; i < element.children.length; i++) {
-        const ele = element.children.item(i);
-        fn(ele, i);
-      }
-      return _DOM;
-    },
     append: (...nodes: any[]) => {
       nodes.forEach((v: any) => {
         if (v) {
@@ -228,6 +216,18 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
         }
       });
 
+      return _DOM;
+    },
+    children: (fn: (children: HTMLInputElement) => any) => {
+      fn(element.children);
+
+      return _DOM;
+    },
+    forEach: (fn: (node: HTMLInputElement, index: number) => any) => {
+      for (let i = 0; i < element.children.length; i++) {
+        const ele = element.children.item(i);
+        fn(ele, i);
+      }
       return _DOM;
     },
     props: (obj: any) => {
