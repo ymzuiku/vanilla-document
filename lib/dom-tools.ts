@@ -78,9 +78,6 @@ export interface IDOM<T> {
     position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
     newNode: HTMLElement,
   ) => IDOM<T>;
-  removeAllChildren: () => IDOM<T>;
-  removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
-  remove: () => IDOM<T>;
   append: (...nodes: any[]) => IDOM<T>;
   setAttribute: (key: string, value: any) => IDOM<T>;
   removeAttribute: (key: string) => IDOM<T>;
@@ -94,8 +91,6 @@ export interface IDOM<T> {
   onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
   onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
-  // event by DOM.remove()
-  onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => IDOM<T>;
   [key: string]: any;
 }
@@ -190,12 +185,15 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
 
       return _DOM;
     },
-    removeChild: (forEach: (node: HTMLElement, index: number) => any) => {
+    children: (fn: (children: HTMLElement) => any) => {
+      fn(element.children);
+
+      return _DOM;
+    },
+    forEach: (fn: (node: HTMLElement, index: number) => any) => {
       for (let i = 0; i < element.children.length; i++) {
         const ele = element.children.item(i);
-        if (forEach(ele, i)) {
-          toDOM(ele).remove();
-        }
+        fn(ele, i);
       }
       return _DOM;
     },
@@ -206,10 +204,6 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
           element.appendChild(ele);
           if (ele.__onAppend) {
             ele.__onAppend(ele.__lastMemo, ele._DOM);
-          }
-          if (ele.__connectStore) {
-            const { store, onUpdate, memo } = ele.__connectStore;
-            store.listen(onUpdate, memo);
           }
 
           if (ele.__onRendered) {
@@ -296,20 +290,13 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
     onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onAppend = fn;
       element.setAttribute(ONAPPEND_KEY, '1');
+
       return _DOM;
     },
     onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
       element.__onRendered = fn;
       element.setAttribute(ONRENDERED_KEY, '1');
-      return _DOM;
-    },
-    onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
-      element.__onRemove = fn;
-      element.setAttribute(ONREMOVE_KEY, '1');
-      return _DOM;
-    },
-    connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => {
-      element.__connectStore = { store, onUpdate, memo };
+
       return _DOM;
     },
   };
