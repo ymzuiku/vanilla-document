@@ -141,7 +141,8 @@ export interface IStyle {
     content?: string | null;
     counterIncrement?: string | null;
     counterReset?: string | null;
-    cssFloat?: string | null;
+    cssFloat?: 'left' | 'right' | 'none' | 'inherit';
+    float?: 'left' | 'right' | 'none' | 'inherit';
     cssText?: string;
     cursor?: 'auto' | 'default' | 'pointer' | 'crosshair' | 'move' | 'e-resize' | 'ne-resize' | 'nw-resize' | 'n-resize' | 'se-resize' | 'sw-resize' | 's-resize' | 'w-resize' | 'text' | 'wait' | 'help';
     direction?: string;
