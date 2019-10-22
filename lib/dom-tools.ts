@@ -1,7 +1,6 @@
 import { ONAPPEND_KEY, ONREMOVE_KEY, ONRENDERED_KEY } from './commonCount';
 import { IStyle, IProps } from './interface';
 import * as device from './device';
-import { keyframesSpring } from './keyframesSpring';
 
 const cssSet = new Set<string>();
 
@@ -91,8 +90,6 @@ export interface IDOM<T> {
   /** use BEM replace(/\^/, ${${BEM}_}) */
   appendCss: (css: string, BEM?: string) => IDOM<T>;
   style: (obj: IStyle) => IDOM<T>;
-  /** create keyframes use Spring */
-  keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
   // After append to parent
   onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
@@ -115,7 +112,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
       fn(element);
       return _DOM;
     },
-    ref: (fn: (selfChain: IDOM<T>) => any) => {
+    ref: (fn: (theDOM: IDOM<T>) => any) => {
       fn(_DOM as any);
       return _DOM;
     },
@@ -193,17 +190,6 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
 
       return _DOM;
     },
-    removeAllChildren: () => {
-      if (element) {
-        for (let i = 0; i < element.children.length; i++) {
-          const ele = element.children.item(i);
-          toDOM(ele).remove();
-        }
-      }
-      element.innerHTML = '';
-
-      return _DOM;
-    },
     removeChild: (forEach: (node: HTMLElement, index: number) => any) => {
       for (let i = 0; i < element.children.length; i++) {
         const ele = element.children.item(i);
@@ -211,31 +197,6 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
           toDOM(ele).remove();
         }
       }
-      return _DOM;
-    },
-    remove: () => {
-      _DOM.removeAllChildren();
-      if (element.__onRemove) {
-        element.__onRemove(element.__lastMemo, _DOM);
-      }
-      if (element.__connectStore) {
-        const { store, onUpdate } = element.__connectStore;
-        store.unListen(onUpdate);
-      }
-      // 如果有自动绑定的事件，当元素移除时，会自动移除事件
-      if (element.__events) {
-        element.__events.forEach((event: any) => {
-          element.removeEventListener(...event);
-        });
-        element.__events.clear();
-        element.__events = null;
-      }
-      element._DOM = null;
-      element._state = null;
-      element.remove();
-
-      _DOM.element = null as any;
-      _DOM = null as any;
       return _DOM;
     },
     append: (...nodes: any[]) => {
@@ -330,20 +291,6 @@ export const toDOM = <T extends any>(element: T): IDOM<T> => {
       Object.keys(obj).forEach(k => {
         element.style[k] = obj[k];
       });
-      return _DOM;
-    },
-    keyframesSpring: (name: string, tension: number, wobble: number, fn: (value: number) => string) => {
-      if (!cssSet.has(name)) {
-        const cssNode = document.createElement('style');
-        const css = keyframesSpring(name, tension, wobble, fn);
-
-        cssNode.textContent = css;
-        cssNode.type = 'text/css';
-        document.head.appendChild(cssNode);
-
-        cssSet.add(name);
-      }
-
       return _DOM;
     },
     onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => {
