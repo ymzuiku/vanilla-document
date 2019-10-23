@@ -25,9 +25,7 @@ declare function IQuerySelectorAll<E extends Element = Element>(
 export interface IDOM<T> {
   __isVanilly: boolean;
   getElement: (fn: (ele: T) => any) => IDOM<T> & T;
-  /**
-   * bind props to element
-   */
+  setId: (id: string) => IDOM<T> & T;
   setProps: (obj: IProps) => IDOM<T> & T;
   /** get data from element */
   getProp: (key: string, callback: (value: any) => any) => IDOM<T> & T;
@@ -44,8 +42,9 @@ export interface IDOM<T> {
   setInnerText: (text: string) => IDOM<T> & T;
   setInnerHTML: (html: string) => IDOM<T> & T;
   setText: (text: string | number | null) => IDOM<T> & T;
-  query: typeof IQuerySelector;
-  queryAll: typeof IQuerySelectorAll;
+  query(seletor: string, fn: (node: HTMLInputElement) => any, unfindable?: () => any): IDOM<T> & T;
+  queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
+  insertBefore: (newNode: HTMLInputElement) => IDOM<T> & T;
   queryInsertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;
   queryInsertAdjacent: (
     position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
@@ -73,8 +72,11 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
 
   element.__isVanilly = true;
   element.getElement = (fn: (ele: T) => any) => {
-    fn(element);
+    fn.call(element, element);
     return element as any;
+  };
+  element.setId = (id: string) => {
+    element.id = id;
   };
   element.addEvent = <K extends keyof HTMLElementEventMap>(
     type: K,
@@ -107,16 +109,20 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
   element.query = (selector: any, fn: any, unfindable: any) => {
     const ele = element.querySelector(selector);
     if (ele) {
-      fn(ele);
+      fn.call(element, ele);
     } else if (unfindable) {
-      unfindable();
+      unfindable.call(element);
     }
 
     return element as any;
   };
   element.queryAll = (selector: any, fn: any) => {
-    fn(element.querySelectorAll(selector));
+    fn.call(element, element.querySelectorAll(selector));
 
+    return element as any;
+  };
+  element.insertBefore = (newNode: HTMLInputElement) => {
+    element.insertBefore(newNode, element);
     return element as any;
   };
   element.queryInsertBefore = (selector: any, newNode: any, unfindable: any) => {
@@ -142,17 +148,17 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       if (v) {
         element.appendChild(v);
         if (v.__onAppend) {
-          v.__onAppend(v.__lastMemo, v);
+          v.__onAppend.call(v, v);
         }
 
         if (v.__onRendered) {
-          let out = 0;
+          let timeout = 0;
           const findAndRunOnAppend = () => {
-            out++;
+            timeout++;
             const nodeInDOM = document.getElementById(v.__onRenderedId);
             if (nodeInDOM) {
-              v.__onRendered(v.__lastMemo, v);
-            } else if (out < 100) {
+              v.__onRendered.call(v, v);
+            } else if (timeout < 100) {
               setTimeout(findAndRunOnAppend, 40);
             }
           };
@@ -165,14 +171,14 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
   };
 
   element.getChildren = (fn: (children: HTMLInputElement) => any) => {
-    fn(element.children);
+    fn.call(element, element.children);
 
     return element as any;
   };
   element.forEachChildren = (fn: (node: HTMLInputElement, index: number) => any) => {
     for (let i = 0; i < element.children.length; i++) {
       const ele = element.children.item(i);
-      fn(ele, i);
+      fn.call(element, ele, i);
     }
     return element as any;
   };
@@ -183,7 +189,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
   element.getProp = (key: string, callback: Function) => {
-    callback(element[key]);
+    callback.call(element, element[key]);
     return element as any;
   };
   element.setAttr = (key: string, value: any) => {

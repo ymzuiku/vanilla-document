@@ -13,3 +13,13 @@ const root = DOM('div').setAppend(
 
 document.body.append(root);
 nuageRoute.init('/home');
+
+const b = DOM('div').setAppend(DOM('input').setAttr('id', 'bb'));
+
+DOM(document.body).setAppend(b);
+
+b.query('#bb', function(this: any, ele) {
+  console.log(ele);
+  console.log(b);
+  console.log(this);
+});

@@ -1,14 +1,8 @@
 import { IStyle, IProps } from './interface';
-declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (ele: HTMLElementTagNameMap[K]) => any, unfindable?: () => any): IDOM<HTMLElementTagNameMap[K]>;
-declare function IQuerySelector<E extends Element = Element>(selectors: string, fn: (ele: E) => any, unfindable?: () => any): IDOM<E>;
-declare function IQuerySelectorAll<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (nodeList: HTMLElementTagNameMap[K][]) => any): IDOM<HTMLElementTagNameMap[K]>;
-declare function IQuerySelectorAll<E extends Element = Element>(selectors: string, fn: (nodeList: E[]) => any): IDOM<E>;
 export interface IDOM<T> {
     __isVanilly: boolean;
     getElement: (fn: (ele: T) => any) => IDOM<T> & T;
-    /**
-     * bind props to element
-     */
+    setId: (id: string) => IDOM<T> & T;
     setProps: (obj: IProps) => IDOM<T> & T;
     /** get data from element */
     getProp: (key: string, callback: (value: any) => any) => IDOM<T> & T;
@@ -17,8 +11,9 @@ export interface IDOM<T> {
     setInnerText: (text: string) => IDOM<T> & T;
     setInnerHTML: (html: string) => IDOM<T> & T;
     setText: (text: string | number | null) => IDOM<T> & T;
-    query: typeof IQuerySelector;
-    queryAll: typeof IQuerySelectorAll;
+    query(seletor: string, fn: (node: HTMLInputElement) => any, unfindable?: () => any): IDOM<T> & T;
+    queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
+    insertBefore: (newNode: HTMLInputElement) => IDOM<T> & T;
     queryInsertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;
     queryInsertAdjacent: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLInputElement) => IDOM<T> & T;
     setAppend: (...nodes: any[]) => IDOM<T> & T;
@@ -34,4 +29,3 @@ export interface IDOM<T> {
     onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T> & T) => any) => IDOM<T> & T;
 }
 export declare const toDOM: <T extends any>(element: T) => IDOM<T> & T;
-export {};
