@@ -1,40 +1,32 @@
-import { DOM, routeManage } from 'vanilly';
-import { store } from './actions';
+import { DOM } from 'vanilly';
+import nuageRoute from '@nuage/route';
 
 export const User = () => {
-  const user = DOM('div').textContent('user-page');
+  const user = DOM('div').setText('user-page');
 
-  function updateInput() {
-    console.log('xxx');
-    if (store.state.age > 10) {
-      input.remove();
-    }
-  }
-
-  const input = DOM('input')
-    .props({ id: 'input' })
-    .onAppend(() => store.listen(updateInput, s => [s.age]))
-    .onRemove(() => store.unListen(updateInput));
+  const input = DOM('input').setProps({ id: 'input' });
 
   const p = DOM('p')
     .onAppend(() => {
       console.log('onAppend-sub-p');
     })
-    .textContent('111');
+    .setText('111');
 
   const button = DOM('button')
-    .props({
+    .setProps({
       onclick: () => {
         console.log('haha');
       },
     })
-    .textContent('user-page-click');
+    .setText('user-page-click');
 
   const changePage = DOM('button')
-    .addEventListener('click', () => {
-      routeManage.push('/home');
+    .addEvent('click', () => {
+      nuageRoute.push('/home');
     })
-    .textContent('go-home-page');
+    .setText('go-home-page');
 
-  return user.append(input, p, button, changePage);
+  user.setAppend(input, p, button, changePage);
+
+  return user;
 };

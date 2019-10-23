@@ -1,18 +1,56 @@
 import { IDOM, toDOM } from './dom-tools';
+import { media } from './media';
+
+const cacheAppend = new Set<string>();
 
 declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
   options?: ElementCreationOptions,
-): IDOM<HTMLElementTagNameMap[K]>;
+): IDOM<HTMLElementTagNameMap[K]> & HTMLElementTagNameMap[K];
 
-declare function IDOMCreator<K extends Element>(tagNode?: K, options?: any): IDOM<K>;
+declare function IDOMCreator<K extends Element>(tagNode?: K, options?: any): IDOM<K> & K;
+
+interface IDOMExp {
+  /** use BEM replace(/\^/, ${${BEM}_}) */
+  appendCss: (css: string, BEM?: string) => any;
+  appendStyle: (src: string, onload: string) => any;
+}
 
 /** Element operator */
-export const DOM: typeof IDOMCreator = (tag: any, options?: any) => {
+export const DOM: typeof IDOMCreator & IDOMExp = (tag: any, options?: any) => {
   if (typeof tag === 'string') {
     const element = document.createElement(tag, options);
     return toDOM(element);
   }
 
   return toDOM(tag || document.createElement('div'));
+};
+
+DOM.appendCss = (css: string, BEM?: string) => {
+  const cacheCss = `${css}${BEM}`;
+  if (!cacheAppend.has(cacheCss)) {
+    const cssNode = document.createElement('style');
+    if (css.indexOf('@media-') > -1) {
+      Object.keys(media).forEach(k => {
+        css = css.replace(k, (media as any)[k]);
+      });
+    }
+    if (BEM) {
+      css = css.replace(/\.\^/g, `.${BEM}-`);
+    }
+    cssNode.textContent = css;
+    cssNode.type = 'text/css';
+    document.head.appendChild(cssNode);
+    cacheAppend.add(cacheCss);
+  }
+};
+
+DOM.appendStyle = (src: string, onload?: any) => {
+  if (!cacheAppend.has(src)) {
+    const node = document.createElement('script');
+    node.src = src;
+    node.onload = onload;
+    document.head.appendChild(node);
+    cacheAppend.add(src);
+  }
 };

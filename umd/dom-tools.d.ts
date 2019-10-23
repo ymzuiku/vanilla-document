@@ -4,46 +4,34 @@ declare function IQuerySelector<E extends Element = Element>(selectors: string, 
 declare function IQuerySelectorAll<K extends keyof HTMLElementTagNameMap>(selectors: K, fn: (nodeList: HTMLElementTagNameMap[K][]) => any): IDOM<HTMLElementTagNameMap[K]>;
 declare function IQuerySelectorAll<E extends Element = Element>(selectors: string, fn: (nodeList: E[]) => any): IDOM<E>;
 export interface IDOM<T> {
-    __isChain: true;
-    element: T;
-    getElement: (fn: (ele: T) => any) => IDOM<T>;
-    ref: (fn: (selfChain: IDOM<T>) => any) => IDOM<T>;
+    __isVanilly: boolean;
+    getElement: (fn: (ele: T) => any) => IDOM<T> & T;
     /**
      * bind props to element
      */
-    props: (obj: IProps) => IDOM<T>;
+    setProps: (obj: IProps) => IDOM<T> & T;
     /** get data from element */
-    getProp: (key: string, callback: (value: any) => any) => IDOM<T>;
-    /** know from addEventListener, when remvoe element, auto removeEventListen */
-    addEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IDOM<T>;
-    addEventListener: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IDOM<T>;
-    removeEventListener: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions) => IDOM<T>;
-    innerText: (text: string) => IDOM<T>;
-    innerHTML: (html: string) => IDOM<T>;
-    textContent: (text: string | number | null) => IDOM<T>;
-    querySelector: typeof IQuerySelector;
-    querySelectorAll: typeof IQuerySelectorAll;
-    insertBefore: (selectors: any, newNode: HTMLElement, unfindable?: () => any) => IDOM<T>;
-    insertAdjacentElement: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLElement) => IDOM<T>;
-    removeAllChildren: () => IDOM<T>;
-    removeChild: (forEach: (node: HTMLElement, index: number) => any) => IDOM<T>;
-    remove: () => IDOM<T>;
-    append: (...nodes: any[]) => IDOM<T>;
-    setAttribute: (key: string, value: any) => IDOM<T>;
-    removeAttribute: (key: string) => IDOM<T>;
-    cssText: (text: string) => IDOM<T>;
+    getProp: (key: string, callback: (value: any) => any) => IDOM<T> & T;
+    addEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => IDOM<T> & T;
+    removeEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions) => IDOM<T> & T;
+    setInnerText: (text: string) => IDOM<T> & T;
+    setInnerHTML: (html: string) => IDOM<T> & T;
+    setText: (text: string | number | null) => IDOM<T> & T;
+    query: typeof IQuerySelector;
+    queryAll: typeof IQuerySelectorAll;
+    queryInsertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;
+    queryInsertAdjacent: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLInputElement) => IDOM<T> & T;
+    setAppend: (...nodes: any[]) => IDOM<T> & T;
+    getChildren: (fn: (children: HTMLInputElement) => any) => IDOM<T> & T;
+    forEachChildren: (fn: (node: HTMLInputElement, index: number) => any) => IDOM<T> & T;
+    setAttr: (key: string, value: any) => IDOM<T> & T;
+    removeAttri: (key: string) => IDOM<T> & T;
+    setCssText: (text: string) => IDOM<T> & T;
     /** use BEM replace(/\.\^/, ${${BEM}_}) */
-    css: (className: string, BEM?: string) => IDOM<T>;
-    /** use BEM replace(/\^/, ${${BEM}_}) */
-    appendCss: (css: string, BEM?: string) => IDOM<T>;
-    style: (obj: IStyle) => IDOM<T>;
-    /** create keyframes use Spring */
-    keyframesSpring: (keyframesName: string, tension: number, wobble: number, fn: (value: number) => string) => IDOM<T>;
-    onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
-    onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
-    onRemove: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T>) => any) => IDOM<T>;
-    connectStore: (store: any, onUpdate: (state: any) => any, memo?: (state: any) => any) => IDOM<T>;
-    [key: string]: any;
+    setCss: (className: string, BEM?: string) => IDOM<T> & T;
+    setStyle: (obj: IStyle) => IDOM<T> & T;
+    onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T> & T) => any) => IDOM<T> & T;
+    onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T> & T) => any) => IDOM<T> & T;
 }
-export declare const toDOM: <T extends any>(element: T) => IDOM<T>;
+export declare const toDOM: <T extends any>(element: T) => IDOM<T> & T;
 export {};

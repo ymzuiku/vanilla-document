@@ -1,9 +1,15 @@
 import './polyfill';
-import { DOM, Route, routeManage } from 'vanilly';
+import { DOM } from 'vanilly';
+import nuageRoute from '@nuage/route';
 import { Home } from './pages/home';
 import { User } from './pages/user';
 
-const root = DOM('div').append(Route({ path: '/home', component: Home }), Route({ path: '/user', component: User }));
+const Route = nuageRoute.Route;
 
-document.body.append(root.element);
-routeManage.init('/home');
+const root = DOM('div').setAppend(
+  Route({ path: '/home', component: Home }),
+  Route({ path: '/user', component: User }),
+);
+
+document.body.append(root);
+nuageRoute.init('/home');

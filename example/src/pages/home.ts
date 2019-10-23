@@ -1,27 +1,28 @@
-import { DOM, routeManage } from 'vanilly';
+import { DOM } from 'vanilly';
+import nuageRoute from '@nuage/route';
 
 import { store } from './actions';
 
 export const Home = () => {
   const home = DOM('div')
-    .cssText('background:#f55')
-    .textContent('home-page')
+    .setCssText('background:#f55')
+    .setText('home-page')
     .onAppend(() => {
       console.log('onAppend-home-page');
     })
-    .append(
+    .setAppend(
       DOM('button')
-        .props({
+        .setProps({
           onclick: () => {
             store.update(s => (s.age += 1));
           },
         })
-        .textContent('test-click'),
+        .setText('test-click'),
       DOM('button')
-        .addEventListener('click', () => {
-          routeManage.push('/user');
+        .addEvent('click', () => {
+          nuageRoute.push('/user');
         })
-        .textContent('go-user-pagei'),
+        .setText('go-user-pagei'),
     );
 
   return home;
