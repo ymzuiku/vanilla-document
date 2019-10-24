@@ -11,7 +11,7 @@ export interface IDOM<T> {
     setInnerText: (text: string) => IDOM<T> & T;
     setInnerHTML: (html: string) => IDOM<T> & T;
     setText: (text: string | number | null) => IDOM<T> & T;
-    query(seletor: string, fn: (node: HTMLInputElement) => any, unfindable?: () => any): IDOM<T> & T;
+    query(seletor: string, fn: (node: IDOM<HTMLInputElement> & HTMLInputElement) => any, unfindable?: () => any): IDOM<T> & T;
     queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
     insertBefore: (newNode: HTMLInputElement) => IDOM<T> & T;
     queryInsertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;

@@ -42,7 +42,11 @@ export interface IDOM<T> {
   setInnerText: (text: string) => IDOM<T> & T;
   setInnerHTML: (html: string) => IDOM<T> & T;
   setText: (text: string | number | null) => IDOM<T> & T;
-  query(seletor: string, fn: (node: HTMLInputElement) => any, unfindable?: () => any): IDOM<T> & T;
+  query(
+    seletor: string,
+    fn: (node: IDOM<HTMLInputElement> & HTMLInputElement) => any,
+    unfindable?: () => any,
+  ): IDOM<T> & T;
   queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
   insertBefore: (newNode: HTMLInputElement) => IDOM<T> & T;
   queryInsertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;
@@ -109,7 +113,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
   element.query = (selector: any, fn: any, unfindable: any) => {
     const ele = element.querySelector(selector);
     if (ele) {
-      fn.call(element, ele);
+      fn.call(element, toDOM(ele));
     } else if (unfindable) {
       unfindable.call(element);
     }
@@ -180,12 +184,14 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       const ele = element.children.item(i);
       fn.call(element, ele, i);
     }
+
     return element as any;
   };
   element.setProps = (obj: any) => {
     Object.keys(obj).forEach(k => {
       element[k] = obj[k];
     });
+
     return element as any;
   };
   element.getProp = (key: string, callback: Function) => {

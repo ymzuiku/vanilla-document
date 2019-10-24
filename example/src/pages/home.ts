@@ -2,9 +2,11 @@ import { DOM } from 'vanilly';
 import nuageRoute from '@nuage/route';
 
 import { store } from './actions';
+import { element } from 'prop-types';
+import { SlowBuffer } from 'buffer';
 
 export const Home = () => {
-  const home = DOM('div')
+  return DOM('div')
     .setCssText('background:#f55')
     .setText('home-page')
     .onAppend(() => {
@@ -12,6 +14,7 @@ export const Home = () => {
     })
     .setAppend(
       DOM('button')
+        .setId('btn')
         .setProps({
           onclick: () => {
             store.update(s => (s.age += 1));
@@ -23,7 +26,8 @@ export const Home = () => {
           nuageRoute.push('/user');
         })
         .setText('go-user-pagei'),
-    );
-
-  return home;
+    )
+    .query('#btn', el => {
+      el.setStyle({ fontSize: '40px' });
+    });
 };
