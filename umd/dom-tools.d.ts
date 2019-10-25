@@ -1,7 +1,7 @@
 import { IStyle, IProps } from './interface';
 export interface IDOM<T> {
     __isVanilly: boolean;
-    getElement: (fn: (ele: T) => any) => IDOM<T> & T;
+    ref: (fn: (ele: IDOM<T> & T) => any) => IDOM<T> & T;
     setId: (id: string) => IDOM<T> & T;
     setProps: (obj: IProps) => IDOM<T> & T;
     /** get data from element */
@@ -10,7 +10,7 @@ export interface IDOM<T> {
     removeEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions) => IDOM<T> & T;
     setInnerText: (text: string) => IDOM<T> & T;
     setInnerHTML: (html: string) => IDOM<T> & T;
-    setText: (text: string | number | null) => IDOM<T> & T;
+    setSpanText: (text: string | number | null) => IDOM<T> & T;
     query(seletor: string, fn: (node: IDOM<HTMLInputElement> & HTMLInputElement) => any, unfindable?: () => any): IDOM<T> & T;
     queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
     insertBefore: (newNode: HTMLInputElement) => IDOM<T> & T;
@@ -20,12 +20,18 @@ export interface IDOM<T> {
     getChildren: (fn: (children: HTMLInputElement) => any) => IDOM<T> & T;
     forEachChildren: (fn: (node: HTMLInputElement, index: number) => any) => IDOM<T> & T;
     setAttr: (key: string, value: any) => IDOM<T> & T;
-    removeAttri: (key: string) => IDOM<T> & T;
+    removeAttr: (key: string) => IDOM<T> & T;
     setCssText: (text: string) => IDOM<T> & T;
     /** use BEM replace(/\.\^/, ${${BEM}_}) */
     setCss: (className: string, BEM?: string) => IDOM<T> & T;
+    setClassListAdd: (className: string, BEM?: string) => IDOM<T> & T;
+    setClassListRemove: (className: string, BEM?: string) => IDOM<T> & T;
+    setClassListReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
     setStyle: (obj: IStyle) => IDOM<T> & T;
-    onAppend: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T> & T) => any) => IDOM<T> & T;
-    onRendered: <M extends Array<any>>(fn: (memo: M, _DOM: IDOM<T> & T) => any) => IDOM<T> & T;
+    setOnClick: (event: Event) => IDOM<T> & T;
+    onRendered: (fn: (self: IDOM<T> & T) => any) => IDOM<T> & T;
+    render: (props?: any) => IDOM<T> & T;
+    props: any;
+    [key: string]: any;
 }
 export declare const toDOM: <T extends any>(element: T) => IDOM<T> & T;

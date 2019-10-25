@@ -13,5 +13,3 @@ const root = DOM('div').setAppend(
 
 document.body.append(root);
 nuageRoute.init('/home');
-
-const b = DOM('div').setAppend(DOM('input').setAttr('id', 'bb'));
