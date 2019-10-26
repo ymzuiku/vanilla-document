@@ -41,7 +41,7 @@ export interface IDOM<T> {
   ) => IDOM<T> & T;
   setInnerText: (text: string) => IDOM<T> & T;
   setInnerHTML: (html: string) => IDOM<T> & T;
-  setSpanText: (text: string | number | null) => IDOM<T> & T;
+  setText: (text: string | number | null) => IDOM<T> & T;
   query(
     seletor: string,
     fn: (node: IDOM<HTMLInputElement> & HTMLInputElement) => any,
@@ -70,8 +70,9 @@ export interface IDOM<T> {
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
   onRendered: (fn: (self: IDOM<T> & T) => any) => IDOM<T> & T;
   // onRender: (fn: (self: IDOM<T> & T, props: any) => any) => IDOM<T> & T;
-  render: (props?: any) => IDOM<T> & T;
-  props: any;
+  setReplaceNode: (node: any) => IDOM<T> & T;
+  setReplaceChild: (nextNode: any, oldNode: any) => IDOM<T> & T;
+  state: any;
   [key: string]: any;
 }
 
@@ -124,7 +125,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setSpanText = (text: any) => {
+  element.setText = (text: any) => {
     const eles = element.getElementsByClassName('set_span_text__');
     let el = eles ? eles[0] : null;
 
@@ -284,6 +285,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
 
     const id = element.id;
+    element.__onRenderedId = id;
     element.setAttribute('data-onRendered', '1');
 
     let timeout = 0;
@@ -300,7 +302,26 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
 
     return element as any;
   };
-  element.render = (props: any) => element;
+
+  element.setReplaceNode = (node: any) => {
+    if (element.parentElement) {
+      element.parentElement.replaceChild(node, element);
+    }
+    return element as any;
+  };
+
+  element.setReplaceChild = (nextNode: any, oldNode: any) => {
+    if (typeof oldNode === 'string') {
+      oldNode = element.querySelector(oldNode);
+    }
+    // if (oldNode && !element.isEqualNode(oldNode)) {
+    //   element.replaceChild(nextNode, oldNode);
+    // }
+    if (oldNode) {
+      element.replaceChild(nextNode, oldNode);
+    }
+    return element as any;
+  };
 
   return element as any;
 };

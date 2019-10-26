@@ -1,7 +1,8 @@
-import { DOM } from 'vanilly';
+import { DOM, IDOM } from 'vanilly';
 import nuageRoute from '@nuage/route';
 
 import { store } from './actions';
+import { isDeclareModule } from '@babel/types';
 
 const BEM = DOM.randomBEM();
 
@@ -26,61 +27,60 @@ DOM.appendCss(
   BEM,
 );
 
-const Item = (text: string) => {
-  let b = 20;
+const Item = (text: string, fs = 20) => {
+  const out = DOM('div');
+  console.log(out.state);
 
-  return DOM.init(({ dog = b }) => {
-    const out = DOM('div');
-
-    return out.setAppend(
-      DOM('button')
-        .setSpanText(text)
-        .setCss('^item', BEM)
-        .setStyle({ fontSize: `${dog}px` })
-        .setAppend(
-          text.indexOf('a') > -1 && DOM('button').setSpanText('aaa'),
-          text.indexOf('a') == -1 &&
-            DOM('input').setStyle({
-              backgroundColor: '#33f',
-            }),
-        )
-        .setProps({
-          onclick: (e: Event) => {
-            e.stopPropagation();
-            b += 1;
-            out.render({ dog: b });
-          },
-        }),
-    );
-  });
-};
-
-export const Home = () => {
-  return DOM.init(({ text }: any) => {
-    return DOM('div')
-      .setCss('^btn', BEM)
-      .setSpanText(text || 'aaa')
-      .onRendered(() => {
-        console.log('onRendered');
-      })
+  return out.setAppend(
+    DOM('button')
+      .setText(text)
+      .setCss('^item', BEM)
+      .setStyle({ fontSize: `${fs}px` })
       .setProps({
-        onclick: function(this: any) {
-          this.render({ text: Math.random().toString(32) });
+        onclick: (e: Event) => {
+          console.log('111');
+          e.stopPropagation();
+          fs += 1;
+          console.log('xxx', fs);
+          out.setReplaceNode(Item(Math.random().toString(32), fs));
         },
       })
       .setAppend(
-        Item(
-          Math.random()
-            .toString(32)
-            .slice(2),
-        ),
-      );
-  });
+        text.indexOf('a') > -1 && DOM('button').setText('aaa'),
+        text.indexOf('a') == -1 &&
+          DOM('input').setStyle({
+            backgroundColor: '#33f',
+          }),
+      ),
+  );
+};
+
+export const Home = (text: string) => {
+  return DOM('div')
+    .setCss('^btn', BEM)
+    .setText(text || 'aaa')
+    .onRendered(() => {
+      console.log('onRendered');
+    })
+    .setProps({
+      onclick: function(this: IDOM<any>) {
+        this.setReplaceNode(Home('cccc'));
+        // this.setReplaceNode(Home(Date.now().toString(32)));
+      },
+    })
+    .setAppend(
+      Item(
+        Math.random()
+          .toString(32)
+          .slice(2),
+      ),
+      Item('aa'),
+    );
 
   // store.connectElement(
   //   out,
   //   s => {
-  //     // out.setSpanText(s.age);
+  //     // out.setText(s.age);
   //     const b = Item(String(s.age));
   //     out.replaceChild(item, b);
   //   },

@@ -2,7 +2,7 @@ import { DOM } from 'vanilly';
 import nuageRoute from '@nuage/route';
 
 export const User = () => {
-  const user = DOM('div').setSpanText('user-page');
+  const user = DOM('div').setText('user-page');
 
   const input = DOM('input').setProps({ id: 'input' });
 
@@ -10,7 +10,7 @@ export const User = () => {
     .onAppend(() => {
       console.log('onAppend-sub-p');
     })
-    .setSpanText('111');
+    .setText('111');
 
   const button = DOM('button')
     .setProps({
@@ -18,13 +18,13 @@ export const User = () => {
         console.log('haha');
       },
     })
-    .setSpanText('user-page-click');
+    .setText('user-page-click');
 
   const changePage = DOM('button')
     .addEvent('click', () => {
       nuageRoute.push('/home');
     })
-    .setSpanText('go-home-page');
+    .setText('go-home-page');
 
   user.setAppend(input, p, button, changePage);
 

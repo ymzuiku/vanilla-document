@@ -15,7 +15,6 @@ interface IDOMExp {
   appendCss: (css: string, BEM?: string) => any;
   appendStyle: (src: string, onload: string) => any;
   randomBEM: () => string;
-  init: <K extends HTMLInputElement>(fn: <P extends any>(props: P) => any, nextProps?: any) => IDOM<K> & K;
 }
 
 /** Element operator */
@@ -61,19 +60,4 @@ DOM.randomBEM = () => {
   return `BEM_${Date.now().toString(32)}${Math.random()
     .toString(32)
     .slice(2)}`;
-};
-
-DOM.init = (fn: any, nextProps = {} as any) => {
-  const out = fn(nextProps);
-  out.props = nextProps;
-  out.render = (props: any = {}) => {
-    const next = DOM.init(fn, props);
-    if (out.parentElement) {
-      if (!next.isEqualNode(out)) {
-        out.parentElement.replaceChild(next, out);
-      }
-    }
-  };
-
-  return out;
 };
