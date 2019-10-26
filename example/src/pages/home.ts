@@ -1,5 +1,5 @@
 import $ from 'vanilly';
-import { store } from './actions';
+import { obs } from './actions';
 
 const BEM = $.randomBEM();
 
@@ -41,7 +41,7 @@ const Item = (index: number, text: string, fs = 20) => {
       ),
   );
 
-  store.connectElement(
+  obs.connectElement(
     out,
     s => {
       out.$query('#btn', el => {
@@ -79,7 +79,7 @@ export const Home = (index: number) => {
     .$on('click', () => {
       console.time('update');
       home.$replace(Home(index));
-      store.update(s => (s.list[index] += 1));
+      obs.update(s => (s.list[index] += 1));
       console.timeEnd('update');
     })
     .$append(

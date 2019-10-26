@@ -7,7 +7,6 @@
     "@types/node": "12.7.12",
     "@types/react": "16.9.6",
     "keyframes-spring": "^0.1.2",
-    "mico-store": "^1.0.2",
     "mobile-touch": "^1.0.9",
     "react": "^16.10.2",
     "react-scripts": "3.2.0",
@@ -15,6 +14,7 @@
     "vanilla-icon": "^0.1.0",
     "vanilla-list": "^0.1.1",
     "vanilla-message": "^0.1.0",
+    "vanilla-observer": "^0.1.1",
     "vanilla-route": "^0.1.4"
   },
   "scripts": {
