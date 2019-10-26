@@ -1,32 +1,52 @@
-import { DOM } from 'vanilly';
-import nuageRoute from '@nuage/route';
+import $ from 'vanilly';
+import Route from 'vanilla-route';
+import List from 'vanilla-list';
+import Message from 'vanilla-message';
+import Icon from 'vanilla-icon';
 
 export const User = () => {
-  const user = DOM('div').setText('user-page');
+  const user = $('div').$text('user-page');
 
-  const input = DOM('input').setProps({ id: 'input' });
+  const input = $('input').$id('input');
 
-  const p = DOM('p')
-    .onAppend(() => {
+  const p = $('p')
+    .$onMound(() => {
       console.log('onAppend-sub-p');
     })
-    .setText('111');
+    .$text('111');
 
-  const button = DOM('button')
-    .setProps({
+  const button = $('button')
+    .$on('click', e => {
+      console.log('haha');
+      Message('hello', { outTime: 9000, style: { backgroundColor: '#f55' } });
+    })
+    .$text('user-page-click');
+
+  const changePage = $('button')
+    .$props({
       onclick: () => {
-        console.log('haha');
+        console.log('wwww');
       },
     })
-    .setText('user-page-click');
-
-  const changePage = DOM('button')
-    .addEvent('click', () => {
-      nuageRoute.push('/home');
+    .$on('click', e => {
+      Route.push('/home');
     })
-    .setText('go-home-page');
+    .$text('go-home-page');
 
-  user.setAppend(input, p, button, changePage);
+  user.$append(input, p, button, changePage);
+  user.$append(Icon('close'));
+  user.$append(
+    $(
+      List({
+        itemCount: 20000,
+        render: index => {
+          return $('div').$text('aa-' + index);
+        },
+      }),
+    ).$style({
+      height: '200px',
+    }),
+  );
 
   return user;
 };

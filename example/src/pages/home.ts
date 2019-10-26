@@ -1,12 +1,9 @@
-import { DOM, IDOM } from 'vanilly';
-import nuageRoute from '@nuage/route';
-
+import $ from 'vanilly';
 import { store } from './actions';
-import { isDeclareModule } from '@babel/types';
 
-const BEM = DOM.randomBEM();
+const BEM = $.randomBEM();
 
-DOM.appendCss(
+$.css(
   `
   .^btn {
     background: #f00;
@@ -27,63 +24,90 @@ DOM.appendCss(
   BEM,
 );
 
-const Item = (text: string, fs = 20) => {
-  const out = DOM('div');
-  console.log(out.state);
+const Item = (index: number, text: string, fs = 20) => {
+  const out = $('div');
 
-  return out.setAppend(
-    DOM('button')
-      .setText(text)
-      .setCss('^item', BEM)
-      .setStyle({ fontSize: `${fs}px` })
-      .setProps({
-        onclick: (e: Event) => {
-          console.log('111');
-          e.stopPropagation();
-          fs += 1;
-          console.log('xxx', fs);
-          out.setReplaceNode(Item(Math.random().toString(32), fs));
-        },
-      })
-      .setAppend(
-        text.indexOf('a') > -1 && DOM('button').setText('aaa'),
-        text.indexOf('a') == -1 &&
-          DOM('input').setStyle({
+  out.$append(
+    $('button')
+      .$id('btn')
+      .$text(text)
+      .$class('^item', BEM)
+      .$append(
+        text.indexOf('3') > -1 && $('button').$text('aaa'),
+        text.indexOf('3') === -1 &&
+          $('input').$style({
             backgroundColor: '#33f',
           }),
       ),
   );
-};
 
-export const Home = (text: string) => {
-  return DOM('div')
-    .setCss('^btn', BEM)
-    .setText(text || 'aaa')
-    .onRendered(() => {
-      console.log('onRendered');
-    })
-    .setProps({
-      onclick: function(this: IDOM<any>) {
-        this.setReplaceNode(Home('cccc'));
-        // this.setReplaceNode(Home(Date.now().toString(32)));
-      },
-    })
-    .setAppend(
-      Item(
-        Math.random()
-          .toString(32)
-          .slice(2),
-      ),
-      Item('aa'),
-    );
+  store.connectElement(
+    out,
+    s => {
+      out.$query('#btn', el => {
+        el.$text(s.list[index]);
+      });
+    },
+    s => [s.list[index]],
+  );
 
   // store.connectElement(
   //   out,
   //   s => {
-  //     // out.setText(s.age);
-  //     const b = Item(String(s.age));
-  //     out.replaceChild(item, b);
+  //     out.$query('#btn', el => {
+  //       el.$text(s.age);
+  //     });
   //   },
   //   s => [s.age],
   // );
+  return out;
+
+  // .$props({
+  //   onclick: (e: any) => {
+  //     // e.stopPropagation();
+  //     out.$replace(Item(Math.random().toString(32), fs));
+  //   },
+  // });
+  // .$on('click', e => {});
 };
+
+export const Home = (index: number) => {
+  const home = $('div');
+  return home
+    .$class('^btn', BEM)
+    .$text(index)
+    .$on('click', () => {
+      console.time('update');
+      home.$replace(Home(index));
+      store.update(s => (s.list[index] += 1));
+      console.timeEnd('update');
+    })
+    .$append(
+      Item(index, String(index)),
+      Item(index, String(index)).$on('click', e => {
+        // e.stopPropagation();
+        // nuageRoute.push('/user');
+      }),
+    );
+};
+
+// console.time('1');
+// let b = Home(3);
+// b.id = 'bbbb';
+
+// store.state.list.forEach((v, i) => {
+//   document.body.append(Home(i));
+// });
+// document.body.append(b);
+// console.timeEnd('1');
+
+// console.time('contains');
+// console.log(document.body.contains(b));
+// console.timeEnd('contains');
+
+// console.time('id');
+// console.log(document.getElementById('bbbb'));
+// console.timeEnd('id');
+// setInterval(() => {
+//   store.update(s => (s.age += 1));
+// }, 1000);

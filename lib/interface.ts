@@ -1,3 +1,4 @@
+
 interface IGlobalValues {
   inherit: string;
   initial: string;

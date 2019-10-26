@@ -1,4 +1,4 @@
-import { IDOM, toDOM } from './dom-tools';
+import { IDOM, toDOM, tid } from './dom-tools';
 import { media } from './media';
 
 const cacheAppend = new Set<string>();
@@ -12,9 +12,10 @@ declare function IDOMCreator<K extends Element>(tagNode?: K, options?: any): IDO
 
 interface IDOMExp {
   /** use BEM replace(/\^/, ${${BEM}_}) */
-  appendCss: (css: string, BEM?: string) => any;
-  appendStyle: (src: string, onload: string) => any;
+  css: (css: string, BEM?: string) => any;
+  script: (src: string, onload: string) => any;
   randomBEM: () => string;
+  tid: () => string;
 }
 
 /** Element operator */
@@ -27,7 +28,7 @@ export const DOM: typeof IDOMCreator & IDOMExp = (tag: any, options?: any) => {
   return toDOM(tag || document.createElement('div'));
 };
 
-DOM.appendCss = (css: string, BEM?: string) => {
+DOM.css = (css: string, BEM?: string) => {
   const cacheCss = `${css}${BEM}`;
   if (!cacheAppend.has(cacheCss)) {
     const cssNode = document.createElement('style');
@@ -46,7 +47,7 @@ DOM.appendCss = (css: string, BEM?: string) => {
   }
 };
 
-DOM.appendStyle = (src: string, onload?: any) => {
+DOM.script = (src: string, onload?: any) => {
   if (!cacheAppend.has(src)) {
     const node = document.createElement('script');
     node.src = src;
@@ -61,3 +62,5 @@ DOM.randomBEM = () => {
     .toString(32)
     .slice(2)}`;
 };
+
+DOM.tid = tid;

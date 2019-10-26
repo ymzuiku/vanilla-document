@@ -1,5 +1,14 @@
 import { IStyle, IProps } from './interface';
 
+export function tid() {
+  return (
+    Date.now().toString(32) +
+    Math.random()
+      .toString(32)
+      .slice(2)
+  );
+}
+
 declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(
   selectors: K,
   fn: (ele: HTMLElementTagNameMap[K]) => any,
@@ -22,91 +31,96 @@ declare function IQuerySelectorAll<E extends Element = Element>(
   fn: (nodeList: E[]) => any,
 ): IDOM<E>;
 
+type IInputDOM = IDOM<HTMLInputElement> & HTMLInputElement;
+
 export interface IDOM<T> {
   __isVanilly: boolean;
-  ref: (fn: (ele: IDOM<T> & T) => any) => IDOM<T> & T;
-  setId: (id: string) => IDOM<T> & T;
-  setProps: (obj: IProps) => IDOM<T> & T;
+  $ref: (fn: (ele: IDOM<T> & T) => any) => IDOM<T> & T;
+  $id: (id: string) => IDOM<T> & T;
+  $props: (obj: IProps) => IDOM<T> & T;
   /** get data from element */
-  getProp: (key: string, callback: (value: any) => any) => IDOM<T> & T;
-  addEvent: <K extends keyof HTMLElementEventMap>(
-    type: K,
-    listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions,
-  ) => IDOM<T> & T;
-  removeEvent: <K extends keyof HTMLElementEventMap>(
-    type: K,
-    listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
-    options?: boolean | EventListenerOptions,
-  ) => IDOM<T> & T;
-  setInnerText: (text: string) => IDOM<T> & T;
-  setInnerHTML: (html: string) => IDOM<T> & T;
-  setText: (text: string | number | null) => IDOM<T> & T;
-  query(
-    seletor: string,
-    fn: (node: IDOM<HTMLInputElement> & HTMLInputElement) => any,
-    unfindable?: () => any,
-  ): IDOM<T> & T;
-  queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
-  insertBefore: (newNode: HTMLInputElement) => IDOM<T> & T;
-  queryInsertBefore: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;
-  queryInsertAdjacent: (
+  $getProp: (key: string, callback: (value: any) => any) => IDOM<T> & T;
+  $text: (text: string | number | null) => IDOM<T> & T;
+  $html: (html: string) => IDOM<T> & T;
+  $val: (val: any) => IDOM<T> & T;
+  $query(seletor: string, fn: (node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;
+  $queryAll(seletor: string, fn: (nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
+  $before: (newNode: HTMLInputElement) => IDOM<T> & T;
+  $beforeQuery: (selectors: any, newNode: HTMLInputElement, unfindable?: () => any) => IDOM<T> & T;
+  $insert: (
     position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
     newNode: HTMLInputElement,
   ) => IDOM<T> & T;
-  setAppend: (...nodes: any[]) => IDOM<T> & T;
-  getChildren: (fn: (children: HTMLInputElement) => any) => IDOM<T> & T;
-  forEachChildren: (fn: (node: HTMLInputElement, index: number) => any) => IDOM<T> & T;
-  setAttr: (key: string, value: any) => IDOM<T> & T;
-  removeAttr: (key: string) => IDOM<T> & T;
-  setCssText: (text: string) => IDOM<T> & T;
+  $append: (...nodes: any[]) => IDOM<T> & T;
+  $children: (fn: (children: HTMLInputElement) => any) => IDOM<T> & T;
+  $childWith: (fn: (node: HTMLInputElement, index: number) => any) => IDOM<T> & T;
+  $parent: (fn: (node: HTMLInputElement) => any) => IDOM<T> & T;
+  $attr: (key: string, value: any) => IDOM<T> & T;
+  $cssText: (text: string) => IDOM<T> & T;
   /** use BEM replace(/\.\^/, ${${BEM}_}) */
-  setCss: (className: string, BEM?: string) => IDOM<T> & T;
-  setClassListAdd: (className: string, BEM?: string) => IDOM<T> & T;
-  setClassListRemove: (className: string, BEM?: string) => IDOM<T> & T;
-  setClassListReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
-  setStyle: (obj: IStyle) => IDOM<T> & T;
-  setOnClick: (event: Event) => IDOM<T> & T;
+  $class: (className: string, BEM?: string) => IDOM<T> & T;
+  $classAdd: (className: string, BEM?: string) => IDOM<T> & T;
+  $classRemove: (className: string, BEM?: string) => IDOM<T> & T;
+  $classReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
+  $style: (obj: IStyle) => IDOM<T> & T;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
-  onRendered: (fn: (self: IDOM<T> & T) => any) => IDOM<T> & T;
-  // onRender: (fn: (self: IDOM<T> & T, props: any) => any) => IDOM<T> & T;
-  setReplaceNode: (node: any) => IDOM<T> & T;
-  setReplaceChild: (nextNode: any, oldNode: any) => IDOM<T> & T;
-  state: any;
+  $checkAppend: (fn: (self: IDOM<T> & T, timeOut?: number) => any) => IDOM<T> & T;
+  $checkRemove: (fn: (self: IDOM<T> & T, timeOut?: number) => any) => IDOM<T> & T;
+  $replace: (node: any) => IDOM<T> & T;
+  $replaceChild: (nextNode: any, oldNode: any) => IDOM<T> & T;
+  $replaceWith: (fn: (oldNode: any, index: number) => any) => IDOM<T> & T;
+  $on: <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any,
+  ) => IDOM<T> & T;
+  $listen: <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any,
+  ) => IDOM<T> & T;
+  $unListen: <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions,
+  ) => IDOM<T> & T;
   [key: string]: any;
 }
 
 export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
-  if (!element.state) {
-    element.state = {};
-  }
   if (element.__isVanilly) {
     return element as any;
   }
 
   element.__isVanilly = true;
 
-  element.ref = (fn: (ele: IDOM<T> & T) => any) => {
+  element.$ref = (fn: (ele: IDOM<T> & T) => any) => {
     fn.call(element, element as any);
     return element as any;
   };
 
-  element.setId = (id: string) => {
+  element.$id = (id: string) => {
     element.id = id;
 
     return element as any;
   };
 
-  element.addEvent = <K extends keyof HTMLElementEventMap>(
+  element.$on = <K extends keyof HTMLElementEventMap>(
     type: K,
-    listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
+    listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any,
+  ) => {
+    element[`on${type}`] = listener;
+    return element as any;
+  };
+
+  element.$listen = <K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions,
   ) => {
     element.addEventListener(type, listener, options);
     return element as any;
   };
 
-  element.removeEvent = <K extends keyof HTMLElementEventMap>(
+  element.$unListen = <K extends keyof HTMLElementEventMap>(
     type: K,
     listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
     options?: boolean | EventListenerOptions,
@@ -115,17 +129,12 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setInnerText = (text: string) => {
-    element.innerText = text;
-    return element as any;
-  };
-
-  element.setInnerHTML = (html: string) => {
+  element.$html = (html: string) => {
     element.innerHTML = html;
     return element as any;
   };
 
-  element.setText = (text: any) => {
+  element.$text = (text: any) => {
     const eles = element.getElementsByClassName('set_span_text__');
     let el = eles ? eles[0] : null;
 
@@ -135,12 +144,17 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       el.setAttribute('class', 'set_span_text__');
       element.appendChild(el);
     }
+
     el.textContent = text;
 
     return element as any;
   };
+  element.$val = (val: string) => {
+    element.value = val;
+    return element as any;
+  };
 
-  element.query = (selector: any, fn: any, unfindable: any) => {
+  element.$query = (selector: any, fn: any, unfindable: any) => {
     const ele = element.querySelector(selector);
     if (ele) {
       fn.call(element, toDOM(ele));
@@ -151,18 +165,18 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.queryAll = (selector: any, fn: any) => {
+  element.$queryAll = (selector: any, fn: any) => {
     fn.call(element, element.querySelectorAll(selector));
 
     return element as any;
   };
 
-  element.insertBefore = (newNode: HTMLInputElement) => {
+  element.$before = (newNode: HTMLInputElement) => {
     element.insertBefore(newNode, element);
     return element as any;
   };
 
-  element.queryInsertBefore = (selector: any, newNode: any, unfindable: any) => {
+  element.$beforeQuery = (selector: any, newNode: any, unfindable: any) => {
     const ele = element.querySelector(selector);
     if (ele) {
       element.insertBefore(newNode, ele);
@@ -173,28 +187,25 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.queryInsertAdjacent = (
-    position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
-    newNode: HTMLElement,
-  ) => {
+  element.$insert = (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLElement) => {
     element.insertAdjacentElement(position, newNode);
 
     return element as any;
   };
 
-  element.setAppend = (...nodes: any[]) => {
+  element.$append = (...nodes: any[]) => {
     element.append(...nodes.filter(Boolean));
 
     return element as any;
   };
 
-  element.getChildren = (fn: (children: HTMLInputElement) => any) => {
+  element.$children = (fn: (children: HTMLInputElement) => any) => {
     fn.call(element, element.children);
 
     return element as any;
   };
 
-  element.forEachChildren = (fn: (node: HTMLInputElement, index: number) => any) => {
+  element.$childWith = (fn: (node: HTMLInputElement, index: number) => any) => {
     for (let i = 0; i < element.children.length; i++) {
       const ele = element.children.item(i);
       fn.call(element, ele, i);
@@ -203,7 +214,15 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setProps = (obj: any) => {
+  element.$parent = (fn: (node: HTMLInputElement) => any) => {
+    if (element.parentElement) {
+      fn.call(element, element.parentElement);
+    }
+
+    return element as any;
+  };
+
+  element.$props = (obj: any) => {
     Object.keys(obj).forEach(k => {
       element[k] = obj[k];
     });
@@ -211,28 +230,27 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.getProp = (key: string, callback: Function) => {
+  element.$getProp = (key: string, callback: Function) => {
     callback.call(element, element[key]);
     return element as any;
   };
 
-  element.setAttr = (key: string, value: any) => {
-    element.setAttribute(key, value);
+  element.$attr = (key: string, value: any) => {
+    if (value) {
+      element.setAttribute(key, value);
+    } else {
+      element.removeAttribute(key);
+    }
     return element as any;
   };
 
-  element.removeAttr = (key: string) => {
-    element.removeAttribute(key);
-    return element as any;
-  };
-
-  element.setCssText = (text: string) => {
+  element.$cssText = (text: string) => {
     element.style.cssText = text;
     return element as any;
   };
 
   /** BEM参数 将会查找字符串 ^， 替换为 ${BEM}_ */
-  element.setCss = (cssString: string, BEM?: string) => {
+  element.$class = (cssString: string, BEM?: string) => {
     if (BEM) {
       cssString = cssString.replace(/\^/g, `${BEM}-`);
     }
@@ -240,7 +258,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setClassListAdd = (cssString: string, BEM?: string) => {
+  element.$classAdd = (cssString: string, BEM?: string) => {
     if (BEM) {
       cssString = cssString.replace(/\^/g, `${BEM}-`);
     }
@@ -249,7 +267,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setClassListRemove = (cssString: string, BEM?: string) => {
+  element.$classRemove = (cssString: string, BEM?: string) => {
     if (BEM) {
       cssString = cssString.replace(/\^/g, `${BEM}-`);
     }
@@ -258,7 +276,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setClassListReplace = (oldClass: string, newClass: string, BEM?: string) => {
+  element.$classReplace = (oldClass: string, newClass: string, BEM?: string) => {
     if (BEM) {
       oldClass = oldClass.replace(/\^/g, `${BEM}-`);
       newClass = newClass.replace(/\^/g, `${BEM}-`);
@@ -268,58 +286,73 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element as any;
   };
 
-  element.setStyle = (obj: IStyle) => {
+  element.$style = (obj: IStyle) => {
     Object.keys(obj).forEach(k => {
       element.style[k] = obj[k];
     });
     return element as any;
   };
 
-  element.onRendered = (fn: (self: IDOM<T>) => any) => {
-    if (!element.id) {
-      element.id =
-        Date.now().toString(32) +
-        Math.random()
-          .toString(32)
-          .slice(2);
-    }
+  element.$checkAppend = (fn: (self: IDOM<T>) => any, timeOut: 4000) => {
+    let t = 0;
 
-    const id = element.id;
-    element.__onRenderedId = id;
-    element.setAttribute('data-onRendered', '1');
-
-    let timeout = 0;
-    const findAndRunOnAppend = () => {
-      timeout++;
-      const nodeInDOM = document.getElementById(id);
-      if (nodeInDOM) {
+    const findAndRunOnMound = () => {
+      t += 50;
+      const isHave = document.body.contains(element as any);
+      if (isHave) {
         fn.call(element, element as any);
-      } else if (timeout < 100) {
-        setTimeout(findAndRunOnAppend, 40);
+      } else if (t < timeOut) {
+        setTimeout(findAndRunOnMound, 50);
       }
     };
-    setTimeout(findAndRunOnAppend, 40);
+    setTimeout(findAndRunOnMound);
 
     return element as any;
   };
 
-  element.setReplaceNode = (node: any) => {
+  element.$checkRemove = (fn: (self: IDOM<T>) => any, timeOut: 4000) => {
+    let t = 0;
+
+    const findAndRunOnMound = () => {
+      t += 50;
+      const isHave = document.body.contains(element as any);
+      if (!isHave) {
+        fn.call(element, element as any);
+      } else if (t < timeOut) {
+        setTimeout(findAndRunOnMound, 50);
+      }
+    };
+    setTimeout(findAndRunOnMound);
+
+    return element as any;
+  };
+
+  element.$replace = (node: any) => {
     if (element.parentElement) {
       element.parentElement.replaceChild(node, element);
     }
     return element as any;
   };
 
-  element.setReplaceChild = (nextNode: any, oldNode: any) => {
+  element.$replaceChild = (nextNode: any, oldNode: any) => {
     if (typeof oldNode === 'string') {
       oldNode = element.querySelector(oldNode);
     }
-    // if (oldNode && !element.isEqualNode(oldNode)) {
-    //   element.replaceChild(nextNode, oldNode);
-    // }
     if (oldNode) {
       element.replaceChild(nextNode, oldNode);
     }
+    return element as any;
+  };
+
+  element.$replaceWith = (fn: (node: HTMLInputElement, index: number) => any) => {
+    for (let i = 0; i < element.children.length; i++) {
+      const ele = element.children.item(i);
+      const nextNode = fn.call(element, ele, i);
+      if (!nextNode.isEqualNode(ele)) {
+        element.replaceChild(nextNode, ele);
+      }
+    }
+
     return element as any;
   };
 

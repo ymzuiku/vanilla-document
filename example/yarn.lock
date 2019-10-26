@@ -6131,6 +6131,11 @@ jsx-ast-utils@^2.1.0, jsx-ast-utils@^2.2.1:
     array-includes "^3.0.3"
     object.assign "^4.1.0"
 
+keyframes-spring@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/keyframes-spring/-/keyframes-spring-0.1.2.tgz#749223b12bcd56e70a6f84d1e70aadabb2a71d29"
+  integrity sha512-KdpC0jRVUEsdv10vtXLEkkAZO1wAjatBmaJJRr5kq5g2KuGkiZbHS367mbymJqWeUahtsvFi/9c32/TlkRXizg==
+
 killable@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
@@ -6463,10 +6468,10 @@ methods@~1.1.2:
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
 
-mico-store@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/mico-store/-/mico-store-1.0.0.tgz#a9c2dfd157dbf5772757653a1ca345f19054ad00"
-  integrity sha512-r066ulZDcKdZmMYhYoIJcD6I8bG4KUtIVh+ko9vshMEQsVqV38hO0wRN823CQJ1hG900PJdQzf9XcvuUwymLnA==
+mico-store@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/mico-store/-/mico-store-1.0.2.tgz#d60c46fc1ced0005caf7f91369e5cf564911fb4c"
+  integrity sha512-FxjSPdlGkO9kkTshzh67Hq4eFKekZ4RUzrMb3+wBiCEukSjjY4YUCdAYlcgEtouB3+H7gU/e+HTcvy3ZNxDWYw==
 
 microevent.ts@~0.1.1:
   version "0.1.1"
@@ -10099,6 +10104,30 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+vanilla-icon@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vanilla-icon/-/vanilla-icon-0.1.0.tgz#8e364facc6d45601e83877b80327fec38f15ac59"
+  integrity sha512-im0IIReKgGArWiFQHBLiFG6WV3V/qT+WZSsKKm7bUtpVJDRrzGKGU7GSmWIJdzbIJSE3yA0AxPY0r54Ju8/grw==
+
+vanilla-list@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/vanilla-list/-/vanilla-list-0.1.1.tgz#3b2f4d0f51d582e97ff5ae8b11d080f24e6b597e"
+  integrity sha512-q8gsiWzCWVv9R35Xs8vw8+Lm3EVhxg2QLGUuv2KZgrFd2xLbEqnIdERoVe94UEzeztnzjggqDIQytQ6aNsPdQg==
+
+vanilla-message@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vanilla-message/-/vanilla-message-0.1.0.tgz#d91efb4e5f2ed0e9f04551f24787fb4915c0e0ee"
+  integrity sha512-r46+4ebeZ12QwAWvOq+pCkPt+EKS/kmwTzBpmvB5qllwb28q4jgqeOLj/HGxPjBAlDd9a86easUNHSFnFirMnA==
+  dependencies:
+    keyframes-spring "^0.1.2"
+
+vanilla-route@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/vanilla-route/-/vanilla-route-0.1.4.tgz#8b8258374d63adc8f2bfaeb9cd26fc29c3b0bc6e"
+  integrity sha512-jzcVmlj61z8tG77xukYcqgIo7RM7BzRTCVH80G5vIxZd0ESR1FMN/jjuJUUuqqGYkJbJgUFKxIgjxhjYquO65Q==
+  dependencies:
+    querystring-number "^1.0.6"
 
 vary@~1.1.2:
   version "1.1.2"

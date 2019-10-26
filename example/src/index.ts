@@ -1,15 +1,15 @@
-import './polyfill';
-import { DOM } from 'vanilly';
-import nuageRoute from '@nuage/route';
+import { $ } from 'vanilly';
+import Route from 'vanilla-route';
 import { Home } from './pages/home';
 import { User } from './pages/user';
+import './iconfont';
 
-const Route = nuageRoute.Route;
+const Register = Route.Register;
 
-const root = DOM('div').setAppend(
-  Route({ path: '/home', component: Home }),
-  Route({ path: '/user', component: User }),
+const root = $('div').$append(
+  Register({ path: '/home', component: Home }),
+  Register({ path: '/user', component: User }),
 );
 
 document.body.append(root);
-nuageRoute.init('/home');
+Route.init('/home');

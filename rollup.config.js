@@ -36,11 +36,8 @@ const watchOptions = {
   output: {
     file: './umd/index.js',
     format: 'umd',
-    name: 'vanilly',
+    name: '$',
     sourcemap: true,
-    globals: {
-      immer: 'immer',
-    },
   },
   plugins: [
     rollupTypescript({
