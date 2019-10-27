@@ -18,28 +18,6 @@ export interface IInputEvent {
 export type IOnInput = (this: IInputDOM, ev: HTMLElementEventMap['input']) => any;
 export type IOnClick = (this: IInputDOM, ev: HTMLElementEventMap['click']) => any;
 
-declare function IQuerySelector<K extends keyof HTMLElementTagNameMap>(
-  selectors: K,
-  fn: (ele: HTMLElementTagNameMap[K]) => any,
-  unfindable?: () => any,
-): IDOM<HTMLElementTagNameMap[K]>;
-
-declare function IQuerySelector<E extends Element = Element>(
-  selectors: string,
-  fn: (ele: E) => any,
-  unfindable?: () => any,
-): IDOM<E>;
-
-declare function IQuerySelectorAll<K extends keyof HTMLElementTagNameMap>(
-  selectors: K,
-  fn: (nodeList: HTMLElementTagNameMap[K][]) => any,
-): IDOM<HTMLElementTagNameMap[K]>;
-
-declare function IQuerySelectorAll<E extends Element = Element>(
-  selectors: string,
-  fn: (nodeList: E[]) => any,
-): IDOM<E>;
-
 type IInputDOM = IDOM<HTMLInputElement> & HTMLInputElement;
 
 export interface IDOM<T> {
@@ -54,12 +32,9 @@ export interface IDOM<T> {
   $val: (val: any) => IDOM<T> & T;
   $query(seletor: string, fn: (this: IInputDOM, node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;
   $queryAll(seletor: string, fn: (this: IInputDOM, nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
-  $before: (newNode: HTMLInputElement) => IDOM<T> & T;
-  $beforeQuery: (selectors: any, newNode: HTMLInputElement, unfindable?: (this: IInputDOM) => any) => IDOM<T> & T;
-  $insert: (
-    position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend',
-    newNode: HTMLInputElement,
-  ) => IDOM<T> & T;
+  $before: (newNode: Element) => IDOM<T> & T;
+  $beforeQuery: (selector: any, newNode: Element, unfindable?: (this: IInputDOM) => any) => IDOM<T> & T;
+  $insert: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: Element) => IDOM<T> & T;
   $append: (...nodes: any[]) => IDOM<T> & T;
   $children: (fn: (this: IInputDOM, children: HTMLInputElement) => any) => IDOM<T> & T;
   $childWith: (fn: (this: IInputDOM, node: HTMLInputElement, index: number) => any) => IDOM<T> & T;
@@ -73,8 +48,8 @@ export interface IDOM<T> {
   $classReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
   $style: (obj: IStyle) => IDOM<T> & T;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
-  $checkAppend: (fn: (this: IInputDOM, timeOut?: number) => any) => IDOM<T> & T;
-  $checkRemove: (fn: (this: IInputDOM, timeOut?: number) => any) => IDOM<T> & T;
+  $checkAppend: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
+  $checkRemove: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
   $replace: (node: any) => IDOM<T> & T;
   $replaceChild: (nextNode: any, oldNode: any) => IDOM<T> & T;
   $replaceWith: (fn: (this: IInputDOM, oldNode: any, index: number) => any) => IDOM<T> & T;

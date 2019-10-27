@@ -10122,10 +10122,10 @@ vanilla-route@^0.1.4:
   dependencies:
     querystring-number "^1.0.6"
 
-vanilly@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/vanilly/-/vanilly-0.4.1.tgz#6de4b40fb7e804b736e2da1baa330a0161833ce2"
-  integrity sha512-BsQpobBFhUJofs/jkt85tnJpLK7HDRxmo5g9a6bjNW2p4BxcZIfb3IMn53NutJ8NLCjdoTq01ql+gzrOD0NOlQ==
+vanilly@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/vanilly/-/vanilly-0.4.7.tgz#369a35a1c8f20c82128a0ca56d6a2fd29a8438f3"
+  integrity sha512-3U7T8NmxU6/m++Qqpi6ujyoRzpVFRs7fdOprtVt9Sp+gL4bxYP/ND5wbVekycDJQQLG6gZaoY5XSSmIuVk3ieQ==
 
 vary@~1.1.2:
   version "1.1.2"

@@ -20,9 +20,9 @@ export interface IDOM<T> {
     $val: (val: any) => IDOM<T> & T;
     $query(seletor: string, fn: (this: IInputDOM, node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;
     $queryAll(seletor: string, fn: (this: IInputDOM, nodeList: HTMLInputElement[]) => any): IDOM<T> & T;
-    $before: (newNode: HTMLInputElement) => IDOM<T> & T;
-    $beforeQuery: (selectors: any, newNode: HTMLInputElement, unfindable?: (this: IInputDOM) => any) => IDOM<T> & T;
-    $insert: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLInputElement) => IDOM<T> & T;
+    $before: (newNode: Element) => IDOM<T> & T;
+    $beforeQuery: (selector: any, newNode: Element, unfindable?: (this: IInputDOM) => any) => IDOM<T> & T;
+    $insert: (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: Element) => IDOM<T> & T;
     $append: (...nodes: any[]) => IDOM<T> & T;
     $children: (fn: (this: IInputDOM, children: HTMLInputElement) => any) => IDOM<T> & T;
     $childWith: (fn: (this: IInputDOM, node: HTMLInputElement, index: number) => any) => IDOM<T> & T;
@@ -35,8 +35,8 @@ export interface IDOM<T> {
     $classRemove: (className: string, BEM?: string) => IDOM<T> & T;
     $classReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
     $style: (obj: IStyle) => IDOM<T> & T;
-    $checkAppend: (fn: (this: IInputDOM, timeOut?: number) => any) => IDOM<T> & T;
-    $checkRemove: (fn: (this: IInputDOM, timeOut?: number) => any) => IDOM<T> & T;
+    $checkAppend: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
+    $checkRemove: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
     $replace: (node: any) => IDOM<T> & T;
     $replaceChild: (nextNode: any, oldNode: any) => IDOM<T> & T;
     $replaceWith: (fn: (this: IInputDOM, oldNode: any, index: number) => any) => IDOM<T> & T;
