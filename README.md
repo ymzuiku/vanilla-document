@@ -209,9 +209,9 @@ Because vanilly is vanilla.js's helper functions
 
 We created some vanilla.js packages:
 
-- [vanilla-route](https://github.com/ymzuiku/vanill-route")
-- [vanilla-observer](https://github.com/ymzuiku/vanill-observer")
-- [vanilla-list](https://github.com/ymzuiku/vanill-list")
-- [vanilla-icon](https://github.com/ymzuiku/vanill-icon")
-- [vanilla-message](https://github.com/ymzuiku/vanill-message")
-- [vanilla-device](https://github.com/ymzuiku/vanill-device")
+- [vanilla-route](https://github.com/ymzuiku/vanilla-route)
+- [vanilla-observer](https://github.com/ymzuiku/vanilla-observer)
+- [vanilla-list](https://github.com/ymzuiku/vanilla-list)
+- [vanilla-icon](https://github.com/ymzuiku/vanilla-icon)
+- [vanilla-message](https://github.com/ymzuiku/vanilla-message)
+- [vanilla-device](https://github.com/ymzuiku/vanilla-device)
