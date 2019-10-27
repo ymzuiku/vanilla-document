@@ -275,6 +275,7 @@ We created some vanilla.js packages:
 
 - [vanilla-route](https://github.com/ymzuiku/vanilla-route)
 - [vanilla-observer](https://github.com/ymzuiku/vanilla-observer)
+- [vanilla-http](https://github.com/ymzuiku/vanilla-http)
 - [vanilla-list](https://github.com/ymzuiku/vanilla-list)
 - [vanilla-icon](https://github.com/ymzuiku/vanilla-icon)
 - [vanilla-message](https://github.com/ymzuiku/vanilla-message)
