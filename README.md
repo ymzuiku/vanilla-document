@@ -164,7 +164,7 @@ use \$(element).xxx:
 
 Here have recode React Tutorial: `https://reactjs.org/tutorial/tutorial.html`
 
-![screenshot](.readme/screenshot.png)
+![screenshot](.readme/screenshot2.png)
 
 Tutorial Demo: [vanilly.workos.top](http://vanilly.workos.top)
 
