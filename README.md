@@ -207,7 +207,7 @@ document.body.append(Game());
 
 Because vanilly is vanilla.js's helper functions
 
-We create some vanilla.js packages:
+We created some vanilla.js packages:
 
 - [vanilla-route](https://github.com/ymzuiku/vanill-route")
 - [vanilla-observer](https://github.com/ymzuiku/vanill-observer")
