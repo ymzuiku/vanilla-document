@@ -215,8 +215,3 @@ We created some vanilla.js packages:
 - [vanilla-icon](https://github.com/ymzuiku/vanill-icon")
 - [vanilla-message](https://github.com/ymzuiku/vanill-message")
 - [vanilla-device](https://github.com/ymzuiku/vanill-device")
-
-```js
-// install core-js
-import 'core-js/features/set';
-```
