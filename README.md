@@ -8,8 +8,6 @@ A VanillaJS Framework, No lifecycle, No state, No diff VDOM.
 
 **No React, No Vue, Easy SPA**
 
-Tiny, Clear and Light size:
-
 | Compress type | Size |
 | ------------- | ---- |
 | No Gzip       | 5k   |
@@ -17,9 +15,12 @@ Tiny, Clear and Light size:
 
 Feature:
 
+- Zero dependencies
 - Fast, no diff VDOM pay expenses
 - Chain declarative UI
 - Only element helper functions
+- Easy create css and use BEM in Javascript
+- Support IE 9 (need core.Set polyfill)
 
 ## Install
 
