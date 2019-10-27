@@ -16,11 +16,12 @@ Use VanillaJS Chain declarative UI, No lifecycle, No state, No diff VDOM.
 Feature:
 
 - Zero dependencies
+- Freedom, you can use any design mode
 - Fast, no diff VDOM pay expenses
-- Chain declarative UI
+- Chain declarative UI (Like JSX or Flutter ?)
 - Only element helper functions
 - Easy create css and use BEM in Javascript
-- Support IE 9 (need core.Set polyfill)
+- Support IE 9 (precondition add core.Set polyfill)
 
 ## Install
 
@@ -171,10 +172,15 @@ import { calculateWinner } from './utils/calculateWinner';
 import './css';
 
 // pure-component
-const Square = (val: number) => {
+const Square = (val: number | string, onClick: Function) => {
   return $('button')
     .$class('square')
-    .$text(val);
+    .$text(val)
+    .$on('click', function() {
+      const v = onClick(this);
+      // Use new data rerender self
+      this.$replace(Square(v, onClick));
+    });
 };
 
 // board, Lifting State up here
@@ -194,9 +200,9 @@ const Board = (name: string) => {
   };
 
   const renderSquare = (i: number) => {
-    return Square(squares[i]).$on('click', function() {
+    return Square('', () => {
       handleClick(i);
-      this.$replace(renderSquare(i));
+      return squares[i];
     });
   };
 

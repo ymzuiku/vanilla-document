@@ -18,9 +18,9 @@ export const Board = (name: string) => {
   };
 
   const renderSquare = (i: number) => {
-    return Square(squares[i]).$on('click', function() {
+    return Square('', () => {
       handleClick(i);
-      this.$replace(renderSquare(i));
+      return squares[i];
     });
   };
 

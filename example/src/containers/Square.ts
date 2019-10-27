@@ -1,7 +1,11 @@
 import $ from 'vanilly';
 
-export const Square = (val: number) => {
+export const Square = (val: number | string, onClick: Function) => {
   return $('button')
     .$class('square')
-    .$text(val);
+    .$text(val)
+    .$on('click', function() {
+      const v = onClick();
+      this.$replace(Square(v, onClick));
+    });
 };
