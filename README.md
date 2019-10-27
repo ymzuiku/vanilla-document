@@ -113,11 +113,11 @@ document.body.append(inputA, inputB);
 
 use \$.xxx:
 
-| name     | params                       | description                                                                  |
-| -------- | ---------------------------- | ---------------------------------------------------------------------------- |
-| css      | css:string; BEM?:string      | add \<style>{css}\</style> in document.head, and use BEM replace `.^` string |
-| style    | src:string; onload?:Function | add \<script src={src}>\</script> in document.head                           |
-| randomId | none                         | Create random id                                                             |
+| name     | params                       | description                                      |
+| -------- | ---------------------------- | ------------------------------------------------ |
+| css      | css:string; BEM?:string      | insert css in document, and use BEM replace `.^` |
+| style    | src:string; onload?:Function | insert script in document                        |
+| randomId | none                         | Create random id                                 |
 
 ### Element api
 
@@ -143,7 +143,7 @@ use \$(element).xxx:
 | \$parent       | fn:(node:Element)=>any                                                                     | Get element.parent                                                                   |
 | \$attr         | key:string, value: any                                                                     | Set or remove element attribute                                                      |
 | \$cssText      | cssText:string                                                                             | Set element.style.cssText                                                            |
-| \$class        | cssText:string                                                                             | Set element.className                                                                |
+| \$class        | cssText:string; BEM?:string;                                                               | Set element.className, and use BEM replace `^` string                                |
 | \$classAdd     | cssText:string                                                                             | Add a class in element classList                                                     |
 | \$classRemove  | cssText:string                                                                             | Remove a class in element classList                                                  |
 | \$classReplace | cssText:string                                                                             | Replace a class in element classList                                                 |
