@@ -109,7 +109,7 @@ document.body.append(inputA, inputB);
 
 ## Tutorial
 
-Here have recode `https://reactjs.org/tutorial/tutorial.html`
+Here have recode React Tutorial: `https://reactjs.org/tutorial/tutorial.html`
 
 ![screenshot](.readme/screenshot.png)
 
