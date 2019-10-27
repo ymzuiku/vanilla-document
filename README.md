@@ -168,6 +168,8 @@ Here have recode React Tutorial: `https://reactjs.org/tutorial/tutorial.html`
 
 Tutorial Demo: [vanilly.workos.top](http://vanilly.workos.top)
 
+We can see, vanilly and this Tutorial code all in `2.8kb`
+
 ```js
 import $ from 'vanilly';
 import { calculateWinner } from './utils/calculateWinner';

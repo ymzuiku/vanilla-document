@@ -22,9 +22,9 @@ module.exports = {
       maxAsyncRequests: 5,
       cacheGroups: {
         // 编译成单个文件
-        vendor_single: {
+        vendor_src: {
           test: /.*/,
-          name: 'single',
+          name: 'src',
         },
         // // 有意义的首屏资源，首屏相关页面+组件+容器+排除大组件、大容器
         // vendor_FMP: {
