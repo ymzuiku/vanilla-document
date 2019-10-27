@@ -2,7 +2,7 @@
 
 A VanillaJS Framework, No component, No state, No diff VDOM.
 
-> Principle: DOM is browser's state
+# Gesundheit: DOM is browser's state, browser's state is UI state
 
 ![](.readme/barmImage.jpg)
 
@@ -18,7 +18,7 @@ Tiny, Clear and Light size:
 Feature:
 
 - Chain declarative UI
-- Only element helper function
+- Only element helper functions
 
 ## Install
 
