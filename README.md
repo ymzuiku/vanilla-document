@@ -95,7 +95,7 @@ const inputB = $('input').$on('input', function(e) {
   obs.update(s => (s.value = e.target.value));
 });
 
-// when obs.update, and when inputA remove auto unListen update
+// Listen obs.update, and when inputA remove auto unListen it
 obs.connectElement(inputA, s => {
   inputA.value = s.value;
 });
