@@ -1,6 +1,6 @@
 # vanilly
 
-A VanillaJS Framework, No lifecycle, No state, No diff VDOM.
+Use VanillaJS Chain declarative UI, No lifecycle, No state, No diff VDOM.
 
 # Gesundheit: DOM is browser's state, browser's state is UI state
 
