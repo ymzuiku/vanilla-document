@@ -215,3 +215,9 @@ We created some vanilla.js packages:
 - [vanilla-icon](https://github.com/ymzuiku/vanilla-icon)
 - [vanilla-message](https://github.com/ymzuiku/vanilla-message)
 - [vanilla-device](https://github.com/ymzuiku/vanilla-device)
+
+You can search other packages in github: https://github.com/search?q=vanilla
+
+![](.readme/github-search.png)
+
+> We have a very large ecosystem :)
