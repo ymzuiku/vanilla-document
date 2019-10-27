@@ -1,6 +1,6 @@
 # vanilly
 
-Use VanillaJS Chain declarative UI, No lifecycle, No state, No diff VDOM.
+Use VanillaJS chained declarative UI, No lifecycle, No state, No diff VDOM.
 
 # Gesundheit: DOM is browser's state, browser's state is UI state
 
@@ -18,7 +18,7 @@ Feature:
 - Zero dependencies
 - Freedom, you can use any design mode
 - Fast, no diff VDOM pay expenses
-- Chain declarative UI (Like JSX or Flutter ?)
+- Chained declarative UI (Like JSX or Flutter ?)
 - Only element helper functions
 - Easy create css and use BEM in Javascript
 - Support IE 9 (precondition add core.Set polyfill)
