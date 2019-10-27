@@ -27,7 +27,7 @@ Feature:
 Use unpkg:
 
 ```html
-<script src="https://unpkg.com/vanilly@0.4.1/umd/index.js"></script>
+<script src="https://unpkg.com/vanilly@0.4.10/umd/index.js"></script>
 ```
 
 Or use npm:
