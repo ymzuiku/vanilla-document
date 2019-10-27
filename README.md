@@ -4,7 +4,7 @@ A VanillaJS Framework, No component, No state, No diff VDOM.
 
 > Principle: DOM is browser's state
 
-![](barmImage.jpg)
+![](.readme/barmImage.jpg)
 
 **No React, No Vue, Easy SPA**
 
