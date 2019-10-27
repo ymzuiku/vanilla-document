@@ -17,7 +17,7 @@ Tiny, Clear and Light size:
 
 Feature:
 
-- Fast, no diff pay expenses
+- Fast, no diff VDOM pay expenses
 - Chain declarative UI
 - Only element helper functions
 
