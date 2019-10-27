@@ -164,11 +164,11 @@ use \$(element).xxx:
 
 Here have recode React Tutorial: `https://reactjs.org/tutorial/tutorial.html`
 
+All code in `2.8kb`, It have: Vanilly, CSS, src/\*.ts:
+
 ![screenshot](.readme/screenshot2.png)
 
 Tutorial Demo: [vanilly.workos.top](http://vanilly.workos.top)
-
-We can see, vanilly and this Tutorial code all in `2.8kb`
 
 ```js
 import $ from 'vanilly';
