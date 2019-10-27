@@ -209,12 +209,12 @@ Because vanilly is vanilla.js's helper functions
 
 We create some vanilla.js packages:
 
-- vanilla-route
-- vanilla-observer
-- vanilla-list
-- vanilla-icon
-- vanilla-message
-- vanilla-device
+- [vanilla-route](https://github.com/ymzuiku/vanill-route")
+- [vanilla-observer](https://github.com/ymzuiku/vanill-observer")
+- [vanilla-list](https://github.com/ymzuiku/vanill-list")
+- [vanilla-icon](https://github.com/ymzuiku/vanill-icon")
+- [vanilla-message](https://github.com/ymzuiku/vanill-message")
+- [vanilla-device](https://github.com/ymzuiku/vanill-device")
 
 ```js
 // install core-js

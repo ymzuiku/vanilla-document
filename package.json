@@ -1,6 +1,6 @@
 {
   "name": "vanilly",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": false,
   "main": "umd/index.js",
   "types": "umd/index.d.ts",
