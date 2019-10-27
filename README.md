@@ -210,10 +210,11 @@ Because vanilly is vanilla.js's helper functions
 We create some vanilla.js packages:
 
 - vanilla-route
+- vanilla-observer
 - vanilla-list
 - vanilla-icon
 - vanilla-message
-- vanilla-
+- vanilla-device
 
 ```js
 // install core-js
