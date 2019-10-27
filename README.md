@@ -236,6 +236,7 @@ use \$(element).xxx:
 | \$props                | obj:object                                                                                 | Set element[key] = value                                                             |
 | \$getProp              | key:string; callback:(value:any)=>any                                                      | Get element[key], and callback                                                       |
 | \$text                 | text:string                                                                                | Create <span>{text}</span>, and append to element                                    |
+| \$getText              | fn:(text:string)=>any                                                                      | Get \$text created span.textContent                                                  |
 | \$val                  | val:any                                                                                    | Set element.value                                                                    |
 | \$html                 | html:string                                                                                | Set element.innerHtml                                                                |
 | \$query                | seletor:string; callback:(node:Element)=>any; unfindable?:()=>any                          | element.querySelector and callback, if unfind, callback unfindable                   |
@@ -250,9 +251,10 @@ use \$(element).xxx:
 | \$attr                 | key:string, value: any                                                                     | Set or remove element attribute                                                      |
 | \$cssText              | cssText:string                                                                             | Set element.style.cssText                                                            |
 | \$class                | cssText:string; BEM?:string;                                                               | Set element.className, and use BEM replace `^` string                                |
-| \$classAdd             | cssText:string                                                                             | Add a class in element classList                                                     |
-| \$classRemove          | cssText:string                                                                             | Remove a class in element classList                                                  |
-| \$classReplace         | cssText:string                                                                             | Replace a class in element classList                                                 |
+| \$classAdd             | cssText:string; BEM?string;                                                                | Add a class in element classList                                                     |
+| \$classRemove          | cssText:string; BEM?string;                                                                | Remove a class in element classList                                                  |
+| \$classReplace         | cssText:string; BEM?string;                                                                | Replace a class in element classList                                                 |
+| \$classContains        | cssText:string; fn:(isHave:boolean)=>any; BEM?string;                                      | Get contains a class in element classList                                            |
 | \$style                | obj:CSSStyle                                                                               | Set element.style with object                                                        |
 | \$checkAppend (slowly) | fn :(self:this)=>any; timeOut?:nubmer                                                      | check element is append in document with timeOut's time                              |
 | \$checkRemove (slowly) | fn :(self:this)=>any; timeOut?:nubmer                                                      | check element is remove in document with timeOut's time                              |

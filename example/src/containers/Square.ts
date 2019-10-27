@@ -5,7 +5,7 @@ export const Square = (val: number | string, onClick: Function) => {
     .$class('square')
     .$text(val)
     .$on('click', function() {
-      const v = onClick();
+      const v = onClick.call(this);
       this.$replace(Square(v, onClick));
     });
 };

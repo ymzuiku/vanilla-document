@@ -18,7 +18,7 @@ export const Board = (name: string) => {
   };
 
   const renderSquare = (i: number) => {
-    return Square('', () => {
+    return Square('', function() {
       handleClick(i);
       return squares[i];
     });

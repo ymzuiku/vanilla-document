@@ -27,7 +27,8 @@ export interface IDOM<T> {
   $props: (obj: IProps) => IDOM<T> & T;
   /** get data from element */
   $getProp: (key: string, callback: (this: IInputDOM, value: any) => any) => IDOM<T> & T;
-  $text: (text: string | number | null) => IDOM<T> & T;
+  $text: (text: any) => IDOM<T> & T;
+  $getText: (fn: (text: string | number) => any) => IDOM<T> & T;
   $html: (html: string) => IDOM<T> & T;
   $val: (val: any) => IDOM<T> & T;
   $query(seletor: string, fn: (this: IInputDOM, node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;
@@ -46,6 +47,7 @@ export interface IDOM<T> {
   $classAdd: (className: string, BEM?: string) => IDOM<T> & T;
   $classRemove: (className: string, BEM?: string) => IDOM<T> & T;
   $classReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
+  $classContains: (className: string, fn: (isContains: boolean) => any, BEM?: string) => IDOM<T> & T;
   $style: (obj: IStyle) => IDOM<T> & T;
   // Very slow, after append ues setTimout(fn, 40) find DOM, time out at 4000 ms
   $checkAppend: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
@@ -130,6 +132,15 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
 
     el.textContent = text;
+    return element as any;
+  };
+  element.$getText = (fn: any) => {
+    const eles = element.getElementsByClassName('set_span_text__');
+    let el = eles ? eles[0] : null;
+
+    if (el) {
+      fn(el.textContent);
+    }
 
     return element as any;
   };
@@ -267,6 +278,14 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
     element.classList.replace(oldClass, newClass);
 
+    return element as any;
+  };
+
+  element.$classContains = (className: string, fn: (isContains: boolean) => any, BEM?: string) => {
+    if (BEM) {
+      className = className.replace(/\^/g, `${BEM}-`);
+    }
+    fn.call(element, element.classList.contains(className));
     return element as any;
   };
 

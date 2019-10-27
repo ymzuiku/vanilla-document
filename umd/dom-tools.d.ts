@@ -15,7 +15,8 @@ export interface IDOM<T> {
     $props: (obj: IProps) => IDOM<T> & T;
     /** get data from element */
     $getProp: (key: string, callback: (this: IInputDOM, value: any) => any) => IDOM<T> & T;
-    $text: (text: string | number | null) => IDOM<T> & T;
+    $text: (text: any) => IDOM<T> & T;
+    $getText: (fn: (text: string | number) => any) => IDOM<T> & T;
     $html: (html: string) => IDOM<T> & T;
     $val: (val: any) => IDOM<T> & T;
     $query(seletor: string, fn: (this: IInputDOM, node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;
@@ -34,6 +35,7 @@ export interface IDOM<T> {
     $classAdd: (className: string, BEM?: string) => IDOM<T> & T;
     $classRemove: (className: string, BEM?: string) => IDOM<T> & T;
     $classReplace: (oldClass: string, newClass: string, BEM?: string) => IDOM<T> & T;
+    $classContains: (className: string, fn: (isContains: boolean) => any, BEM?: string) => IDOM<T> & T;
     $style: (obj: IStyle) => IDOM<T> & T;
     $checkAppend: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
     $checkRemove: (fn: (this: IInputDOM, self: IInputDOM) => any, timeOut?: number) => IDOM<T> & T;
