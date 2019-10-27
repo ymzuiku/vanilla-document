@@ -1,16 +1,8 @@
+import { Square } from './Square';
 import $ from 'vanilly';
-import { calculateWinner } from './utils/calculateWinner';
-import './css';
+import { calculateWinner } from '../utils/calculateWinner';
 
-// pure-component
-const Square = (val: number) => {
-  return $('button')
-    .$class('square')
-    .$text(val);
-};
-
-// board, Lifting State up here
-const Board = (name: string) => {
+export const Board = (name: string) => {
   const squares = Array(9).fill(null);
   const status = 'Next player: X';
   let xIsNext = true;
@@ -64,22 +56,3 @@ const Board = (name: string) => {
 
   return game;
 };
-
-// Game application, render some board
-const Game = () => {
-  return $('div')
-    .$class('game')
-    .$append(
-      $('div')
-        .$class('game-board')
-        .$append(Board('Game A')),
-      $('div')
-        .$class('game-board')
-        .$append(Board('Game B')),
-      $('div')
-        .$class('game-board')
-        .$append(Board('Game C')),
-    );
-};
-
-document.body.append(Game());
