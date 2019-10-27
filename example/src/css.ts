@@ -40,9 +40,6 @@ ol, ul {
   outline: none;
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
 
 .game {
   display: flex;
