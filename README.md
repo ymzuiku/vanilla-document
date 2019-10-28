@@ -2,7 +2,7 @@
 
 Use VanillaJS chained declarative UI, No lifecycle, No state, No diff VDOM.
 
-# Gesundheit: DOM is browser's state, browser's state is UI state
+# Gesundheit: `UI=fn(state)` -> `UI=browser(DOM)`
 
 ![](.readme/barmImage.jpg)
 
