@@ -1,6 +1,6 @@
 const ua = navigator.userAgent;
 const isAndroid = /(?:Android)/.test(ua);
-const isIos = /(?:iPhone|iPad)/.test(ua);
+const isIos = /(?:iPhone)/.test(ua);
 const isWechat = /MicroMessenger/.test(ua);
 const isPc = !isIos && !isAndroid;
 

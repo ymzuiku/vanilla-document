@@ -31,7 +31,7 @@ DOM.css = (css: string, BEM?: string) => {
   const cacheCss = `${css}${BEM}`;
   if (!cacheAppend.has(cacheCss)) {
     const cssNode = document.createElement('style');
-    if (css.indexOf('@media-') > -1) {
+    if (/@media-/.test(css)) {
       Object.keys(media).forEach(k => {
         css = css.replace(k, (media as any)[k]);
       });

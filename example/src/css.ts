@@ -7,6 +7,7 @@ body {
   margin: 20px;
 }
 
+
 ol, ul {
   padding-left: 30px;
 }
@@ -34,6 +35,13 @@ ol, ul {
   padding: 0;
   text-align: center;
   width: 34px;
+}
+
+
+@media-md{
+  .game {
+    background:#f55;
+  }
 }
 
 .square:focus {
