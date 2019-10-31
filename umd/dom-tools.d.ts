@@ -16,6 +16,7 @@ export interface IDOM<T> {
     $getProp: (key: string, callback: (this: IInputDOM, value: any) => any) => IDOM<T> & T;
     $text: (text: any) => IDOM<T> & T;
     $getText: (fn: (text: string | number) => any) => IDOM<T> & T;
+    $textContent: (text: any) => IDOM<T> & T;
     $html: (html: string) => IDOM<T> & T;
     $val: (val: any) => IDOM<T> & T;
     $query(seletor: string, fn: (this: IInputDOM, node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;

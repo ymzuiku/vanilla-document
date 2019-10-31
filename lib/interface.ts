@@ -263,6 +263,8 @@ export interface IStyle {
   justifyItems?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | keyof IGlobalValues;
   justifySelf?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | keyof IGlobalValues;
   kerning?: string | null;
+  /** ios 不支持 */
+  overscrollBehavior?:'auto'|'contain'|'none';
   layoutGrid?: string | null;
   layoutGridChar?: string | null;
   layoutGridLine?: string | null;
@@ -411,14 +413,14 @@ export interface IStyle {
   strokeWidth?: string | null;
   tabSize?: string;
   tableLayout?: 'auto' | 'fixed' | keyof IGlobalValues;
-  textAlign?: string;
-  textAlignLast?: string;
+  textAlign?: 'left'|'right'|'center'|'justify'|'inherit';
+  textAlignLast?: 'auto'|'left'|'right'|'center'|'justify'|'inherit'|'start'|'end'|'initial';
   textAnchor?: string | null;
   textCombineUpright?: string;
-  textDecoration?: string;
+  textDecoration?: 'none'|'underline'|'overline'|'line-through'|'blink'|'inherit';
   textDecorationColor?: string;
-  textDecorationLine?: string;
-  textDecorationStyle?: string;
+  textDecorationLine?: 'none'|'underline'|'overline'|'line-through'|'blink'|'inherit';
+  textDecorationStyle?: 'solid'|'double'|'dotted'|'dashed'|'wavy'|'initial'|'inherit';
   textEmphasis?: string;
   textEmphasisColor?: string;
   textEmphasisPosition?: string;
@@ -428,9 +430,9 @@ export interface IStyle {
   textKashida?: string | null;
   textKashidaSpace?: string | null;
   textOrientation?: string;
-  textOverflow?: string;
+  textOverflow?: 'clip'|'ellipsis'|string;
   textShadow?: string;
-  textTransform?: string;
+  textTransform?: 'none'|'capitalize'|'uppercase'|'lowercase'|'inherit';
   textUnderlinePosition?: string;
   top?: string | null;
   touchAction?: string;

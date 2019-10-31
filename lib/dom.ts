@@ -1,4 +1,5 @@
 import { IDOM, toDOM } from './dom-tools';
+import { IStyle } from './interface';
 
 declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
@@ -12,6 +13,7 @@ interface IDOMExp {
   css: (css: string, BEM?: string) => any;
   script: (src?: string, textContent?: string, onload?: Function) => any;
   randomId: () => string;
+  style: (obj: IStyle) => any;
 }
 
 /** Element operator */
@@ -48,4 +50,8 @@ dom.randomId = () => {
   return `id${Date.now().toString(32)}${Math.random()
     .toString(32)
     .slice(2)}`;
+};
+
+dom.style = (obj: IStyle) => {
+  return obj;
 };

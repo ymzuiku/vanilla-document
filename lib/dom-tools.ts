@@ -22,6 +22,7 @@ export interface IDOM<T> {
   $getProp: (key: string, callback: (this: IInputDOM, value: any) => any) => IDOM<T> & T;
   $text: (text: any) => IDOM<T> & T;
   $getText: (fn: (text: string | number) => any) => IDOM<T> & T;
+  $textContent: (text: any) => IDOM<T> & T;
   $html: (html: string) => IDOM<T> & T;
   $val: (val: any) => IDOM<T> & T;
   $query(seletor: string, fn: (this: IInputDOM, node: IInputDOM) => any, unfindable?: () => any): IDOM<T> & T;
@@ -91,7 +92,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     listener: (this: IInputDOM, ev: HTMLElementEventMap[K]) => any,
   ) => {
     element[`on${type}`] = listener;
-    return element as any;
+    return element;
   };
 
   element.$addEvent = <K extends keyof HTMLElementEventMap>(
@@ -100,7 +101,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     options?: boolean | AddEventListenerOptions,
   ) => {
     element.addEventListener(type, listener, options);
-    return element as any;
+    return element;
   };
 
   element.$removeEvent = <K extends keyof HTMLElementEventMap>(
@@ -109,12 +110,12 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     options?: boolean | EventListenerOptions,
   ) => {
     element.removeEventListener(type, listener, options);
-    return element as any;
+    return element;
   };
 
   element.$html = (html: string) => {
     element.innerHTML = html;
-    return element as any;
+    return element;
   };
 
   element.$text = (text: any) => {
@@ -129,8 +130,9 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
 
     el.textContent = text;
-    return element as any;
+    return element;
   };
+
   element.$getText = (fn: any) => {
     const eles = element.getElementsByClassName('set_span_text__');
     let el = eles ? eles[0] : null;
@@ -139,8 +141,15 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       fn(el.textContent);
     }
 
-    return element as any;
+    return element;
   };
+
+  element.$textContent = (text: string) => {
+    element.textContent = text;
+
+    return element;
+  };
+
   element.$val = (val: string) => {
     element.value = val;
     return element as any;
@@ -165,7 +174,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
 
   element.$before = (newNode: HTMLInputElement) => {
     element.insertBefore(newNode, element);
-    return element as any;
+    return element;
   };
 
   element.$beforeQuery = (selector: any, newNode: any, unfindable: any) => {
@@ -176,25 +185,25 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       unfindable.call(element);
     }
 
-    return element as any;
+    return element;
   };
 
   element.$insert = (position: 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend', newNode: HTMLElement) => {
     element.insertAdjacentElement(position, newNode);
 
-    return element as any;
+    return element;
   };
 
   element.$append = (...nodes: any[]) => {
     element.append(...nodes.filter(Boolean));
 
-    return element as any;
+    return element;
   };
 
   element.$children = (fn: (children: HTMLInputElement) => any) => {
     fn.call(element, element.children);
 
-    return element as any;
+    return element;
   };
 
   element.$childWith = (fn: (node: HTMLInputElement, index: number) => any) => {
@@ -203,7 +212,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       fn.call(element, ele, i);
     }
 
-    return element as any;
+    return element;
   };
 
   element.$parent = (fn: (node: HTMLInputElement) => any) => {
