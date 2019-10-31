@@ -7,5 +7,11 @@ export const Square = (val: number | string, onClick: Function) => {
     .$on('click', function() {
       const v = onClick.call(this);
       this.$replace(Square(v, onClick));
+    })
+    .$hover({
+      backgroundColor: '#f8f8f8',
+    })
+    .$active({
+      backgroundColor: '#eee',
     });
 };

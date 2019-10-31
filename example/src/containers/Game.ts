@@ -14,5 +14,11 @@ export const Game = () => {
       dom('div')
         .$class('game-board')
         .$append(Board('Game C')),
+      dom('input')
+        .$props({ placeholder: 'test :focus' })
+        .$style({ outline: 'none', border: '1px solid #eee' })
+        .$focus({
+          border: '1px solid #888',
+        }),
     );
 };

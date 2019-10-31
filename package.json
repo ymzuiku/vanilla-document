@@ -1,6 +1,6 @@
 {
   "name": "vanilla-document",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": false,
   "main": "umd/index.js",
   "types": "umd/index.d.ts",

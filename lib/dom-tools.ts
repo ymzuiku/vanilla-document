@@ -1,5 +1,7 @@
 import { IStyle, IProps } from './interface';
 
+const isPc = window.screen.width > 1023;
+
 export interface IInputEvent {
   target: {
     value: string;
@@ -59,6 +61,10 @@ export interface IDOM<T> {
     listener: (this: IInputDOM, ev: HTMLElementEventMap[K] & IInputEvent) => any,
     options?: boolean | EventListenerOptions,
   ) => IDOM<T> & T;
+  $onStyle: (inEvent: string | null, outEvent: string | null, obj: IStyle) => IDOM<T> & T;
+  $active: (obj: IStyle) => IDOM<T> & T;
+  $hover: (obj: IStyle) => IDOM<T> & T;
+  $focus: (obj: IStyle) => IDOM<T> & T;
   [key: string]: any;
 }
 
@@ -71,13 +77,13 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
 
   element.$ref = (fn: (ele: IDOM<T> & T) => any) => {
     fn.call(element, element as any);
-    return element as any;
+    return element;
   };
 
   element.$id = (id: string) => {
     element.id = id;
 
-    return element as any;
+    return element;
   };
 
   element.$on = <K extends keyof HTMLElementEventMap>(
@@ -205,7 +211,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       fn.call(element, element.parentElement);
     }
 
-    return element as any;
+    return element;
   };
 
   element.$props = (obj: any) => {
@@ -213,12 +219,12 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       element[k] = obj[k];
     });
 
-    return element as any;
+    return element;
   };
 
   element.$getProp = (key: string, callback: Function) => {
     callback.call(element, element[key]);
-    return element as any;
+    return element;
   };
 
   element.$attr = (key: string, value: any) => {
@@ -227,12 +233,12 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     } else {
       element.removeAttribute(key);
     }
-    return element as any;
+    return element;
   };
 
   element.$cssText = (text: string) => {
     element.style.cssText = text;
-    return element as any;
+    return element;
   };
 
   /** BEM参数 将会查找字符串 ^， 替换为 ${BEM}_ */
@@ -241,7 +247,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       cssString = cssString.replace(/\^/g, `${BEM}-`);
     }
     element.setAttribute('class', cssString);
-    return element as any;
+    return element;
   };
 
   element.$classAdd = (cssString: string, BEM?: string) => {
@@ -250,7 +256,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
     element.classList.add(cssString);
 
-    return element as any;
+    return element;
   };
 
   element.$classRemove = (cssString: string, BEM?: string) => {
@@ -259,7 +265,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
     element.classList.remove(cssString);
 
-    return element as any;
+    return element;
   };
 
   element.$classReplace = (oldClass: string, newClass: string, BEM?: string) => {
@@ -269,7 +275,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     }
     element.classList.replace(oldClass, newClass);
 
-    return element as any;
+    return element;
   };
 
   element.$classContains = (className: string, fn: (isContains: boolean) => any, BEM?: string) => {
@@ -277,14 +283,14 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       className = className.replace(/\^/g, `${BEM}-`);
     }
     fn.call(element, element.classList.contains(className));
-    return element as any;
+    return element;
   };
 
   element.$style = (obj: IStyle) => {
     Object.keys(obj).forEach(k => {
       element.style[k] = obj[k];
     });
-    return element as any;
+    return element;
   };
 
   element.$checkAppend = (fn: (self: IDOM<T>) => any, timeOut: 4000) => {
@@ -301,7 +307,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     };
     setTimeout(findAndRunOnMound);
 
-    return element as any;
+    return element;
   };
 
   element.$checkRemove = (fn: (self: IDOM<T>) => any, timeOut: 4000) => {
@@ -318,14 +324,14 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     };
     setTimeout(findAndRunOnMound);
 
-    return element as any;
+    return element;
   };
 
   element.$replace = (node: any) => {
     if (element.parentElement) {
       element.parentElement.replaceChild(node, element);
     }
-    return element as any;
+    return element;
   };
 
   element.$replaceChild = (nextNode: any, oldNode: any) => {
@@ -335,7 +341,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     if (oldNode) {
       element.replaceChild(nextNode, oldNode);
     }
-    return element as any;
+    return element;
   };
 
   element.$replaceWith = (fn: (node: HTMLInputElement, index: number) => any) => {
@@ -347,7 +353,56 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
       }
     }
 
-    return element as any;
+    return element;
+  };
+
+  element.$onStyle = (inEvent: string, outEvent: string, obj: IStyle) => {
+    const oldStyle = {} as any;
+
+    Object.keys(obj).forEach(k => {
+      oldStyle[k] = element.style[k];
+    });
+
+    const oldInEvent = inEvent && element[inEvent];
+    const oldOutEvent = outEvent && element[outEvent];
+
+    if (inEvent) {
+      element[inEvent] = (e: any) => {
+        if (oldInEvent) {
+          oldInEvent.call(element, e);
+        }
+        element.$style(obj);
+      };
+    }
+    if (outEvent) {
+      element[outEvent] = (e: any) => {
+        if (oldOutEvent) {
+          oldOutEvent.call(element, e);
+        }
+        element.$style(oldStyle);
+      };
+    }
+  };
+
+  element.$hover = (obj: IStyle) => {
+    if (isPc) {
+      element.$onStyle('onmouseenter', 'onmouseout', obj);
+    }
+    return element;
+  };
+
+  element.$active = (obj: IStyle) => {
+    if (isPc) {
+      element.$onStyle('onmousedown', 'onmouseup', obj);
+    } else {
+      element.$onStyle('ontouchstart', 'ontouchend', obj);
+    }
+    return element;
+  };
+
+  element.$focus = (obj: IStyle) => {
+    element.$onStyle('onfocus', 'onblur', obj);
+    return element;
   };
 
   return element as any;
