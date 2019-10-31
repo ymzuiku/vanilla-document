@@ -1,5 +1,5 @@
 import { Square } from './Square';
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 import { calculateWinner } from '../utils/calculateWinner';
 
 export const Board = (name: string) => {
@@ -37,19 +37,19 @@ export const Board = (name: string) => {
     game.$query('#status', el => el.$text(status));
   };
 
-  const game = $('div').$append(
-    $('div').$text(name),
-    $('div')
+  const game = dom('div').$append(
+    dom('div').$text(name),
+    dom('div')
       .$id('status')
       .$class('status')
       .$text(status),
-    $('div')
+    dom('div')
       .$class('board-row')
       .$append(renderSquare(0), renderSquare(1), renderSquare(2)),
-    $('div')
+    dom('div')
       .$class('board-row')
       .$append(renderSquare(3), renderSquare(4), renderSquare(5)),
-    $('div')
+    dom('div')
       .$class('board-row')
       .$append(renderSquare(6), renderSquare(7), renderSquare(8)),
   );

@@ -4,9 +4,9 @@ declare function IDOMCreator<K extends Element>(tagNode?: K, options?: any): IDO
 interface IDOMExp {
     /** use BEM replace(/\^/, ${${BEM}_}) */
     css: (css: string, BEM?: string) => any;
-    script: (src: string, onload?: Function) => any;
+    script: (src?: string, textContent?: string, onload?: Function) => any;
     randomId: () => string;
 }
 /** Element operator */
-export declare const DOM: typeof IDOMCreator & IDOMExp;
+export declare const dom: typeof IDOMCreator & IDOMExp;
 export {};

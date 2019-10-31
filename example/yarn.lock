@@ -10093,6 +10093,11 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
+vanilla-document@^0.4.12:
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/vanilla-document/-/vanilla-document-0.4.12.tgz#44b7c7124c4f6a979e178c0ac08716599b215218"
+  integrity sha512-o+VuI3m7jIhWjUKYCNYdoJse/f8h/ACX/iDNi1GyR/RO03vXsTUbjnQs0bUuVS6SSjwBe736mondb0qvBZNFzw==
+
 vanilla-icon@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/vanilla-icon/-/vanilla-icon-0.1.0.tgz#8e364facc6d45601e83877b80327fec38f15ac59"
@@ -10121,11 +10126,6 @@ vanilla-route@^0.1.4:
   integrity sha512-jzcVmlj61z8tG77xukYcqgIo7RM7BzRTCVH80G5vIxZd0ESR1FMN/jjuJUUuqqGYkJbJgUFKxIgjxhjYquO65Q==
   dependencies:
     querystring-number "^1.0.6"
-
-vanilly@^0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/vanilly/-/vanilly-0.4.7.tgz#369a35a1c8f20c82128a0ca56d6a2fd29a8438f3"
-  integrity sha512-3U7T8NmxU6/m++Qqpi6ujyoRzpVFRs7fdOprtVt9Sp+gL4bxYP/ND5wbVekycDJQQLG6gZaoY5XSSmIuVk3ieQ==
 
 vary@~1.1.2:
   version "1.1.2"

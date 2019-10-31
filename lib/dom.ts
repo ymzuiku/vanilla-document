@@ -1,7 +1,4 @@
-import { IDOM, toDOM, tid } from './dom-tools';
-import { media } from './media';
-
-const cacheAppend = new Set<string>();
+import { IDOM, toDOM } from './dom-tools';
 
 declare function IDOMCreator<K extends keyof HTMLElementTagNameMap>(
   tagName: K,
@@ -13,12 +10,12 @@ declare function IDOMCreator<K extends Element>(tagNode?: K, options?: any): IDO
 interface IDOMExp {
   /** use BEM replace(/\^/, ${${BEM}_}) */
   css: (css: string, BEM?: string) => any;
-  script: (src: string, onload?: Function) => any;
+  script: (src?: string, textContent?: string, onload?: Function) => any;
   randomId: () => string;
 }
 
 /** Element operator */
-export const DOM: typeof IDOMCreator & IDOMExp = (tag: any, options?: any) => {
+export const dom: typeof IDOMCreator & IDOMExp = (tag: any, options?: any) => {
   if (typeof tag === 'string') {
     const element = document.createElement(tag, options);
     return toDOM(element);
@@ -27,37 +24,28 @@ export const DOM: typeof IDOMCreator & IDOMExp = (tag: any, options?: any) => {
   return toDOM(tag || document.createElement('div'));
 };
 
-DOM.css = (css: string, BEM?: string) => {
-  const cacheCss = `${css}${BEM}`;
-  if (!cacheAppend.has(cacheCss)) {
-    const cssNode = document.createElement('style');
-    if (/@media-/.test(css)) {
-      Object.keys(media).forEach(k => {
-        css = css.replace(k, (media as any)[k]);
-      });
-    }
-    if (BEM) {
-      css = css.replace(/\.\^/g, `.${BEM}-`);
-    }
-    cssNode.textContent = css;
-    cssNode.type = 'text/css';
-    document.head.appendChild(cssNode);
-    cacheAppend.add(cacheCss);
+dom.css = (css: string, BEM?: string) => {
+  const cssNode = document.createElement('style');
+  if (BEM) {
+    css = css.replace(/\.\^/g, `.${BEM}-`);
   }
+  cssNode.textContent = css;
+  cssNode.type = 'text/css';
+  document.head.appendChild(cssNode);
 };
 
-DOM.script = (src: string, onload?: any) => {
-  if (!cacheAppend.has(src)) {
-    const node = document.createElement('script');
+dom.script = (src?: string, textContent?: string, onload?: any) => {
+  const node = document.createElement('script');
+  if (src) {
     node.src = src;
-    node.onload = onload;
-    document.head.appendChild(node);
-    cacheAppend.add(src);
   }
+  node.textContent = textContent || '';
+  node.onload = onload;
+  document.head.appendChild(node);
 };
 
-DOM.randomId = () => {
-  return `ID_${Date.now().toString(32)}${Math.random()
+dom.randomId = () => {
+  return `id${Date.now().toString(32)}${Math.random()
     .toString(32)
     .slice(2)}`;
 };

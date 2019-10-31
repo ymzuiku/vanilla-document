@@ -1,17 +1,17 @@
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 import { Board } from './Board';
 
 export const Game = () => {
-  return $('div')
+  return dom('div')
     .$class('game')
     .$append(
-      $('div')
+      dom('div')
         .$class('game-board')
         .$append(Board('Game A')),
-      $('div')
+      dom('div')
         .$class('game-board')
         .$append(Board('Game B')),
-      $('div')
+      dom('div')
         .$class('game-board')
         .$append(Board('Game C')),
     );

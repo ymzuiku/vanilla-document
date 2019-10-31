@@ -11,12 +11,12 @@
     "react": "^16.10.2",
     "react-scripts": "3.2.0",
     "typescript": "3.5.2",
+    "vanilla-document": "^0.4.12",
     "vanilla-icon": "^0.1.0",
     "vanilla-list": "^0.1.1",
     "vanilla-message": "^0.1.0",
     "vanilla-observer": "^0.1.1",
-    "vanilla-route": "^0.1.4",
-    "vanilly": "^0.4.7"
+    "vanilla-route": "^0.1.4"
   },
   "scripts": {
     "start": "react-app-rewired start",

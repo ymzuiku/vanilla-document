@@ -1,14 +1,5 @@
 import { IStyle, IProps } from './interface';
 
-export function tid() {
-  return (
-    Date.now().toString(32) +
-    Math.random()
-      .toString(32)
-      .slice(2)
-  );
-}
-
 export interface IInputEvent {
   target: {
     value: string;

@@ -36,7 +36,7 @@ const watchOptions = {
   output: {
     file: './umd/index.js',
     format: 'umd',
-    name: '$',
+    name: 'dom',
     sourcemap: true,
   },
   plugins: [
@@ -48,7 +48,26 @@ const watchOptions = {
     }),
   ],
 };
-const watcher = rollup.watch(watchOptions);
+
+const polyfillOptions = {
+  input: './lib/dom-polyfill.ts',
+  output: {
+    file: './umd/dom-polyfill.js',
+    format: 'umd',
+    name: 'domPolyfill',
+    sourcemap: true,
+  },
+  plugins: [
+    rollupTypescript({
+      useTsconfigDeclarationDir: false,
+    }),
+    uglify({
+      sourcemap: true,
+    }),
+  ],
+};
+
+const watcher = rollup.watch([watchOptions, polyfillOptions]);
 
 // event.code can be one of:
 //   START        — the watcher is (re)starting

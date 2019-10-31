@@ -1,4 +1,4 @@
-# vanilly
+# vanilla-document
 
 Use VanillaJS chained declarative UI, No lifecycle, No state, No diff VDOM.
 
@@ -21,22 +21,22 @@ Feature:
 - Chained declarative UI (Like JSX or Flutter ?)
 - Only element helper functions
 - Easy create css and use BEM in Javascript
-- Support IE 9 (precondition add core.Set polyfill)
+- Support IE 9 (precondition add core.Set polyfill and `vanilla-document/umd/dom-polyfill`)
 
 ## Install
 
 Use unpkg:
 
 ```html
-<script src="https://unpkg.com/vanilly@0.4.12/umd/index.js"></script>
+<script src="https://unpkg.com/vanilla-document@0.4.12/umd/index.js"></script>
 ```
 
 Or use npm:
 
 ```sh
-npm i --save vanilly
+npm i --save vanilla-document
 # or
-yarn add vanilly
+yarn add vanilla-document
 ```
 
 ## Example
@@ -44,25 +44,25 @@ yarn add vanilly
 **Register css:**
 
 ```js
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 
-$.css(`.red-box {background:#f00;}`);
+dom.css(`.red-box {background:#f00;}`);
 ```
 
 **Chain declarative UI:**
 
 ```js
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 
-const box = $('div')
+const box = dom('div')
   .$id('box')
   .$text('hello')
   .$class('red-box')
   .$append(
-    $('h2').$text(`I'm a title`),
-    $('input').$val(`I'm a input`),
-    $('button').$text(`I'm a button`),
-    $('a').$text(`I'm a <a />`),
+    dom(h2').$text(`I'm a title`),
+    dom('input').$val(`I'm a input`),
+    dom('button').$text(`I'm a button`),
+    dom('a').$text(`I'm a <a />`),
   );
 
 // render in dom
@@ -72,11 +72,11 @@ document.body.append(box);
 **Extends any element:**
 
 ```js
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 
 const oldBox = document.getElementById('box');
 
-const box = $(oldBox);
+const box = dom(oldBox);
 box.$text('hello');
 
 document.body.append(box);
@@ -85,16 +85,16 @@ document.body.append(box);
 **Bind data:**
 
 ```js
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 import Observer from 'vanilla-observer';
 
 const obs = Observer({ value: '' });
 
-const inputA = $('input').$on('input', function(e) {
+const inputA = dom('input').$on('input', function(e) {
   obs.update(s => (s.value = e.target.value));
 });
 
-const inputB = $('input').$on('input', function(e) {
+const inputB = dom('input').$on('input', function(e) {
   obs.update(s => (s.value = e.target.value));
 });
 
@@ -121,13 +121,13 @@ All code in `2.8kb`, It have: Vanilly, CSS, src/\*.ts:
 Tutorial Demo: [vanilly.workos.top](http://vanilly.workos.top)
 
 ```js
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 import { calculateWinner } from './utils/calculateWinner';
 import './css';
 
 // pure-component
 const Square = (val: number | string, onClick: Function) => {
-  return $('button')
+  return dom('button')
     .$class('square')
     .$text(val)
     .$on('click', function() {
@@ -173,19 +173,19 @@ const Board = (name: string) => {
     game.$query('#status', el => el.$text(status));
   };
 
-  const game = $('div').$append(
-    $('div').$text(name),
-    $('div')
+  const game = dom('div').$append(
+    dom('div').$text(name),
+    dom('div')
       .$id('status')
       .$class('status')
       .$text(status),
-    $('div')
+    dom('div')
       .$class('board-row')
       .$append(renderSquare(0), renderSquare(1), renderSquare(2)),
-    $('div')
+    dom('div')
       .$class('board-row')
       .$append(renderSquare(3), renderSquare(4), renderSquare(5)),
-    $('div')
+    dom('div')
       .$class('board-row')
       .$append(renderSquare(6), renderSquare(7), renderSquare(8)),
   );
@@ -195,16 +195,16 @@ const Board = (name: string) => {
 
 // Game application, render some board
 const Game = () => {
-  return $('div')
+  return dom('div')
     .$class('game')
     .$append(
-      $('div')
+      dom('div')
         .$class('game-board')
         .$append(Board('Game A')),
-      $('div')
+      dom('div')
         .$class('game-board')
         .$append(Board('Game B')),
-      $('div')
+      dom('div')
         .$class('game-board')
         .$append(Board('Game C')),
     );
@@ -219,11 +219,11 @@ document.body.append(Game());
 
 use \$.xxx:
 
-| name     | params                       | description                                      |
-| -------- | ---------------------------- | ------------------------------------------------ |
-| css      | css:string; BEM?:string      | insert css in document, and use BEM replace `.^` |
-| style    | src:string; onload?:Function | insert script in document                        |
-| randomId | none                         | Create random id                                 |
+| name     | params                                             | description                                      |
+| -------- | -------------------------------------------------- | ------------------------------------------------ |
+| css      | css:string; BEM?:string                            | insert css in document, and use BEM replace `.^` |
+| style    | src?:string; textContent?:string; onload?:Function | insert script or textContext in document         |
+| randomId | none                                               | Create random id                                 |
 
 ### Element api
 
@@ -267,9 +267,9 @@ use \$(element).xxx:
 
 ## Ecology
 
-> All vanilla.js packages can use vanilly
+> All vanilla.js packages can use vanilla-document
 
-Because vanilly is vanilla.js's helper functions
+Because vanilla-document is vanilla.js's helper functions
 
 We created some vanilla.js packages:
 
@@ -281,7 +281,7 @@ We created some vanilla.js packages:
 - [vanilla-message](https://github.com/ymzuiku/vanilla-message)
 - [vanilla-device](https://github.com/ymzuiku/vanilla-device)
 
-You can search other packages in github: https://github.com/search?q=vanilla
+You can search other packages in github: https://github.com/search?q=vanilla-document
 
 ![](.readme/github-search.png)
 

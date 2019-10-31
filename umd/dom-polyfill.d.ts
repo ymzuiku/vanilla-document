@@ -1,1 +1,2 @@
-export declare const dom_polyfill = true;
+declare const dom_polyfill = true;
+export default dom_polyfill;

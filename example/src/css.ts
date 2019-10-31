@@ -1,7 +1,7 @@
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 
 // register <style>...</style> in document.head
-$.css(`
+dom.css(`
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;

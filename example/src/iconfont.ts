@@ -1,6 +1,6 @@
-import { $ } from 'vanilly';
+import dom from 'vanilla-document';
 
-$.css(`
+dom.css(`
 @font-face {font-family: "iconfont";
   src: url('//at.alicdn.com/t/font_1466973_yerr5id314.eot?t=1571902477199'); /* IE9 */
   src: url('//at.alicdn.com/t/font_1466973_yerr5id314.eot?t=1571902477199#iefix') format('embedded-opentype'), /* IE6-IE8 */

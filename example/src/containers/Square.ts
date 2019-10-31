@@ -1,7 +1,7 @@
-import $ from 'vanilly';
+import dom from 'vanilla-document';
 
 export const Square = (val: number | string, onClick: Function) => {
-  return $('button')
+  return dom('button')
     .$class('square')
     .$text(val)
     .$on('click', function() {

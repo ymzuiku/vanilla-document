@@ -1,5 +1,4 @@
 import { IStyle, IProps } from './interface';
-export declare function tid(): string;
 export interface IInputEvent {
     target: {
         value: string;
