@@ -13,7 +13,6 @@ module.exports = {
 
     // config.externals = {
     //   immer: 'immer',
-    //   vanilly: 'vanilly',
     // };
     config.optimization.splitChunks = {
       chunks: 'all', // all, async, initial

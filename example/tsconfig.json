@@ -15,5 +15,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["src", "../vanilly", "../vanilly-route"]
+  "include": ["src"]
 }
