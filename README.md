@@ -114,11 +114,11 @@ document.body.append(inputA, inputB);
 
 Here have recode React Tutorial: `https://reactjs.org/tutorial/tutorial.html`
 
-All code in `2.8kb`, It have: Vanilly, CSS, src/\*.ts:
+All code in `2.8kb`, It have: vanilla-document, CSS, src/\*.ts:
 
 ![screenshot](.readme/screenshot2.png)
 
-Tutorial Demo: [vanilly.workos.top](http://vanilly.workos.top)
+Tutorial Demo: [vanilla-document.workos.top](http://vanilla-document.workos.top)
 
 ```js
 import dom from 'vanilla-document';

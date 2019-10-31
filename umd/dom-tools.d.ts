@@ -8,7 +8,7 @@ export declare type IOnInput = (this: IInputDOM, ev: HTMLElementEventMap['input'
 export declare type IOnClick = (this: IInputDOM, ev: HTMLElementEventMap['click']) => any;
 declare type IInputDOM = IDOM<HTMLInputElement> & HTMLInputElement;
 export interface IDOM<T> {
-    __isVanilly: boolean;
+    __isVanillaDOM: boolean;
     $ref: (fn: (this: IInputDOM, ele: IDOM<T> & T) => any) => IDOM<T> & T;
     $id: (id: string) => IDOM<T> & T;
     $props: (obj: IProps) => IDOM<T> & T;

@@ -12,7 +12,7 @@ export type IOnClick = (this: IInputDOM, ev: HTMLElementEventMap['click']) => an
 type IInputDOM = IDOM<HTMLInputElement> & HTMLInputElement;
 
 export interface IDOM<T> {
-  __isVanilly: boolean;
+  __isVanillaDOM: boolean;
   $ref: (fn: (this: IInputDOM, ele: IDOM<T> & T) => any) => IDOM<T> & T;
   $id: (id: string) => IDOM<T> & T;
   $props: (obj: IProps) => IDOM<T> & T;
@@ -63,11 +63,11 @@ export interface IDOM<T> {
 }
 
 export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
-  if (element.__isVanilly) {
+  if (element.__isVanillaDOM) {
     return element as any;
   }
 
-  element.__isVanilly = true;
+  element.__isVanillaDOM = true;
 
   element.$ref = (fn: (ele: IDOM<T> & T) => any) => {
     fn.call(element, element as any);
