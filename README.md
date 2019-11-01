@@ -134,6 +134,9 @@ const Square = (val: number | string, onClick: Function) => {
       const v = onClick(this);
       // Use new data rerender self
       this.$replace(Square(v, onClick));
+    })
+    .$hover({
+      background: '#f5f5f5',
     });
 };
 
