@@ -62,10 +62,16 @@ export interface IDOM<T> {
     listener: (this: IInputDOM, ev: HTMLElementEventMap[K] & IInputEvent) => any,
     options?: boolean | EventListenerOptions,
   ) => IDOM<T> & T;
-  $onStyle: (inEvent: string | null, outEvent: string | null, obj: IStyle) => IDOM<T> & T;
+  /** pseudo classes */
+  $pseudo: (inEvent: string | null, outEvent: string | null, obj: IStyle) => IDOM<T> & T;
+  /** like :active pseudo classes */
   $active: (obj: IStyle) => IDOM<T> & T;
+  /** like :hover pseudo classes */
   $hover: (obj: IStyle) => IDOM<T> & T;
+  /** like :focus pseudo classes */
   $focus: (obj: IStyle) => IDOM<T> & T;
+  /** like :media pseudo classes */
+  $media: (checker: boolean | string, obj: IStyle) => IDOM<T> & T;
   [key: string]: any;
 }
 
@@ -365,7 +371,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element;
   };
 
-  element.$onStyle = (inEvent: string, outEvent: string, obj: IStyle) => {
+  element.$pseudo = (inEvent: string, outEvent: string, obj: IStyle) => {
     const oldStyle = {} as any;
 
     Object.keys(obj).forEach(k => {
@@ -395,23 +401,50 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
 
   element.$hover = (obj: IStyle) => {
     if (isPc) {
-      element.$onStyle('onmouseenter', 'onmouseout', obj);
+      element.$pseudo('onmouseenter', 'onmouseout', obj);
     }
     return element;
   };
 
   element.$active = (obj: IStyle) => {
     if (isPc) {
-      element.$onStyle('onmousedown', 'onmouseup', obj);
+      element.$pseudo('onmousedown', 'onmouseup', obj);
     } else {
-      element.$onStyle('ontouchstart', 'ontouchend', obj);
+      element.$pseudo('ontouchstart', 'ontouchend', obj);
     }
     return element;
   };
 
   element.$focus = (obj: IStyle) => {
-    element.$onStyle('onfocus', 'onblur', obj);
+    element.$pseudo('onfocus', 'onblur', obj);
     return element;
+  };
+
+  element.$media = (checker: boolean | string, obj: IStyle) => {
+    if (typeof checker === 'boolean' && checker) {
+      element.$style(obj);
+    }
+    if (typeof checker === 'string') {
+      const oldStyle = {} as any;
+      Object.keys(obj).forEach(k => {
+        oldStyle[k] = element.style[k];
+      });
+
+      const fn = (x: any) => {
+        if (!document.body.contains(element as any)) {
+          x.removeListener(fn);
+        } else if (x.matches) {
+          // 媒体查询
+          element.$style(obj);
+        } else {
+          element.$style(oldStyle);
+        }
+      };
+
+      var x = window.matchMedia(`(max-width: ${checker})`);
+      x.addListener(fn);
+      fn(x);
+    }
   };
 
   return element as any;
