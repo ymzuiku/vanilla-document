@@ -13,5 +13,6 @@ export const Square = (val: number | string, onClick: Function) => {
     })
     .$active({
       backgroundColor: '#eee',
-    });
+    })
+    .$media('640px', { borderStyle: 'dotted' });
 };
