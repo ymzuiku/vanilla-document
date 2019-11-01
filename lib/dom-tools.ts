@@ -430,11 +430,12 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
         oldStyle[k] = element.style[k];
       });
 
+      const md = window.matchMedia(`(max-width: ${checker})`);
       const fn = (x: any, onlyRun?: boolean) => {
         const isHave = document.body.contains(element as any);
 
         if (!isHave && !onlyRun) {
-          x.removeListener(fn);
+          md.removeListener(fn);
         } else if (x.matches) {
           // 媒体查询
           element.$style(obj);
@@ -443,9 +444,8 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
         }
       };
 
-      const x = window.matchMedia(`(max-width: ${checker})`);
-      x.addListener(fn);
-      fn(x, true);
+      md.addListener(fn);
+      fn(md, true);
     }
     return element;
   };
