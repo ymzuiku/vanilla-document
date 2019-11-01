@@ -271,8 +271,11 @@ use \$(element).xxx:
 
 Because vanilla-document is vanilla.js's helper functions
 
-We created some vanilla.js packages:
+If your need create a vanilla.js package, please don't dependencies other vanilla.js, only use `BOM` and `DOM` APIs, This will ensure that it will stand the test of time.
 
+We created some vanilla.js packages, there very tiny(1kb~5kb), and zero dependencies:
+
+- [vanilla-document](https://github.com/ymzuiku/vanilla-document)
 - [vanilla-route](https://github.com/ymzuiku/vanilla-route)
 - [vanilla-observer](https://github.com/ymzuiku/vanilla-observer)
 - [vanilla-http](https://github.com/ymzuiku/vanilla-http)
@@ -280,6 +283,7 @@ We created some vanilla.js packages:
 - [vanilla-icon](https://github.com/ymzuiku/vanilla-icon)
 - [vanilla-message](https://github.com/ymzuiku/vanilla-message)
 - [vanilla-device](https://github.com/ymzuiku/vanilla-device)
+- [vanilla-spring](https://github.com/ymzuiku/vanilla-spring)
 
 You can search other packages in github: https://github.com/search?q=vanilla-document
 
