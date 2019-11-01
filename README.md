@@ -232,41 +232,46 @@ use \$.xxx:
 
 use \$(element).xxx:
 
-| name                   | params                                                                                     | description                                                                          |
-| ---------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| \$ref                  | fn:(ele: this)=>any                                                                        | Get element                                                                          |
-| \$id                   | id:string                                                                                  | Set element.id                                                                       |
-| \$props                | obj:object                                                                                 | Set element[key] = value                                                             |
-| \$getProp              | key:string; callback:(value:any)=>any                                                      | Get element[key], and callback                                                       |
-| \$text                 | text:string                                                                                | Create <span>{text}</span>, and append to element                                    |
-| \$getText              | fn:(text:string)=>any                                                                      | Get \$text created span.textContent                                                  |
-| \$val                  | val:any                                                                                    | Set element.value                                                                    |
-| \$html                 | html:string                                                                                | Set element.innerHtml                                                                |
-| \$query                | seletor:string; callback:(node:Element)=>any; unfindable?:()=>any                          | element.querySelector and callback, if unfind, callback unfindable                   |
-| \$queryAll             | seletor:string; callback:(nodes:Element[])=>any                                            | element.querySelectorAll and callback                                                |
-| \$before               | newNode:Element                                                                            | insert node before element                                                           |
-| \$beforeQuery          | selector:string; newNode:Element; unfindable?:()=>any                                      | element.querySelector and insert node before element, if unfind, callback unfindable |
-| \$insert               | position: 'beforebegin' \| 'afterbegin' \| 'beforeend' \| 'afterend', newNode:Element      | run element.insertAdjacentElement                                                    |
-| \$append               | ...nodes:any[]                                                                             | element.append some elements                                                         |
-| \$children             | fn:(children:Elements)=>any                                                                | Get element.children                                                                 |
-| \$childWith            | fn:(child:Element, index: number)=>any                                                     | ForEach element.children                                                             |
-| \$parent               | fn:(node:Element)=>any                                                                     | Get element.parent                                                                   |
-| \$attr                 | key:string, value: any                                                                     | Set or remove element attribute                                                      |
-| \$cssText              | cssText:string                                                                             | Set element.style.cssText                                                            |
-| \$class                | cssText:string; BEM?:string;                                                               | Set element.className, and use BEM replace `^` string                                |
-| \$classAdd             | cssText:string; BEM?string;                                                                | Add a class in element classList                                                     |
-| \$classRemove          | cssText:string; BEM?string;                                                                | Remove a class in element classList                                                  |
-| \$classReplace         | cssText:string; BEM?string;                                                                | Replace a class in element classList                                                 |
-| \$classContains        | cssText:string; fn:(isHave:boolean)=>any; BEM?string;                                      | Get contains a class in element classList                                            |
-| \$style                | obj:CSSStyle                                                                               | Set element.style with object                                                        |
-| \$checkAppend (slowly) | fn :(self:this)=>any; timeOut?:nubmer                                                      | check element is append in document with timeOut's time                              |
-| \$checkRemove (slowly) | fn :(self:this)=>any; timeOut?:nubmer                                                      | check element is remove in document with timeOut's time                              |
-| \$replace              | node:any                                                                                   | Use node replace self                                                                |
-| \$replaceChild         | nextNode:any, oldNode:any                                                                  | Use element replace a self child element                                             |
-| \$replaceWith          | fn: (oldNode:any, index:number)=>any                                                       | ForEach self children and replace new element                                        |
-| \$on                   | type:string; listener:(ev:HTMLElementEvent)=>any                                           | Set event to element, like element.onclick = fn                                      |
-| \$addEvent             | type:string; listener:(ev:HTMLElementEvent)=>any; options: boolean \| EventListenerOptions | addEventListener to element                                                          |
-| \$removeEvent          | type:string, listener:(ev:HTMLElementEvent)=>any; options: boolean \| EventListenerOptions | removeEventListener to element                                                       |
+| name                   | params                                                                                     | description                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| \$ref                  | fn:(ele: this)=>any                                                                        | Get element                                                                           |
+| \$id                   | id:string                                                                                  | Set element.id                                                                        |
+| \$props                | obj:object                                                                                 | Set element[key] = value                                                              |
+| \$getProp              | key:string; callback:(value:any)=>any                                                      | Get element[key], and callback                                                        |
+| \$text                 | text:string                                                                                | Create <span>{text}</span>, and append to element                                     |
+| \$getText              | fn:(text:string)=>any                                                                      | Get \$text created span.textContent                                                   |
+| \$val                  | val:any                                                                                    | Set element.value                                                                     |
+| \$html                 | html:string                                                                                | Set element.innerHtml                                                                 |
+| \$query                | seletor:string; callback:(node:Element)=>any; unfindable?:()=>any                          | element.querySelector and callback, if unfind, callback unfindable                    |
+| \$queryAll             | seletor:string; callback:(nodes:Element[])=>any                                            | element.querySelectorAll and callback                                                 |
+| \$before               | newNode:Element                                                                            | insert node before element                                                            |
+| \$beforeQuery          | selector:string; newNode:Element; unfindable?:()=>any                                      | element.querySelector and insert node before element, if unfind, callback unfindable  |
+| \$insert               | position: 'beforebegin' \| 'afterbegin' \| 'beforeend' \| 'afterend', newNode:Element      | run element.insertAdjacentElement                                                     |
+| \$append               | ...nodes:any[]                                                                             | element.append some elements                                                          |
+| \$children             | fn:(children:Elements)=>any                                                                | Get element.children                                                                  |
+| \$childWith            | fn:(child:Element, index: number)=>any                                                     | ForEach element.children                                                              |
+| \$parent               | fn:(node:Element)=>any                                                                     | Get element.parent                                                                    |
+| \$attr                 | key:string, value: any                                                                     | Set or remove element attribute                                                       |
+| \$cssText              | cssText:string                                                                             | Set element.style.cssText                                                             |
+| \$class                | cssText:string; BEM?:string;                                                               | Set element.className, and use BEM replace `^` string                                 |
+| \$classAdd             | cssText:string; BEM?string;                                                                | Add a class in element classList                                                      |
+| \$classRemove          | cssText:string; BEM?string;                                                                | Remove a class in element classList                                                   |
+| \$classReplace         | cssText:string; BEM?string;                                                                | Replace a class in element classList                                                  |
+| \$classContains        | cssText:string; fn:(isHave:boolean)=>any; BEM?string;                                      | Get contains a class in element classList                                             |
+| \$style                | obj:CSSStyle                                                                               | Set element.style with object                                                         |
+| \$checkAppend (slowly) | fn :(self:this)=>any; timeOut?:nubmer                                                      | check element is append in document with timeOut's time                               |
+| \$checkRemove (slowly) | fn :(self:this)=>any; timeOut?:nubmer                                                      | check element is remove in document with timeOut's time                               |
+| \$replace              | node:any                                                                                   | Use node replace self                                                                 |
+| \$replaceChild         | nextNode:any, oldNode:any                                                                  | Use element replace a self child element                                              |
+| \$replaceWith          | fn: (oldNode:any, index:number)=>any                                                       | ForEach self children and replace new element                                         |
+| \$on                   | type:string; listener:(ev:HTMLElementEvent)=>any                                           | Set event to element, like element.onclick = fn                                       |
+| \$addEvent             | type:string; listener:(ev:HTMLElementEvent)=>any; options: boolean \| EventListenerOptions | addEventListener to element                                                           |
+| \$removeEvent          | type:string, listener:(ev:HTMLElementEvent)=>any; options: boolean \| EventListenerOptions | removeEventListener to element                                                        |
+| \$pseudo               | inEvent: string \| null, outEvent: string \| null, obj: IStyle                             | Use event realize `Pseudo Classes`                                                    |
+| \$hover                | obj: IStyle                                                                                | Equa ('div').\$pseudo('onmouseenter', 'onmouseleave', {...style})                     |
+| \$focus                | obj: IStyle                                                                                | Equa ('div').\$pseudo('onfocus', 'onblur', {...style})                                |
+| \$active               | obj: IStyle                                                                                | Equa ('div').\$pseudo('onmousedown/ontouchstart', 'onmouseup/ontouchend', {...style}) |
+| \$media                | checker:boolean\|string, obj: IStyle                                                       | like @media pseudo                                                                    |
 
 ## Ecology
 
