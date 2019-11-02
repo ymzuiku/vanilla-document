@@ -63,13 +63,13 @@ export interface IDOM<T> {
     options?: boolean | EventListenerOptions,
   ) => IDOM<T> & T;
   /** pseudo classes */
-  $pseudo: (inEvent: string | null, outEvent: string | null, obj: IStyle) => IDOM<T> & T;
+  $pseudo: (inEvent: string | null, outEvent: string | null, obj: IStyle, target?: any) => IDOM<T> & T;
   /** like :active pseudo classes */
-  $active: (obj: IStyle) => IDOM<T> & T;
+  $active: (obj: IStyle, target?: any) => IDOM<T> & T;
   /** like :hover pseudo classes */
-  $hover: (obj: IStyle) => IDOM<T> & T;
+  $hover: (obj: IStyle, target?: any) => IDOM<T> & T;
   /** like :focus pseudo classes */
-  $focus: (obj: IStyle) => IDOM<T> & T;
+  $focus: (obj: IStyle, target?: any) => IDOM<T> & T;
   /** like :media pseudo classes */
   $media: (checker: boolean | string, obj: IStyle) => IDOM<T> & T;
   [key: string]: any;
@@ -320,6 +320,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
         setTimeout(findAndRunOnMound, 50);
       }
     };
+
     setTimeout(findAndRunOnMound);
 
     return element;
@@ -371,11 +372,12 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
     return element;
   };
 
-  element.$pseudo = (inEvent: string, outEvent: string, obj: IStyle) => {
+  element.$pseudo = (inEvent: string, outEvent: string, obj: IStyle, target?: any) => {
+    const ele = target || element;
     const oldStyle = {} as any;
 
     Object.keys(obj).forEach(k => {
-      oldStyle[k] = element.style[k];
+      oldStyle[k] = ele.style[k];
     });
 
     const oldInEvent = inEvent && element[inEvent];
@@ -386,7 +388,7 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
         if (oldInEvent) {
           oldInEvent.call(element, e);
         }
-        element.$style(obj);
+        ele.$style(obj);
       };
     }
     if (outEvent) {
@@ -394,29 +396,29 @@ export const toDOM = <T extends any>(element: T): IDOM<T> & T => {
         if (oldOutEvent) {
           oldOutEvent.call(element, e);
         }
-        element.$style(oldStyle);
+        ele.$style(oldStyle);
       };
     }
   };
 
-  element.$hover = (obj: IStyle) => {
+  element.$hover = (obj: IStyle, target?: any) => {
     if (isPc) {
-      element.$pseudo('onmouseenter', 'onmouseout', obj);
+      element.$pseudo('onmouseenter', 'onmouseout', obj, target);
     }
     return element;
   };
 
-  element.$active = (obj: IStyle) => {
+  element.$active = (obj: IStyle, target?: any) => {
     if (isPc) {
-      element.$pseudo('onmousedown', 'onmouseup', obj);
+      element.$pseudo('onmousedown', 'onmouseup', obj, target);
     } else {
-      element.$pseudo('ontouchstart', 'ontouchend', obj);
+      element.$pseudo('ontouchstart', 'ontouchend', obj, target);
     }
     return element;
   };
 
-  element.$focus = (obj: IStyle) => {
-    element.$pseudo('onfocus', 'onblur', obj);
+  element.$focus = (obj: IStyle, target?: any) => {
+    element.$pseudo('onfocus', 'onblur', obj, target);
     return element;
   };
 

@@ -46,13 +46,13 @@ export interface IDOM<T> {
     $addEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: IInputDOM, ev: HTMLElementEventMap[K] & IInputEvent) => any) => IDOM<T> & T;
     $removeEvent: <K extends keyof HTMLElementEventMap>(type: K, listener: (this: IInputDOM, ev: HTMLElementEventMap[K] & IInputEvent) => any, options?: boolean | EventListenerOptions) => IDOM<T> & T;
     /** pseudo classes */
-    $pseudo: (inEvent: string | null, outEvent: string | null, obj: IStyle) => IDOM<T> & T;
+    $pseudo: (inEvent: string | null, outEvent: string | null, obj: IStyle, target?: any) => IDOM<T> & T;
     /** like :active pseudo classes */
-    $active: (obj: IStyle) => IDOM<T> & T;
+    $active: (obj: IStyle, target?: any) => IDOM<T> & T;
     /** like :hover pseudo classes */
-    $hover: (obj: IStyle) => IDOM<T> & T;
+    $hover: (obj: IStyle, target?: any) => IDOM<T> & T;
     /** like :focus pseudo classes */
-    $focus: (obj: IStyle) => IDOM<T> & T;
+    $focus: (obj: IStyle, target?: any) => IDOM<T> & T;
     /** like :media pseudo classes */
     $media: (checker: boolean | string, obj: IStyle) => IDOM<T> & T;
     [key: string]: any;
