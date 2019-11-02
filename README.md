@@ -291,6 +291,8 @@ We created some vanilla.js packages, there very tiny(1kb~5kb), and zero dependen
 - [vanilla-icon](https://github.com/ymzuiku/vanilla-icon)
 - [vanilla-message](https://github.com/ymzuiku/vanilla-message)
 - [vanilla-device](https://github.com/ymzuiku/vanilla-device)
+- [vanilla-style](https://github.com/ymzuiku/vanilla-style)
+- [vanilla-cssjs](https://github.com/ymzuiku/vanilla-cssjs)
 - [vanilla-spring](https://github.com/ymzuiku/vanilla-spring)
 
 You can search other packages in github: https://github.com/search?q=vanilla-document
