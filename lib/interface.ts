@@ -191,7 +191,7 @@ export interface IStyle {
   fillOpacity?: string | null;
   fillRule?: string | null;
   filter?: string;
-  flex?: string | null;
+  flex?: string | number | null;
   flexBasis?: string | null;
   flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
   flexFlow?: string | null;
