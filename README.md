@@ -284,7 +284,7 @@ If your need create a vanilla.js package, please don't dependencies other vanill
 We created some vanilla.js packages, there very tiny(1kb~5kb), and zero dependencies:
 
 - [vanilla-document](https://github.com/ymzuiku/vanilla-document)
-- [vanilla-route](https://github.com/ymzuiku/vanilla-route)
+- [vanilla-navi](https://github.com/ymzuiku/vanilla-navi)
 - [vanilla-observer](https://github.com/ymzuiku/vanilla-observer)
 - [vanilla-http](https://github.com/ymzuiku/vanilla-http)
 - [vanilla-list](https://github.com/ymzuiku/vanilla-list)

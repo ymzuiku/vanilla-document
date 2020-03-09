@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const rollup = require('rollup');
-const rollupTypescript = require('rollup-plugin-typescript2');
-const { uglify } = require('rollup-plugin-uglify');
-const { resolve } = require('path');
+const rollup = require("rollup");
+const rollupTypescript = require("rollup-plugin-typescript2");
+const { uglify } = require("rollup-plugin-uglify");
+const { resolve } = require("path");
 const pwd = (...args) => resolve(process.cwd(), ...args);
-const fs = require('fs-extra');
+const fs = require("fs-extra");
 const argv = process.argv.splice(2);
 
 function clearDir(dir) {
@@ -29,42 +29,54 @@ function haveArgv(...args) {
   return isHave;
 }
 
-clearDir(pwd('umd'));
+clearDir(pwd("umd"));
 
 const watchOptions = {
-  input: './lib/index.ts',
+  input: "./lib/index.ts",
   output: {
-    file: './umd/index.js',
-    format: 'umd',
-    name: 'dom',
-    sourcemap: true,
+    file: "./umd/index.js",
+    format: "umd",
+    name: "dom",
+    sourcemap: true
   },
   plugins: [
     rollupTypescript({
-      useTsconfigDeclarationDir: false,
+      useTsconfigDeclarationDir: false
     }),
     uglify({
-      sourcemap: true,
-    }),
-  ],
+      sourcemap: true
+    })
+  ]
 };
 
 const polyfillOptions = {
-  input: './lib/dom-polyfill.ts',
+  external: [
+    "ws",
+    "node-rsa",
+    "crypto",
+    "lodash",
+    "fastify",
+    "fastify-cors",
+    "mongodb",
+    "fs-extra",
+    "path",
+    "fs"
+  ],
+  input: "./lib/dom-polyfill.ts",
   output: {
-    file: './umd/dom-polyfill.js',
-    format: 'umd',
-    name: 'domPolyfill',
-    sourcemap: true,
+    file: "./umd/dom-polyfill.js",
+    format: "umd",
+    name: "domPolyfill",
+    sourcemap: true
   },
   plugins: [
     rollupTypescript({
-      useTsconfigDeclarationDir: false,
+      useTsconfigDeclarationDir: false
     }),
     uglify({
-      sourcemap: true,
-    }),
-  ],
+      sourcemap: true
+    })
+  ]
 };
 
 const watcher = rollup.watch([watchOptions, polyfillOptions]);
@@ -76,14 +88,14 @@ const watcher = rollup.watch([watchOptions, polyfillOptions]);
 //   END          — finished building all bundles
 //   ERROR        — encountered an error while bundling
 //   FATAL        — encountered an unrecoverable error
-watcher.on('event', event => {
-  if (event.code === 'ERROR') {
+watcher.on("event", event => {
+  if (event.code === "ERROR") {
     console.log(event);
-  } else if (event.code === 'BUNDLE_END') {
+  } else if (event.code === "BUNDLE_END") {
     // console.log(event);
-    console.log('BUNDLE_END');
-  } else if (event.code === 'END') {
-    if (!haveArgv('--watch', '-w')) {
+    console.log("BUNDLE_END");
+  } else if (event.code === "END") {
+    if (!haveArgv("--watch", "-w")) {
       watcher.close();
     }
 
